@@ -198,6 +198,7 @@ fun EditProfileScreen(
                                         val estado = estadoStateUser
                                         val descricao = descricaoState
                                         val foto = fotoUri
+                                        Log.w("foto", "EditProfileScreen: $foto", )
                                         val nome_de_usuario = tagDeUsuarioState
                                         val nome = nomeState
 
@@ -241,6 +242,11 @@ fun EditProfileScreen(
                                                                         uri.toString(),
                                                                         "foto"
                                                                     )
+//                                                                    localStorage.salvarValor(
+//                                                                        context,
+//                                                                        foto.toString(),
+//                                                                        "foto"
+//                                                                    )
                                                                     //BARRA DE PROGRESSO DO UPLOAD
                                                                 }
                                                         }
@@ -426,6 +432,7 @@ fun EditProfileScreen(
                                         .clip(CircleShape)
                                         .clickable {
                                             launcher.launch("image/*")
+                                            Log.w("foto", "EditProfileScreen: $fotoUri", )
                                         },
                                     contentScale = ContentScale.Crop
                                 )
@@ -444,6 +451,7 @@ fun EditProfileScreen(
                                         .clip(RoundedCornerShape(10.dp))
                                         .clickable {
                                             launcher.launch("image/*")
+                                            Log.w("foto", "EditProfileScreen: $fotoUri", )
                                         },
                                     contentScale = ContentScale.Crop
                                 )

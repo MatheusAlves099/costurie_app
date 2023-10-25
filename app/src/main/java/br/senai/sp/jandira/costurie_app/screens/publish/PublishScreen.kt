@@ -187,7 +187,7 @@ fun PublishScreen(
                 Log.e(MainActivity::class.java.simpleName, "Publicação Feita com Sucesso!")
                 Log.e("publication", "publication: ${response.body()} ")
 
-                navController.navigate("services")
+                navController.navigate("home")
 
             } else {
                 val errorBody = response.errorBody()?.string()

@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.DropdownServicesTag
+import br.senai.sp.jandira.costurie_app.components.ProgressBar
 import br.senai.sp.jandira.costurie_app.function.saveLogin
 import br.senai.sp.jandira.costurie_app.model.Filtering
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
@@ -85,6 +87,8 @@ fun ServicesScreen(
     viewModelUserTags: UserTagViewModel,
     localStorage: Storage
 ) {
+
+    var isLoading = false
 
     val categoryClickedViewModel: CategoryClickedViewModel = viewModel()
 
@@ -272,148 +276,164 @@ fun ServicesScreen(
                     letterSpacing = 2.sp
                 )
 
-                LazyRow() {
-                    items(listCategory) { filtering ->
-                        Card(
-                            modifier = Modifier
-                                .size(100.dp, 45.dp)
-                                .padding(start = 16.dp, 2.dp)
-                                .clickable {
-                                    categoryClickedViewModel.setClickedCategory(filtering.id)
-                                    val categoriaSelecionada = filtering.nome
-                                    val array = UserRepositorySqlite(context).findUsers()
-                                    val user = array[0]
-                                    lifecycleScope.launch {
-                                        val tags = getTags(
-                                            user.token,
-                                            categoriaSelecionada
-                                        ).toMutableList()
-                                        listTags = tags
-                                    }
-                                },
-                            elevation = 0.dp
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
-                            ) {
-                                Text(
-                                    text = filtering.nome.uppercase(),
-                                    modifier = Modifier
-                                        .height(20.dp),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = Contraste
-                                )
+               
 
-                                if (categoryClickedViewModel.getClickedCategory(filtering.id)) {
-                                    Canvas(
-                                        modifier = Modifier.size(6.dp),
-                                        onDraw = {
-                                            drawCircle(
-                                                color = color
-                                            )
+                if (listTags.isEmpty()) {
+                    isLoading = true
+                    ProgressBar(isDisplayed = isLoading)
+                } else {
+                    LazyRow() {
+                        items(listCategory) { filtering ->
+                            Card(
+                                modifier = Modifier
+                                    .size(100.dp, 45.dp)
+                                    .padding(start = 16.dp, 2.dp)
+                                    .clickable {
+                                        categoryClickedViewModel.setClickedCategory(filtering.id)
+                                        val categoriaSelecionada = filtering.nome
+                                        val array = UserRepositorySqlite(context).findUsers()
+                                        val user = array[0]
+                                        lifecycleScope.launch {
+                                            listTags = emptyList()
+                                            if (listTags.isEmpty()) {
+                                                isLoading = true
+                                                val tags = getTags(
+                                                    user.token,
+                                                    categoriaSelecionada
+                                                ).toMutableList()
+                                                listTags = tags
+                                            } else {
+                                                isLoading = false
+                                            }
                                         }
+                                    },
+                                elevation = 0.dp
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = filtering.nome.uppercase(),
+                                        modifier = Modifier
+                                            .height(20.dp),
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = Contraste
                                     )
+
+                                    if (categoryClickedViewModel.getClickedCategory(filtering.id)) {
+                                        Canvas(
+                                            modifier = Modifier.size(6.dp),
+                                            onDraw = {
+                                                drawCircle(
+                                                    color = color
+                                                )
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
 
+
                 Row(
                     modifier = Modifier
-
                         .padding(top = 28.dp)
-                        .fillMaxWidth()
-                        .fillMaxHeight(),
+                        .fillMaxSize(),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        modifier = Modifier
-                            .padding(18.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        items(filtro(pesquisaState)) { tags ->
-                            Card(
-                                modifier = Modifier
-                                    .size(170.dp, 85.dp)
-                                    .clickable {
-                                        val idTagSelecionada = tags.id.toString()
-                                        val tagSelecionada = tags.nome_tag
+                    if (filtro(pesquisaState).isEmpty()) {
+                        ProgressBar(isDisplayed = !isLoading)
+                    } else {
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            modifier = Modifier
+                                .padding(18.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            items(filtro(pesquisaState)) { tags ->
+                                Card(
+                                    modifier = Modifier
+                                        .size(170.dp, 85.dp)
+                                        .clickable {
+                                            val idTagSelecionada = tags.id.toString()
+                                            val tagSelecionada = tags.nome_tag
 
-                                        localStorage.salvarValor(
-                                            context,
-                                            idTagSelecionada,
-                                            "idSelecionado"
-                                        )
-                                        localStorage.salvarValor(
-                                            context,
-                                            tagSelecionada,
-                                            "tagSelecionada"
-                                        )
+                                            localStorage.salvarValor(
+                                                context,
+                                                idTagSelecionada,
+                                                "idSelecionado"
+                                            )
+                                            localStorage.salvarValor(
+                                                context,
+                                                tagSelecionada,
+                                                "tagSelecionada"
+                                            )
 
 //                                        viewModelUserTags.id = idTagSelecionada
 //                                        viewModelUserTags.nome = tagSelecionada
 
 
-                                        navController.navigate("profileList")
-                                        Log.d(
-                                            "TAGSELECIONADA",
-                                            "ServicesScreen: $idTagSelecionada, $tagSelecionada"
-                                        )
-                                    },
-                                shape = RoundedCornerShape(15.dp),
-                                border = BorderStroke(
-                                    width = 1.dp,
-                                    Brush.horizontalGradient(
-                                        listOf(
-                                            Color(201, 143, 236, 255),
-                                            Color(168, 155, 255, 255)
-                                        )
-                                    )
-                                )
-                            ) {
-
-                                val fatorContraste = -0.5f
-
-                                val colorMatrix = ColorMatrix().apply {
-                                    // Aplicando o ajuste de contraste
-                                    setToScale(
-                                        1f + fatorContraste,
-                                        1f + fatorContraste,
-                                        1f + fatorContraste,
-                                        1f
-                                    )
-                                }
-
-                                AsyncImage(
-                                    model = tags.imagem,
-                                    contentDescription = "",
-                                    contentScale = ContentScale.Crop,
-                                    colorFilter = ColorFilter.colorMatrix(colorMatrix)
-                                )
-
-                                Box(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentAlignment = Alignment.BottomStart
-                                ) {
-                                    Text(
-                                        text = tags.nome_tag,
-                                        fontSize = 18.sp,
-                                        color = Color.White,
-                                        modifier = Modifier.padding(start = 12.dp),
-                                        fontWeight = FontWeight.Light,
-                                        style = TextStyle(
-                                            shadow = Shadow(
-                                                color = Color.Black,
-                                                offset = Offset(0f, 6f),
+                                            navController.navigate("profileList")
+                                            Log.d(
+                                                "TAGSELECIONADA",
+                                                "ServicesScreen: $idTagSelecionada, $tagSelecionada"
                                             )
-                                        ),
-                                        fontFamily = Kufam
+                                        },
+                                    shape = RoundedCornerShape(15.dp),
+                                    border = BorderStroke(
+                                        width = 1.dp,
+                                        Brush.horizontalGradient(
+                                            listOf(
+                                                Color(201, 143, 236, 255),
+                                                Color(168, 155, 255, 255)
+                                            )
+                                        )
                                     )
+                                ) {
+
+                                    val fatorContraste = -0.5f
+
+                                    val colorMatrix = ColorMatrix().apply {
+                                        // Aplicando o ajuste de contraste
+                                        setToScale(
+                                            1f + fatorContraste,
+                                            1f + fatorContraste,
+                                            1f + fatorContraste,
+                                            1f
+                                        )
+                                    }
+
+                                    AsyncImage(
+                                        model = tags.imagem,
+                                        contentDescription = "",
+                                        contentScale = ContentScale.Crop,
+                                        colorFilter = ColorFilter.colorMatrix(colorMatrix)
+                                    )
+
+                                    Box(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        contentAlignment = Alignment.BottomStart
+                                    ) {
+                                        Text(
+                                            text = tags.nome_tag,
+                                            fontSize = 18.sp,
+                                            color = Color.White,
+                                            modifier = Modifier.padding(start = 12.dp),
+                                            fontWeight = FontWeight.Light,
+                                            style = TextStyle(
+                                                shadow = Shadow(
+                                                    color = Color.Black,
+                                                    offset = Offset(0f, 6f),
+                                                )
+                                            ),
+                                            fontFamily = Kufam
+                                        )
+                                    }
                                 }
                             }
                         }

@@ -224,6 +224,21 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                 Spacer(modifier = Modifier.height(10.dp))
                 LazyRow() {
                     items(publicationsState.value.reversed()) { publication ->
+                        var shortDesc = publication.descricao
+                        var titleList = publication.titulo.split(" ")
+                        var shortTitle = ""
+
+                        if (shortDesc.length > 30) {
+                            shortDesc = shortDesc.substring(0, 30).plus("...")
+                        }
+                        titleList.forEach { string ->
+                            if (titleList.indexOf(string) < 4) {
+                                shortTitle += "$string "
+                            } else if (titleList.indexOf(string) == 4) {
+                                shortTitle += "..."
+                            }
+                        }
+
                         Card(
                             modifier = Modifier
                                 .width(170.dp)
@@ -267,13 +282,13 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                                     verticalArrangement = Arrangement.Top
                                 ) {
                                     Text(
-                                        text = publication.titulo,
+                                        text = shortTitle,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Contraste
                                     )
                                     Text(
-                                        text = publication.descricao,
+                                        text = shortDesc,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Gray

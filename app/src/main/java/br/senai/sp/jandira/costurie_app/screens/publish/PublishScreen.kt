@@ -118,6 +118,8 @@ fun PublishScreen(
     var isImageSelected by remember { mutableStateOf(false) }
 
     var selectedMedia by remember { mutableStateOf(emptyList<AnexoResponse>()) }
+    var selectedMediaUri by remember { mutableStateOf(emptyList<Uri>()) }
+    var selectedMediaUrl by remember { mutableStateOf(emptyList<Uri>()) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -125,6 +127,7 @@ fun PublishScreen(
         if (uri != null) {
             val anexoResponse = AnexoResponse(conteudo = uri.toString())
             selectedMedia = selectedMedia + anexoResponse
+            selectedMediaUri += uri
         }
     }
 
@@ -250,6 +253,7 @@ fun PublishScreen(
 
                         }
                 )
+                Log.i("selected", "PublishScreen: ${selectedMediaUri}")
 
                 Image(
                     painter = painterResource(id = R.drawable.send_icon),
@@ -257,7 +261,7 @@ fun PublishScreen(
                     Modifier
                         .size(35.dp)
                         .clickable {
-                            fotoUri?.let {
+                            selectedMediaUri.forEach {
                                 storageRef
                                     .putFile(it)
                                     .addOnCompleteListener { task ->
@@ -275,14 +279,32 @@ fun PublishScreen(
                                                     .addOnCompleteListener { firestoreTask ->
 
                                                         if (firestoreTask.isSuccessful) {
+                                                            Log.i(
+                                                                "fotossuccess", "PublishScreen: ${
+                                                                    selectedMediaUri.indexOf(
+                                                                        uri
+                                                                    )
+                                                                }"
+                                                            )
                                                             Toast
                                                                 .makeText(
                                                                     context,
-                                                                    "UPLOAD REALIZADO COM SUCESSO",
+                                                                    "UPLOAD REALIZADO COM SUCESSO ${
+                                                                        selectedMediaUri.indexOf(
+                                                                            uri
+                                                                        )
+                                                                    }",
                                                                     Toast.LENGTH_SHORT
                                                                 )
                                                                 .show()
                                                         } else {
+                                                            Log.i(
+                                                                "fotoserro", "PublishScreen: ${
+                                                                    selectedMediaUri.indexOf(
+                                                                        uri
+                                                                    )
+                                                                }"
+                                                            )
                                                             Toast
                                                                 .makeText(
                                                                     context,
@@ -292,11 +314,7 @@ fun PublishScreen(
                                                                 .show()
                                                         }
 
-                                                        localStorage.salvarValor(
-                                                            context,
-                                                            uri.toString(),
-                                                            "foto"
-                                                        )
+
                                                         //BARRA DE PROGRESSO DO UPLOAD
                                                     }
                                             }

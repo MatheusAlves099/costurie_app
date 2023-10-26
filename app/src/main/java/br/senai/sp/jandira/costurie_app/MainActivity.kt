@@ -56,7 +56,8 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "expandedComment")
+                    startDestination = "main")
+
    {
                     composable(route = "main") { MainScreen(navController = navController) }
                     composable(route = "register") { RegisterScreen(navController = navController, lifecycleScope = lifecycleScope) }
@@ -66,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = "tradePassword") { TradePasswordScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelPassword) }
                     composable(route = "loading") { LoadingScreen(navController = navController, lifecycleScope = lifecycleScope) }
                     composable(route = "home") { HomeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelUser) }
-                    composable(route = "explore") { ExploreScreen(navController = navController) }
+                    composable(route = "explore") { ExploreScreen(navController = navController, localStorage = localStorage) }
                     //composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
                     composable(route = "expandedComment") { ExpandedCommentScreen() }
                     composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser,  localStorage = localStorage) }

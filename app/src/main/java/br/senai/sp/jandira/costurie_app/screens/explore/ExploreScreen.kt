@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
@@ -50,7 +51,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import coil.compose.AsyncImage
 
 @Composable
-fun ExploreScreen(navController: NavController) {
+fun ExploreScreen(navController: NavController,  localStorage: Storage) {
 
     var context = LocalContext.current
 
@@ -230,7 +231,8 @@ fun ExploreScreen(navController: NavController) {
                                 .padding(start = 16.dp, 2.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {
-
+                                    localStorage.salvarValor(context, publication.id.toString(), "id_publicacao")
+                                    navController.navigate("expandedPublication")
                                 },
                             backgroundColor = Color.White,
                             elevation = 20.dp

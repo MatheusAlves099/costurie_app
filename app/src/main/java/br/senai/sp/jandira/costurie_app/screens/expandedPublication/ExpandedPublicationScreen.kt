@@ -52,7 +52,9 @@ import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
 import br.senai.sp.jandira.costurie_app.components.ModalFilter
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
 import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
+import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
+import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -70,6 +72,26 @@ fun ExpandedPublicationScreen(
     localStorage: Storage,
 ) {
     var context = LocalContext.current
+
+    var id = localStorage.lerValor(context, "id_publicacao")
+
+    suspend fun getPublicationById(
+        token: String,
+        idPublication: Int
+    ) {
+        val publicationRepository = PublicationRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = publicationRepository.getPublicationById(token, id!!.toInt())
+
+        if (response.isSuccessful) {
+            val responseBody = response.body()
+
+        } else {
+
+        }
+    }
 
     Costurie_appTheme {
         Surface(
@@ -104,6 +126,7 @@ fun ExpandedPublicationScreen(
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
+                                    navController.popBackStack()
                                 }
                         )
                     }
@@ -153,7 +176,7 @@ fun ExpandedPublicationScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp),
@@ -224,7 +247,7 @@ fun ExpandedPublicationScreen(
                     }
                 }
 
-                Row (
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp),
@@ -251,7 +274,7 @@ fun ExpandedPublicationScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Column(
                     modifier = Modifier.fillMaxWidth()
@@ -262,7 +285,7 @@ fun ExpandedPublicationScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(20.dp)
-                            .padding(start = 10.dp, end = 10.dp),
+                            .padding(start = 16.dp, end = 10.dp),
                         fontSize = 15.sp,
                         color = Contraste,
                         fontWeight = FontWeight.SemiBold
@@ -274,7 +297,7 @@ fun ExpandedPublicationScreen(
                         modifier = Modifier
                             .width(430.dp)
                             .height(65.dp)
-                            .padding(start = 10.dp, end = 10.dp),
+                            .padding(start = 16.dp, end = 10.dp),
                         fontSize = 15.sp,
                         color = Contraste
                     )

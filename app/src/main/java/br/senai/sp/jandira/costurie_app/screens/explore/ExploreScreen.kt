@@ -1,5 +1,7 @@
 package br.senai.sp.jandira.costurie_app.screens.explore
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,29 +16,104 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
+import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
+import coil.compose.AsyncImage
 
 @Composable
 fun ExploreScreen(navController: NavController) {
+
+    var context = LocalContext.current
+
+//    suspend fun getAllPublications() {
+//        val publicationRepository = PublicationRepository()
+//        val array = UserRepositorySqlite(context).findUsers()
+//        val user = array[0]
+//
+//        val response = publicationRepository.getAllPublications()
+//
+//        if (response.isSuccessful) {
+//            Log.e(MainActivity::class.java.simpleName, "Publicacoes")
+//            Log.e("user", "user: ${response.body()}")
+//
+//        } else {
+//            val errorBody = response.errorBody()?.string()
+//            Log.e("TODAS AS PUBLICACOES", "Erro: $errorBody")
+//            Toast.makeText(
+//                context,
+//                "Erro ao buscar todas as publicações: $errorBody",
+//                Toast.LENGTH_SHORT
+//            ).show()
+//        }
+//    }
+
+    // Crie um estado mutável para as publicações
+    val publicationsState = remember { mutableStateOf(emptyList<PublicationGetResponse>()) }
+
+    // Função para buscar as publicações
+    suspend fun getAllPublications() {
+        val publicationRepository = PublicationRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = publicationRepository.getAllPublications()
+
+        if (response.isSuccessful) {
+            val publications = response.body()?.publicacoes ?: emptyList()
+            publicationsState.value = publications
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("TODAS AS PUBLICACOES", "Erro: $errorBody")
+            Toast.makeText(
+                context,
+                "Erro ao buscar todas as publicações: $errorBody",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+
+
+
+    LaunchedEffect(key1 = true) {
+        val array = UserRepositorySqlite(context).findUsers()
+
+        val user = array[0]
+
+        getAllPublications()
+
+        Log.e("PUBLICATION", "ExploreScreen: ${getAllPublications()}")
+    }
+
     Costurie_appTheme {
         Surface(
             modifier = Modifier
@@ -94,7 +171,10 @@ fun ExploreScreen(navController: NavController) {
                                     modifier = Modifier
                                         .height(145.dp)
                                         .fillMaxWidth()
-                                        .background(Color(168, 155, 255, 102), shape = RoundedCornerShape(16.dp))
+                                        .background(
+                                            Color(168, 155, 255, 102),
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
                                 ) {
                                     Image(
                                         painter = painterResource(id = R.drawable.mulher_publicacao),
@@ -142,7 +222,7 @@ fun ExploreScreen(navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 LazyRow() {
-                    items(4) { publication ->
+                    items(publicationsState.value.reversed()) { publication ->
                         Card(
                             modifier = Modifier
                                 .width(170.dp)
@@ -168,8 +248,8 @@ fun ExploreScreen(navController: NavController) {
                                             shape = RoundedCornerShape(16.dp)
                                         )
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.mulher_publicacao2),
+                                    AsyncImage(
+                                        model = publication.anexos[0].anexo,
                                         contentDescription = "",
                                         modifier = Modifier
                                             .size(150.dp, 140.dp)
@@ -185,13 +265,13 @@ fun ExploreScreen(navController: NavController) {
                                     verticalArrangement = Arrangement.Top
                                 ) {
                                     Text(
-                                        text = "Beltrana dos Santos Silva",
+                                        text = publication.titulo,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Contraste
                                     )
                                     Text(
-                                        text = "Descrição",
+                                        text = publication.descricao,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Gray

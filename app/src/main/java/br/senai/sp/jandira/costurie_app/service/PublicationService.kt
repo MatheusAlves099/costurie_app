@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.service
 
+import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponseTag
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
@@ -12,6 +13,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface PublicationService {
 
@@ -25,5 +27,12 @@ interface PublicationService {
     @Headers("Content-Type: application/json")
     @GET("/publicacao/select_all")
     suspend fun getAllPublications(): Response<BaseResponsePublication>
+
+    @Headers("Content-Type: application/json")
+    @GET("/publicacao/select_by_id/{id}")
+    suspend fun getPublicationById(
+        @Header("x-access-token") token: String,
+        @Path("id") id: Int
+    ): Response<BaseResponseIdPublication>
 
 }

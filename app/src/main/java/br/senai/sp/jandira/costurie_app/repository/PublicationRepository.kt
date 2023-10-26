@@ -1,6 +1,9 @@
 package br.senai.sp.jandira.costurie_app.repository
 
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
+import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
+import br.senai.sp.jandira.costurie_app.model.BaseResponseTag
+import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationResponse
 import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.service.PublicationService
@@ -48,4 +51,10 @@ class PublicationRepository {
 
         return apiService.createPublication(requestBody, token)
     }
+
+    suspend fun getAllPublications(): Response<BaseResponsePublication> {
+
+        return apiService.getAllPublications()
+    }
+
 }

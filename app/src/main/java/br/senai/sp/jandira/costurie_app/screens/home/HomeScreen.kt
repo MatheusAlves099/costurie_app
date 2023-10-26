@@ -223,10 +223,6 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
 
                 }
             }
-
-
-
-
         }
     }
 }

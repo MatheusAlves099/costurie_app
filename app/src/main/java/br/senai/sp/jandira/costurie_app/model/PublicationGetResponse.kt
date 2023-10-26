@@ -10,5 +10,5 @@ data class PublicationGetResponse(
     @SerializedName("hora") var hora: String = "",
     @SerializedName("id_usuario") var id_usuario: Int = 0,
     @SerializedName("anexos") var anexos: List<AnexoGetResponse> = mutableListOf(),
-    @SerializedName("tags") var tags: MutableList<List<TagGetPublicationResponse>> = mutableListOf()
+    @SerializedName("tags") var tags: MutableList<TagGetPublicationResponse> = mutableListOf()
 )

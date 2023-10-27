@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.screens.expandedPublication
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,6 +25,9 @@ import androidx.compose.material.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.ButtonGivePoint
@@ -49,10 +54,13 @@ import br.senai.sp.jandira.costurie_app.components.GoogleButton
 import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.components.GradientButtonSmall
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
+import br.senai.sp.jandira.costurie_app.components.GradientButtonTags
 import br.senai.sp.jandira.costurie_app.components.ModalFilter
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
+import br.senai.sp.jandira.costurie_app.components.ModalTagsPublication
 import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
+import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
@@ -60,37 +68,50 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
+import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
+import org.json.JSONObject
 
 @Composable
 fun ExpandedPublicationScreen(
     lifecycleScope: LifecycleCoroutineScope,
     navController: NavController,
-    viewModel: UserViewModel,
+    viewModel: TagPublicationViewModel,
     localStorage: Storage,
 ) {
     var context = LocalContext.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
 
-    suspend fun getPublicationById(
-        token: String,
-        idPublication: Int
-    ) {
+    val publicationState = remember { mutableStateOf<BaseResponseIdPublication?>(null) }
+
+    suspend fun getPublicationById() {
         val publicationRepository = PublicationRepository()
         val array = UserRepositorySqlite(context).findUsers()
         val user = array[0]
 
-        val response = publicationRepository.getPublicationById(token, id!!.toInt())
+        val response = publicationRepository.getPublicationById(user.token, id!!.toInt())
 
         if (response.isSuccessful) {
-            val responseBody = response.body()
+            Log.e(MainActivity::class.java.simpleName, "Requisição bem sucedida, Publicação")
+            Log.e("publicação", "publicação: ${response.body()} ")
 
+            publicationState.value = response.body()
+            viewModel.tags = response.body()?.publicacao?.tags
         } else {
-
+            val errorBody = response.errorBody()?.string()
+            Log.e("EDICAO DE PERFIL", "updateUser: $errorBody")
         }
+    }
+
+    LaunchedEffect(key1 = true) {
+
+        getPublicationById()
+
+        Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
     }
 
     Costurie_appTheme {
@@ -132,6 +153,7 @@ fun ExpandedPublicationScreen(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(15.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -145,8 +167,8 @@ fun ExpandedPublicationScreen(
                             .clip(shape = RoundedCornerShape(10.dp))
                             .background(Color(168, 155, 255, 102))
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.mulher_publicacao),
+                        AsyncImage(
+                            model = publicationState.value?.publicacao?.usuario?.foto.orEmpty(),
                             contentDescription = "",
                             modifier = Modifier
                                 .fillMaxSize()
@@ -157,24 +179,24 @@ fun ExpandedPublicationScreen(
                     }
 
                     Text(
-                        text = "Beltrannya Góes dos Santos",
+                        text = publicationState.value?.publicacao?.usuario?.nome.orEmpty(),
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .width(170.dp)
                             .height(45.dp),
-                        fontSize = 15.sp,
+                        fontSize = 18.sp,
                         color = Contraste
                     )
 
                     GradientButtonSmall(
-                        onClick = { /*TODO*/ },
+                        onClick = {},
                         text = stringResource(id = R.string.botao_recomendar),
                         color1 = Destaque1,
                         color2 = Destaque2
                     )
                 }
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
 
                 Row(
                     modifier = Modifier
@@ -183,31 +205,30 @@ fun ExpandedPublicationScreen(
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    GradientButtonTag(
-                        onClick = { /*TODO*/ },
-                        color1 = Destaque1,
-                        color2 = Destaque2,
-                        tagId = 1,
-                        text = "Crochê",
-                        textColor = Color.White
-                    )
 
-                    GradientButtonTag(
-                        onClick = { /*TODO*/ },
-                        color1 = Destaque1,
-                        color2 = Destaque2,
-                        tagId = 1,
-                        text = "Crochê",
-                        textColor = Color.White
-                    )
 
-                    ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel = viewModel)
+                    //localStorage.salvarValor(context, publicationState.value?.publicacao?.tags.toString(), "tagsPublicação")
+
+                    publicationState.value?.publicacao?.tags?.take(2)?.forEach { tag ->
+                        GradientButtonTag(
+                            onClick = { /*TODO*/ },
+                            color1 = Destaque1,
+                            color2 = Destaque2,
+                            tagId = tag.id,
+                            text = tag.nome_tag,
+                            textColor =  Color(168, 155, 255, 255)
+                        )
+                    }
+
+                    if ((publicationState.value?.publicacao?.tags?.size ?: 0) > 1) {
+                        ModalTagsPublication(color1 = Destaque1, color2 = Destaque2, viewModel)
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 LazyRow() {
-                    items(4) { publication ->
+                    items(publicationState.value?.publicacao?.anexos.orEmpty()) { publication ->
                         Card(
                             modifier = Modifier
                                 .width(250.dp)
@@ -232,8 +253,8 @@ fun ExpandedPublicationScreen(
                                             shape = RoundedCornerShape(16.dp)
                                         )
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.mulher_publicacao),
+                                    AsyncImage(
+                                        model = publication.anexo,
                                         contentDescription = "",
                                         modifier = Modifier
                                             .width(225.dp)
@@ -280,19 +301,19 @@ fun ExpandedPublicationScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.titulo_label).uppercase(),
+                        text = publicationState.value?.publicacao?.titulo.orEmpty(),
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(20.dp)
+                            .height(35.dp)
                             .padding(start = 16.dp, end = 10.dp),
-                        fontSize = 15.sp,
+                        fontSize = 20.sp,
                         color = Contraste,
                         fontWeight = FontWeight.SemiBold
                     )
 
                     Text(
-                        text = "Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem more...Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem more...",
+                        text = publicationState.value?.publicacao?.descricao.orEmpty(),
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .width(430.dp)

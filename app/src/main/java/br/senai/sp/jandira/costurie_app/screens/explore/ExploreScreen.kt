@@ -55,32 +55,8 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
 
     var context = LocalContext.current
 
-//    suspend fun getAllPublications() {
-//        val publicationRepository = PublicationRepository()
-//        val array = UserRepositorySqlite(context).findUsers()
-//        val user = array[0]
-//
-//        val response = publicationRepository.getAllPublications()
-//
-//        if (response.isSuccessful) {
-//            Log.e(MainActivity::class.java.simpleName, "Publicacoes")
-//            Log.e("user", "user: ${response.body()}")
-//
-//        } else {
-//            val errorBody = response.errorBody()?.string()
-//            Log.e("TODAS AS PUBLICACOES", "Erro: $errorBody")
-//            Toast.makeText(
-//                context,
-//                "Erro ao buscar todas as publicações: $errorBody",
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
-//    }
-
-    // Crie um estado mutável para as publicações
     val publicationsState = remember { mutableStateOf(emptyList<PublicationGetResponse>()) }
 
-    // Função para buscar as publicações
     suspend fun getAllPublications() {
         val publicationRepository = PublicationRepository()
         val array = UserRepositorySqlite(context).findUsers()

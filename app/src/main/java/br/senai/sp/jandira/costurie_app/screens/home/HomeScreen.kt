@@ -205,7 +205,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         verticalArrangement = Arrangement.Center
                     ) {
                         if (selectedIndexItem == 0) {
-                            ExploreScreen(navController = navController)
+                            ExploreScreen(navController = navController, localStorage = localStorage)
                             currentScreen = selectedIndexItem
                         } else if (selectedIndexItem == 1) {
                             ServicesScreen(navController = navController, lifecycleScope =  lifecycleScope, filterings = emptyList(), categories = emptyList(), viewModelUserTags = UserTagViewModel(), localStorage = localStorage)

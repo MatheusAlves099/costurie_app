@@ -483,7 +483,7 @@ fun PublishScreen(
 
             Box(
                 modifier = Modifier
-                    .height(120.dp)
+                    .height(180.dp)
                     .fillMaxWidth()
                     .padding(horizontal = 25.dp)
                     .background((Color.White), shape = RoundedCornerShape(20.dp))

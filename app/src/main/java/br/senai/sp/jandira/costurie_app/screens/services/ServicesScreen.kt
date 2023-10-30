@@ -341,7 +341,7 @@ fun ServicesScreen(
 
                 Row(
                     modifier = Modifier
-                        .padding(top = 28.dp)
+                        .padding(top = 15.dp)
                         .fillMaxSize(),
                     horizontalArrangement = Arrangement.Center
                 ) {

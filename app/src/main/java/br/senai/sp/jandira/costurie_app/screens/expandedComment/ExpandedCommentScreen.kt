@@ -3,6 +3,7 @@ package br.senai.sp.jandira.costurie_app.screens.expandedComment
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,10 +32,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -48,6 +54,7 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
+import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -60,6 +67,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun ExpandedCommentScreen() {
     Costurie_appTheme {
+
+        var commentState by remember {
+            mutableStateOf("")
+        }
+
         val sheetState = rememberBottomSheetState(
             initialValue = BottomSheetValue.Collapsed
         )
@@ -108,7 +120,7 @@ fun ExpandedCommentScreen() {
 
                 LazyColumn(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .height(670.dp)
                 ) {
                     items(7) {
                         Card(
@@ -181,13 +193,12 @@ fun ExpandedCommentScreen() {
                     }
                 }
 
-                CustomOutlinedTextField2(
-                    value = "",
-                    onValueChange = { },
-                    borderColor = Color.Cyan,
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(20.dp)
+                CustomOutlinedTextFieldComment(
+                    value = commentState,
+                    onValueChange = {
+                        commentState = it
+                    },
+                    label = stringResource(id = R.string.label_comentarios)
                 )
             },
             sheetBackgroundColor = Color.White,
@@ -211,10 +222,4 @@ fun ExpandedCommentScreen() {
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ExpandedCommentScreenPreview() {
-    ExpandedCommentScreen()
 }

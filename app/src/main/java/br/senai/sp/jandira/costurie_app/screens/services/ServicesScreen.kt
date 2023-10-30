@@ -286,7 +286,7 @@ fun ServicesScreen(
                         items(listCategory) { filtering ->
                             Card(
                                 modifier = Modifier
-                                    .size(100.dp, 45.dp)
+                                    .size(100.dp, 25.dp)
                                     .padding(start = 16.dp, 2.dp)
                                     .clickable {
                                         categoryClickedViewModel.setClickedCategory(filtering.id)
@@ -341,7 +341,7 @@ fun ServicesScreen(
 
                 Row(
                     modifier = Modifier
-                        .padding(top = 28.dp)
+                        .padding(top = 15.dp)
                         .fillMaxSize(),
                     horizontalArrangement = Arrangement.Center
                 ) {

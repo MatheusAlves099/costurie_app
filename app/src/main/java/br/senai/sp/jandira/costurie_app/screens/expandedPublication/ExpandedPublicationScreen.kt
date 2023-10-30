@@ -134,23 +134,59 @@ fun ExpandedPublicationScreen(
                             .height(100.dp),
                         alignment = Alignment.TopEnd
                     )
-                    Row(
-                        modifier = Modifier
-                            .width(370.dp)
-                            .padding(top = 15.dp, start = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.arrow_back),
-                            contentDescription = "",
+
+                    val array = UserRepositorySqlite(context).findUsers()
+
+                    val user = array[0]
+
+                    if (user.id.toInt() == publicationState.value?.publicacao?.usuario?.id) {
+                        Row(
                             modifier = Modifier
-                                .size(45.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                }
-                        )
+                                .width(370.dp)
+                                .padding(top = 15.dp, start = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.arrow_back),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    }
+                            )
+                            Image(
+                                painter = painterResource(id = R.drawable.baseline_more_horiz_24),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .clickable {
+
+                                    }
+                            )
+
+                        }
+                    } else {
+                        Row(
+                            modifier = Modifier
+                                .width(370.dp)
+                                .padding(top = 15.dp, start = 15.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.arrow_back),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(45.dp)
+                                    .clickable {
+                                        navController.popBackStack()
+                                    }
+                            )
+                        }
                     }
+
                 }
 
                 Spacer(modifier = Modifier.height(15.dp))
@@ -183,7 +219,12 @@ fun ExpandedPublicationScreen(
                         textAlign = TextAlign.Start,
                         modifier = Modifier
                             .width(170.dp)
-                            .height(45.dp),
+                            .height(45.dp)
+                            .clickable {
+                                var id = publicationState.value?.publicacao?.usuario?.id
+                                localStorage.salvarValor(context, id.toString(), "idUsuario")
+                                navController.navigate("profileViewed")
+                            },
                         fontSize = 18.sp,
                         color = Contraste
                     )
@@ -216,7 +257,7 @@ fun ExpandedPublicationScreen(
                             color2 = Destaque2,
                             tagId = tag.id,
                             text = tag.nome_tag,
-                            textColor =  Color(168, 155, 255, 255)
+                            textColor = Color(168, 155, 255, 255)
                         )
                     }
 

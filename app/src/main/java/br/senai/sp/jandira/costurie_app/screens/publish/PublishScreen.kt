@@ -42,6 +42,7 @@ import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -89,6 +90,10 @@ fun PublishScreen(
 
     val context = LocalContext.current
 
+    var anexoResponse by remember {
+        mutableStateOf<AnexoResponse>(AnexoResponse(""))
+    }
+
     var titleState by remember {
         mutableStateOf("")
     }
@@ -117,17 +122,17 @@ fun PublishScreen(
 
     var isImageSelected by remember { mutableStateOf(false) }
 
-    var selectedMedia by remember { mutableStateOf(emptyList<AnexoResponse>()) }
-    var selectedMediaUri by remember { mutableStateOf(emptyList<Uri>()) }
-    var selectedMediaUrl by remember { mutableStateOf(emptyList<Uri>()) }
+//    var selectedMedia by remember { mutableStateOf(emptyList<AnexoResponse>()) }
+    var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoResponse>()) }
+    var selectedMediaUrl by remember { mutableStateOf(emptyList<AnexoResponse>()) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
             val anexoResponse = AnexoResponse(conteudo = uri.toString())
-            selectedMedia = selectedMedia + anexoResponse
-            selectedMediaUri += uri
+//            selectedMedia = selectedMedia + anexoResponse
+            selectedMediaUri += anexoResponse
         }
     }
 
@@ -263,13 +268,12 @@ fun PublishScreen(
                         .clickable {
                             selectedMediaUri.forEach {
                                 storageRef
-                                    .putFile(it)
+                                    .putFile(Uri.parse(it.conteudo))
                                     .addOnCompleteListener { task ->
 
                                         if (task.isSuccessful) {
 
                                             storageRef.downloadUrl.addOnSuccessListener { uri ->
-
                                                 val map = HashMap<String, Any>()
                                                 map["pic"] = uri.toString()
 
@@ -279,32 +283,49 @@ fun PublishScreen(
                                                     .addOnCompleteListener { firestoreTask ->
 
                                                         if (firestoreTask.isSuccessful) {
+//                                                            Log.i(
+//                                                                "fotossuccess", "PublishScreen: ${
+//                                                                    selectedMediaUri.indexOf(
+//                                                                        uri
+//                                                                    )
+//                                                                }"
+//                                                            )
+//                                                            Toast
+//                                                                .makeText(
+//                                                                    context,
+//                                                                    "UPLOAD REALIZADO COM SUCESSO ${
+//                                                                        selectedMediaUri.indexOf(
+//                                                                            uri
+//                                                                        )
+//                                                                    }",
+//                                                                    Toast.LENGTH_SHORT
+//                                                                )
+//                                                                .show()
+
+                                                            anexoResponse = AnexoResponse(conteudo = uri.toString())
+                                                            selectedMediaUrl += anexoResponse
                                                             Log.i(
-                                                                "fotossuccess", "PublishScreen: ${
-                                                                    selectedMediaUri.indexOf(
-                                                                        uri
-                                                                    )
-                                                                }"
+                                                                "testeUrl",
+                                                                "PublishScreen: ${selectedMediaUrl[0]}"
                                                             )
-                                                            Toast
-                                                                .makeText(
-                                                                    context,
-                                                                    "UPLOAD REALIZADO COM SUCESSO ${
-                                                                        selectedMediaUri.indexOf(
-                                                                            uri
-                                                                        )
-                                                                    }",
-                                                                    Toast.LENGTH_SHORT
+                                                            if (selectedMediaUrl.size == selectedMediaUri.size) {
+                                                                createPublication(
+                                                                    id_usuario = user.id.toInt(),
+                                                                    token = user.token,
+                                                                    titulo = titleState,
+                                                                    descricao = descriptionState,
+                                                                    anexos = selectedMediaUrl,
+                                                                    tags = tagsArray
                                                                 )
-                                                                .show()
+                                                            }
                                                         } else {
-                                                            Log.i(
-                                                                "fotoserro", "PublishScreen: ${
-                                                                    selectedMediaUri.indexOf(
-                                                                        uri
-                                                                    )
-                                                                }"
-                                                            )
+//                                                            Log.i(
+//                                                                "fotoserro", "PublishScreen: ${
+//                                                                    selectedMediaUri.indexOf(
+//                                                                        uri
+//                                                                    )
+//                                                                }"
+//                                                            )
                                                             Toast
                                                                 .makeText(
                                                                     context,
@@ -313,7 +334,6 @@ fun PublishScreen(
                                                                 )
                                                                 .show()
                                                         }
-
 
                                                         //BARRA DE PROGRESSO DO UPLOAD
                                                     }
@@ -331,18 +351,13 @@ fun PublishScreen(
 
                                         }
 
+
                                         //BARRA DE PROGRESSO DO UPLOAD
 
                                     }
                             }
-                            createPublication(
-                                id_usuario = user.id.toInt(),
-                                token = user.token,
-                                titulo = titleState,
-                                descricao = descriptionState,
-                                anexos = selectedMedia,
-                                tags = tagsArray
-                            )
+                            Log.i("testeUri", "PublishScreen: ${selectedMediaUri}")
+
                         }
                 )
             }
@@ -397,7 +412,7 @@ fun PublishScreen(
             ) {
 
                 LazyRow(content = {
-                    items(selectedMedia) { anexoResponse ->
+                    items(selectedMediaUri) { anexoResponse ->
                         val uri = Uri.parse(anexoResponse.conteudo)
                         Box(
                             modifier = Modifier
@@ -423,13 +438,13 @@ fun PublishScreen(
                                     .clickable {
                                         Log.i(
                                             "ListaArquivos",
-                                            "media: $selectedMedia"
+                                            "media: $selectedMediaUri"
                                         )
                                         Log.i(
                                             "ListaArquivos",
                                             "anexo: $anexoResponse"
                                         )
-                                        selectedMedia = selectedMedia.minus(anexoResponse)
+                                        selectedMediaUri = selectedMediaUri.minus(anexoResponse)
                                     },
                                 tint = Color.White
                             )

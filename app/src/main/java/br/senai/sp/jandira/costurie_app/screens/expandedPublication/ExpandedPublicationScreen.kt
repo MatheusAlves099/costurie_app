@@ -55,6 +55,7 @@ import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.components.GradientButtonSmall
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTags
+import br.senai.sp.jandira.costurie_app.components.ModalEditDeletePublication
 import br.senai.sp.jandira.costurie_app.components.ModalFilter
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
 import br.senai.sp.jandira.costurie_app.components.ModalTagsPublication
@@ -156,16 +157,7 @@ fun ExpandedPublicationScreen(
                                         navController.popBackStack()
                                     }
                             )
-                            Image(
-                                painter = painterResource(id = R.drawable.baseline_more_horiz_24),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(45.dp)
-                                    .clickable {
-
-                                    }
-                            )
-
+                            ModalEditDeletePublication()
                         }
                     } else {
                         Row(

@@ -321,7 +321,8 @@ fun ExpandedPublicationScreen(
                     )
 
                     GradientButtonSmall(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                        },
                         text = stringResource(id = R.string.botao_comentarios),
                         color1 = Destaque1,
                         color2 = Destaque2

@@ -65,7 +65,8 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun ExpandedCommentScreen() {
+fun ExpandedCommentScreen(
+) {
     Costurie_appTheme {
 
         var commentState by remember {
@@ -120,7 +121,7 @@ fun ExpandedCommentScreen() {
 
                 LazyColumn(
                     modifier = Modifier
-                        .height(670.dp)
+                        .height(630.dp)
                 ) {
                     items(7) {
                         Card(

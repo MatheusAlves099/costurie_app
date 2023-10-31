@@ -89,6 +89,13 @@ fun ExpandedPublicationScreen(
 
     val publicationState = remember { mutableStateOf<BaseResponseIdPublication?>(null) }
 
+    val isOpen = remember { mutableStateOf(false) }
+
+    // Chame essa função para abrir a modal
+    fun openModal() {
+        isOpen.value = true
+    }
+
     suspend fun getPublicationById() {
         val publicationRepository = PublicationRepository()
         val array = UserRepositorySqlite(context).findUsers()
@@ -157,7 +164,9 @@ fun ExpandedPublicationScreen(
                                         navController.popBackStack()
                                     }
                             )
-                            ModalEditDeletePublication()
+
+                                ModalEditDeletePublication()
+
                         }
                     } else {
                         Row(

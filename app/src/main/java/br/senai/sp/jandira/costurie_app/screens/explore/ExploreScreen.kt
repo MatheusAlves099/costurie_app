@@ -67,6 +67,7 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
         if (response.isSuccessful) {
             val publications = response.body()?.publicacoes ?: emptyList()
             publicationsState.value = publications
+            Log.i("publis", "getAllPublications: ${publications}")
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("TODAS AS PUBLICACOES", "Erro: $errorBody")
@@ -222,7 +223,11 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                                 .padding(start = 16.dp, 2.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {
-                                    localStorage.salvarValor(context, publication.id.toString(), "id_publicacao")
+                                    localStorage.salvarValor(
+                                        context,
+                                        publication.id.toString(),
+                                        "id_publicacao"
+                                    )
                                     navController.navigate("expandedPublication")
                                 },
                             backgroundColor = Color.White,

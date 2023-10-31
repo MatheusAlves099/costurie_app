@@ -10,15 +10,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.requiredWidthIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,8 +38,10 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -49,6 +57,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
+import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,6 +80,15 @@ fun CustomOutlinedTextFieldComment(
             ),
             shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
         ),
+        trailingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.send_icon),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(30.dp),
+                tint = Destaque2
+            )
+        },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color(252, 246, 255, 255),
             focusedIndicatorColor = Color.Transparent,
@@ -86,16 +104,6 @@ fun CustomOutlinedTextFieldComment(
                 maxLines = 1
             )
         },
-        textStyle = TextStyle.Default.copy(fontSize = 20.sp, color = Color.Black),
-        trailingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.send_icon),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(30.dp)
-                    .padding(bottom = 4.dp, end = 2.dp)
-            )
-        }
+        textStyle = TextStyle.Default.copy(fontSize = 20.sp, color = Color.Black)
     )
 }
-

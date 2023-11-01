@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -226,6 +227,7 @@ fun PasswordScreen(
                                 ),
                                 shape = RoundedCornerShape(20.dp),
                                 modifier = Modifier
+                                    .shadow(20.dp, shape = RoundedCornerShape(20.dp))
                                     .height(60.dp),
                                 textStyle = TextStyle.Default.copy(fontSize = 15.sp)
                             )

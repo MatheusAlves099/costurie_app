@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatsScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.EditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.TagsEditProfileScreen
+import br.senai.sp.jandira.costurie_app.screens.editPublication.EditPublicationScreen
 import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
 import br.senai.sp.jandira.costurie_app.screens.expandedPublication.ExpandedPublicationScreen
 import br.senai.sp.jandira.costurie_app.screens.explore.ExploreScreen
@@ -58,7 +59,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main")
+                    startDestination = "home")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }
@@ -81,6 +82,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = "editProfile") { EditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModel = viewModelUser, localStorage = localStorage) }
                     composable(route = "tagsEditProfile") { TagsEditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModelUser = viewModelUser, viewModelTags = viewModelTags, localStorage = localStorage) }
                     composable(route = "settings") { SettingsScreen(lifecycleScope = lifecycleScope, navController = navController) }
+                    composable(route = "editPublication") { EditPublicationScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage, viewModelTag = viewModelTagsPublication) }
 
                     //telas de personalização
                     composable(route = "name") { NameScreen(navController = navController, localStorage) }

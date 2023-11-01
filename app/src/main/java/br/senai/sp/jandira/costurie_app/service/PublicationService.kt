@@ -27,7 +27,7 @@ interface PublicationService {
 
     @Headers("Content-Type: application/json")
     @GET("/publicacao/select_all")
-    suspend fun getAllPublications(): Response<BaseResponsePublication>
+    suspend fun getAllPublications(@Header("x-access-token") token: String): Response<BaseResponsePublication>
 
     @Headers("Content-Type: application/json")
     @GET("/publicacao/select_by_id/{id}")

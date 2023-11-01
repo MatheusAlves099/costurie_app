@@ -165,7 +165,7 @@ fun ExpandedPublicationScreen(
                                     }
                             )
 
-                                ModalEditDeletePublication()
+                                ModalEditDeletePublication(lifecycleScope, localStorage, navController)
 
                         }
                     } else {

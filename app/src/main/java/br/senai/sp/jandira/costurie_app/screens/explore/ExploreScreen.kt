@@ -62,7 +62,7 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
         val array = UserRepositorySqlite(context).findUsers()
         val user = array[0]
 
-        val response = publicationRepository.getAllPublications()
+        val response = publicationRepository.getAllPublications(user.token)
 
         if (response.isSuccessful) {
             val publications = response.body()?.publicacoes ?: emptyList()

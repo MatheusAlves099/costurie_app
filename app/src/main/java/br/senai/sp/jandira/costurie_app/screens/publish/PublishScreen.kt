@@ -228,7 +228,8 @@ fun PublishScreen(
 
     Costurie_appTheme {
         fun urlDownload() {
-            selectedMediaUri.forEach {
+            for (it in selectedMediaUri) {
+
                 storageRef
                     .putFile(Uri.parse(it.conteudo))
                     .addOnCompleteListener { task ->
@@ -238,6 +239,14 @@ fun PublishScreen(
                             storageRef.downloadUrl.addOnSuccessListener { uri ->
                                 val map = HashMap<String, Any>()
                                 map["pic"] = uri.toString()
+
+                                anexo.conteudo = uri.toString()
+                                selectedMediaUrl.add(anexo)
+
+                                Log.i(
+                                    "urlDown",
+                                    "PublishScreenFora: ${anexo.conteudo}"
+                                )
 
                                 firebaseFirestore
                                     .collection("images")
@@ -264,11 +273,7 @@ fun PublishScreen(
 //                                                                )
 //                                                                .show(
 
-                                            anexo.conteudo = uri.toString()
-                                            Log.i(
-                                                "urlDown",
-                                                "PublishScreenD: ${anexo.conteudo}"
-                                            )
+
                                         } else {
 //                                                            Log.i(
 //                                                                "fotoserro", "PublishScreen: ${
@@ -285,16 +290,16 @@ fun PublishScreen(
                                                 )
                                                 .show()
                                         }
-
                                         //BARRA DE PROGRESSO DO UPLOAD
                                     }
                             }
+
+
                             Log.i(
                                 "urlDown",
                                 "PublishScreenS: ${anexo.conteudo}"
                             )
 
-                            selectedMediaUrl.add(anexo)
 
                         } else {
 
@@ -312,6 +317,7 @@ fun PublishScreen(
                         //BARRA DE PROGRESSO DO UPLOAD
 
                     }
+
             }
         }
 

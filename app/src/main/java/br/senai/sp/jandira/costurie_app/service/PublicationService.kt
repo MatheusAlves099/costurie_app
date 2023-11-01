@@ -9,6 +9,7 @@ import br.senai.sp.jandira.costurie_app.model.UserResponse
 import com.google.gson.JsonObject
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -34,5 +35,12 @@ interface PublicationService {
         @Header("x-access-token") token: String,
         @Path("id") id: Int
     ): Response<BaseResponseIdPublication>
+
+    @Headers("Content-Type: application/json")
+    @DELETE("/publicacao/{id}")
+    suspend fun deletePublicationById(
+        @Header("x-access-token") token: String,
+        @Path("id") id: Int
+    ): Response<JsonObject>
 
 }

@@ -63,4 +63,8 @@ class PublicationRepository {
         return apiService.getPublicationById(token, id)
     }
 
+    suspend fun deletePublication(token: String, id: Int): Response<JsonObject>{
+        return apiService.deletePublicationById(token, id)
+    }
+
 }

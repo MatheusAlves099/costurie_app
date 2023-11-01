@@ -21,13 +21,21 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.rememberBottomSheetScaffoldState
+import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -64,6 +72,7 @@ import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
+import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -76,6 +85,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandedPublicationScreen(
     lifecycleScope: LifecycleCoroutineScope,
@@ -83,6 +93,19 @@ fun ExpandedPublicationScreen(
     viewModel: TagPublicationViewModel,
     localStorage: Storage,
 ) {
+    var commentState by remember {
+        mutableStateOf("")
+    }
+
+    val sheetState = rememberBottomSheetState(
+        initialValue = BottomSheetValue.Collapsed
+    )
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = sheetState
+    )
+
+    val scope = rememberCoroutineScope()
+
     var context = LocalContext.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
@@ -128,243 +151,271 @@ fun ExpandedPublicationScreen(
                 .fillMaxSize(),
             color = Color.White
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box() {
-                    Image(
-                        painter = painterResource(id = R.drawable.retangulo_topo),
-                        contentDescription = "",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(100.dp),
-                        alignment = Alignment.TopEnd
+            BottomSheetScaffold(
+                scaffoldState = scaffoldState,
+                sheetShape = RoundedCornerShape(20.dp),
+                sheetElevation = 10.dp,
+                sheetContent = {
+                    ExpandedCommentScreen(
+                        lifecycleScope = lifecycleScope,
+                        navController = navController,
+                        viewModel = viewModel,
+                        localStorage = localStorage
                     )
+                },
+                sheetBackgroundColor = Color.White,
+                sheetPeekHeight = 0.dp
 
-                    val array = UserRepositorySqlite(context).findUsers()
-
-                    val user = array[0]
-
-                    if (user.id.toInt() == publicationState.value?.publicacao?.usuario?.id) {
-                        Row(
-                            modifier = Modifier
-                                .width(370.dp)
-                                .padding(top = 15.dp, start = 15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.arrow_back),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(45.dp)
-                                    .clickable {
-                                        navController.popBackStack()
-                                    }
-                            )
-
-                                ModalEditDeletePublication(lifecycleScope, localStorage, navController)
-
-                        }
-                    } else {
-                        Row(
-                            modifier = Modifier
-                                .width(370.dp)
-                                .padding(top = 15.dp, start = 15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.arrow_back),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(45.dp)
-                                    .clickable {
-                                        navController.popBackStack()
-                                    }
-                            )
-                        }
-                    }
-
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-                Row(
+            ) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
+                        .fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .clip(shape = RoundedCornerShape(10.dp))
-                            .background(Color(168, 155, 255, 102))
-                    ) {
-                        AsyncImage(
-                            model = publicationState.value?.publicacao?.usuario?.foto.orEmpty(),
+                    Box() {
+                        Image(
+                            painter = painterResource(id = R.drawable.retangulo_topo),
                             contentDescription = "",
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = 5.dp, end = 2.dp)
-                                .clip(shape = RoundedCornerShape(10.dp)),
-                            contentScale = ContentScale.Crop
+                                .fillMaxWidth()
+                                .height(100.dp),
+                            alignment = Alignment.TopEnd
                         )
-                    }
 
-                    Text(
-                        text = publicationState.value?.publicacao?.usuario?.nome.orEmpty(),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .width(170.dp)
-                            .height(45.dp)
-                            .clickable {
-                                var id = publicationState.value?.publicacao?.usuario?.id
-                                localStorage.salvarValor(context, id.toString(), "idUsuario")
-                                navController.navigate("profileViewed")
-                            },
-                        fontSize = 18.sp,
-                        color = Contraste
-                    )
+                        val array = UserRepositorySqlite(context).findUsers()
 
-                    GradientButtonSmall(
-                        onClick = {},
-                        text = stringResource(id = R.string.botao_recomendar),
-                        color1 = Destaque1,
-                        color2 = Destaque2
-                    )
-                }
+                        val user = array[0]
 
-                Spacer(modifier = Modifier.height(30.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-
-
-                    //localStorage.salvarValor(context, publicationState.value?.publicacao?.tags.toString(), "tagsPublicação")
-
-                    publicationState.value?.publicacao?.tags?.take(2)?.forEach { tag ->
-                        GradientButtonTag(
-                            onClick = { /*TODO*/ },
-                            color1 = Destaque1,
-                            color2 = Destaque2,
-                            tagId = tag.id,
-                            text = tag.nome_tag,
-                            textColor = Color(168, 155, 255, 255)
-                        )
-                    }
-
-                    if ((publicationState.value?.publicacao?.tags?.size ?: 0) > 1) {
-                        ModalTagsPublication(color1 = Destaque1, color2 = Destaque2, viewModel)
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                LazyRow() {
-                    items(publicationState.value?.publicacao?.anexos.orEmpty()) { publication ->
-                        Card(
-                            modifier = Modifier
-                                .width(250.dp)
-                                .height(270.dp)
-                                .padding(start = 16.dp, 2.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .clickable {
-
-                                },
-                            elevation = 20.dp
-                        ) {
-                            Column(
-                                modifier = Modifier.height(100.dp),
-                                verticalArrangement = Arrangement.Top
+                        if (user.id.toInt() == publicationState.value?.publicacao?.usuario?.id) {
+                            Row(
+                                modifier = Modifier
+                                    .width(370.dp)
+                                    .padding(top = 15.dp, start = 15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(
+                                Image(
+                                    painter = painterResource(id = R.drawable.arrow_back),
+                                    contentDescription = "",
                                     modifier = Modifier
-                                        .height(250.dp)
-                                        .fillMaxWidth()
-                                        .background(
-                                            Color(168, 155, 255, 102),
-                                            shape = RoundedCornerShape(16.dp)
-                                        )
+                                        .size(45.dp)
+                                        .clickable {
+                                            navController.popBackStack()
+                                        }
+                                )
+
+                                ModalEditDeletePublication(
+                                    lifecycleScope,
+                                    localStorage,
+                                    navController
+                                )
+
+                            }
+                        } else {
+                            Row(
+                                modifier = Modifier
+                                    .width(370.dp)
+                                    .padding(top = 15.dp, start = 15.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.arrow_back),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(45.dp)
+                                        .clickable {
+                                            navController.popBackStack()
+                                        }
+                                )
+                            }
+                        }
+
+                    }
+
+                    Spacer(modifier = Modifier.height(15.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(Color(168, 155, 255, 102))
+                        ) {
+                            AsyncImage(
+                                model = publicationState.value?.publicacao?.usuario?.foto.orEmpty(),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 5.dp, end = 2.dp)
+                                    .clip(shape = RoundedCornerShape(10.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+
+                        Text(
+                            text = publicationState.value?.publicacao?.usuario?.nome.orEmpty(),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .width(170.dp)
+                                .height(45.dp)
+                                .clickable {
+                                    var id = publicationState.value?.publicacao?.usuario?.id
+                                    localStorage.salvarValor(context, id.toString(), "idUsuario")
+                                    navController.navigate("profileViewed")
+                                },
+                            fontSize = 18.sp,
+                            color = Contraste
+                        )
+
+                        GradientButtonSmall(
+                            onClick = {},
+                            text = stringResource(id = R.string.botao_recomendar),
+                            color1 = Destaque1,
+                            color2 = Destaque2
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 10.dp, end = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+
+                        //localStorage.salvarValor(context, publicationState.value?.publicacao?.tags.toString(), "tagsPublicação")
+
+                        publicationState.value?.publicacao?.tags?.take(2)?.forEach { tag ->
+                            GradientButtonTag(
+                                onClick = { /*TODO*/ },
+                                color1 = Destaque1,
+                                color2 = Destaque2,
+                                tagId = tag.id,
+                                text = tag.nome_tag,
+                                textColor = Color(168, 155, 255, 255)
+                            )
+                        }
+
+                        if ((publicationState.value?.publicacao?.tags?.size ?: 0) > 1) {
+                            ModalTagsPublication(color1 = Destaque1, color2 = Destaque2, viewModel)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    LazyRow() {
+                        items(publicationState.value?.publicacao?.anexos.orEmpty()) { publication ->
+                            Card(
+                                modifier = Modifier
+                                    .width(250.dp)
+                                    .height(270.dp)
+                                    .padding(start = 16.dp, 2.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+
+                                    },
+                                elevation = 20.dp
+                            ) {
+                                Column(
+                                    modifier = Modifier.height(100.dp),
+                                    verticalArrangement = Arrangement.Top
                                 ) {
-                                    AsyncImage(
-                                        model = publication.anexo,
-                                        contentDescription = "",
+                                    Box(
                                         modifier = Modifier
-                                            .width(225.dp)
-                                            .height(240.dp)
-                                            .clip(shape = RoundedCornerShape(10.dp)),
-                                        contentScale = ContentScale.Crop
-                                    )
+                                            .height(250.dp)
+                                            .fillMaxWidth()
+                                            .background(
+                                                Color(168, 155, 255, 102),
+                                                shape = RoundedCornerShape(16.dp)
+                                            )
+                                    ) {
+                                        AsyncImage(
+                                            model = publication.anexo,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .width(225.dp)
+                                                .height(240.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    GradientButtonSmall(
-                        onClick = { /*TODO*/ },
-                        text = stringResource(id = R.string.botao_responder),
-                        color1 = Destaque1,
-                        color2 = Destaque2
-                    )
-
-                    ButtonGivePoint(
-                        onClick = { /*TODO*/ },
-                        text = "DAR PONTO"
-                    )
-
-                    GradientButtonSmall(
-                        onClick = {
-                        },
-                        text = stringResource(id = R.string.botao_comentarios),
-                        color1 = Destaque1,
-                        color2 = Destaque2
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                Column(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(
-                        text = publicationState.value?.publicacao?.titulo.orEmpty(),
-                        textAlign = TextAlign.Start,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(35.dp)
-                            .padding(start = 16.dp, end = 10.dp),
-                        fontSize = 20.sp,
-                        color = Contraste,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                            .padding(start = 10.dp, end = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        GradientButtonSmall(
+                            onClick = { /*TODO*/ },
+                            text = stringResource(id = R.string.botao_responder),
+                            color1 = Destaque1,
+                            color2 = Destaque2
+                        )
 
-                    Text(
-                        text = publicationState.value?.publicacao?.descricao.orEmpty(),
-                        textAlign = TextAlign.Start,
-                        modifier = Modifier
-                            .width(430.dp)
-                            .height(65.dp)
-                            .padding(start = 16.dp, end = 10.dp),
-                        fontSize = 15.sp,
-                        color = Contraste
-                    )
+                        ButtonGivePoint(
+                            onClick = { /*TODO*/ },
+                            text = "DAR PONTO"
+                        )
+
+                        GradientButtonSmall(
+                            onClick = {
+                                scope.launch {
+                                    if (sheetState.isCollapsed) {
+                                        sheetState.expand()
+                                    } else {
+                                        sheetState.collapse()
+                                    }
+                                }
+                            },
+                            text = stringResource(id = R.string.botao_comentarios),
+                            color1 = Destaque1,
+                            color2 = Destaque2
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = publicationState.value?.publicacao?.titulo.orEmpty(),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(35.dp)
+                                .padding(start = 16.dp, end = 10.dp),
+                            fontSize = 20.sp,
+                            color = Contraste,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Text(
+                            text = publicationState.value?.publicacao?.descricao.orEmpty(),
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier
+                                .width(430.dp)
+                                .height(65.dp)
+                                .padding(start = 16.dp, end = 10.dp),
+                            fontSize = 15.sp,
+                            color = Contraste
+                        )
+                    }
                 }
             }
         }

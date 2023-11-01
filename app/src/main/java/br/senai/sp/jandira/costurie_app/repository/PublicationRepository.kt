@@ -53,9 +53,9 @@ class PublicationRepository {
         return apiService.createPublication(requestBody, token)
     }
 
-    suspend fun getAllPublications(): Response<BaseResponsePublication> {
+    suspend fun getAllPublications(token: String): Response<BaseResponsePublication> {
 
-        return apiService.getAllPublications()
+        return apiService.getAllPublications(token)
     }
 
     suspend fun getPublicationById(token: String, id: Int): Response<BaseResponseIdPublication> {

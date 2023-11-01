@@ -62,7 +62,7 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
         val array = UserRepositorySqlite(context).findUsers()
         val user = array[0]
 
-        val response = publicationRepository.getAllPublications()
+        val response = publicationRepository.getAllPublications(user.token)
 
         if (response.isSuccessful) {
             val publications = response.body()?.publicacoes ?: emptyList()
@@ -219,7 +219,7 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                         Card(
                             modifier = Modifier
                                 .width(170.dp)
-                                .height(220.dp)
+                                .height(260.dp)
                                 .padding(start = 16.dp, 2.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {

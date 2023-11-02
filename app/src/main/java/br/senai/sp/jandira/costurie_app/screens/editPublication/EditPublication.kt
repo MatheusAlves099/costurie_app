@@ -140,7 +140,7 @@ fun EditPublicationScreen(
     var id = localStorage.lerValor(context, "id_publicacao")
 
 
-    val tagsArray = mutableListOf<TagResponseId>()
+    var tagsArray by remember { mutableStateOf<MutableList<TagResponseId>>(mutableListOf()) }
 
     val tagsState = remember { mutableStateOf<List<TagEditResponse>>(emptyList()) }
 
@@ -160,6 +160,10 @@ fun EditPublicationScreen(
         mutableStateOf(listOf<TagEditResponse>())
     }
 
+    var filteredTags by remember {
+        mutableStateOf(emptyList<TagEditResponse>())
+    }
+
     fun filtro(text: String): List<TagEditResponse> {
         lifecycleScope.launch {
             tagsList = tagsRepository.getAllTags2(user.token).body()!!.data
@@ -169,6 +173,21 @@ fun EditPublicationScreen(
         }
         return newList
     }
+
+//    // Função que associa as tags da publicação às tags disponíveis e atualiza o estado das tags selecionadas
+//    fun updateSelectedTags(dadosPublicacao: BaseResponseIdPublication?, tagsList: List<TagEditResponse>): List<TagEditResponse> {
+//        val selectedTags = mutableListOf<TagEditResponse>()
+//
+//        dadosPublicacao?.publicacao?.tags?.forEach { tagInPublication ->
+//            tagsList.find { it.id == tagInPublication.id }?.let { matchedTag ->
+//                selectedTags.add(
+//                    matchedTag.copy(isClicked = true)
+//                )
+//            }
+//        }
+//
+//        return selectedTags
+//    }
 
     val publicationState = remember { mutableStateOf<BaseResponseIdPublication?>(null) }
 
@@ -212,75 +231,15 @@ fun EditPublicationScreen(
             TagEditResponse(id = tagGetResponse.id, nome_tag = tagGetResponse.nome_tag, id_categoria = tagGetResponse.id_categoria, imagem = tagGetResponse.imagem)
         } ?: emptyList()
 
-
-        Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
+        val tags = filtro(pesquisaState)
+        val allTags = tagsState.value + filtro(pesquisaState)
+        Log.e("PUBLICAÇÃO", "tagsState: ${tagsState}")
+        Log.e("PUBLICAÇÃO", "allTags: ${tags}")
+        Log.e("PUBLICAÇÃO", "os dois juntos: ${allTags}")
     }
 
 
     Costurie_appTheme {
-//        fun urlDownload() {
-//            selectedMediaUri.forEach {
-//                storageRef
-//                    .putFile(Uri.parse(it.conteudo))
-//                    .addOnCompleteListener { task ->
-//
-//                        if (task.isSuccessful) {
-//
-//                            storageRef.downloadUrl.addOnSuccessListener { uri ->
-//                                val map = HashMap<String, Any>()
-//                                map["pic"] = uri.toString()
-//
-//                                firebaseFirestore
-//                                    .collection("images")
-//                                    .add(map)
-//                                    .addOnCompleteListener { firestoreTask ->
-//
-//                                        if (firestoreTask.isSuccessful) {
-//
-//                                            anexo.conteudo = uri.toString()
-//                                            Log.i(
-//                                                "urlDown",
-//                                                "PublishScreenD: ${anexo.conteudo}"
-//                                            )
-//                                        } else {
-//                                            Toast
-//                                                .makeText(
-//                                                    context,
-//                                                    "ERRO AO TENTAR REALIZAR O UPLOAD",
-//                                                    Toast.LENGTH_SHORT
-//                                                )
-//                                                .show()
-//                                        }
-//
-//                                        //BARRA DE PROGRESSO DO UPLOAD
-//                                    }
-//                            }
-//                            Log.i(
-//                                "urlDown",
-//                                "PublishScreenS: ${anexo.conteudo}"
-//                            )
-//
-//                            selectedMediaUrl.add(anexo)
-//
-//                        } else {
-//
-//                            Toast
-//                                .makeText(
-//                                    context,
-//                                    "ERRO AO TENTAR REALIZAR O UPLOAD",
-//                                    Toast.LENGTH_SHORT
-//                                )
-//                                .show()
-//
-//                        }
-//
-//
-//                        //BARRA DE PROGRESSO DO UPLOAD
-//
-//                    }
-//            }
-//        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -489,7 +448,9 @@ fun EditPublicationScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.padding(12.dp)
                 ) {
-                    items(tagsState.value) {
+                    val tags = filtro(pesquisaState)
+                    val allTags = tagsState.value + filtro(pesquisaState)
+                    items(allTags) {
                         GradientButtonTag(
                             onClick = {
                                 isClicked = !isClicked

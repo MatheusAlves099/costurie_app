@@ -43,6 +43,8 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
+import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
+import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
@@ -56,6 +58,8 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
     var context = LocalContext.current
 
     val publicationsState = remember { mutableStateOf(emptyList<PublicationGetResponse>()) }
+
+    val publicationsPopularState = remember { mutableStateOf(emptyList<PopularPublicationResponse>()) }
 
     suspend fun getAllPublications() {
         val publicationRepository = PublicationRepository()
@@ -79,7 +83,27 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
         }
     }
 
+    suspend fun getPopularPublications() {
+        val publicationRepository = PublicationRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
 
+        val response = publicationRepository.getPopularPublication(user.token)
+
+        if (response.isSuccessful) {
+            val publications = response.body()?.publicacao ?: emptyList()
+            publicationsPopularState.value = publications
+            Log.i("publis", "getPopularPublioations: ${publications}")
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("PUBLICAÇÕES MAIS POPULARES", "Erro: $errorBody")
+            Toast.makeText(
+                context,
+                "Erro ao buscar todas as publicações populares: $errorBody",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
 
 
     LaunchedEffect(key1 = true) {
@@ -88,8 +112,10 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
         val user = array[0]
 
         getAllPublications()
+        getPopularPublications()
 
-        Log.e("PUBLICATION", "ExploreScreen: ${getAllPublications()}")
+        Log.e("PUBLICATION1", "ExploreScreen: ${getAllPublications()}")
+        Log.e("PUBLICATION2", "ExploreScreen: ${getAllPublications()}")
     }
 
     Costurie_appTheme {
@@ -130,8 +156,21 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
 
                 LazyRow(
                 ) {
-                    items(4) { publication ->
+                    items(publicationsPopularState.value) { publication ->
+                        var shortDesc = publication.descricao
+                        var titleList = publication.titulo.split(" ")
+                        var shortTitle = ""
 
+                        if (shortDesc.length > 30) {
+                            shortDesc = shortDesc.substring(0, 30).plus("...")
+                        }
+                        titleList.forEach { string ->
+                            if (titleList.indexOf(string) < 4) {
+                                shortTitle += "$string "
+                            } else if (titleList.indexOf(string) == 4) {
+                                shortTitle += "..."
+                            }
+                        }
                         Card(
                             modifier = Modifier
                                 .width(170.dp)
@@ -139,6 +178,12 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                                 .padding(start = 16.dp, 2.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {
+                                    localStorage.salvarValor(
+                                        context,
+                                        publication.id.toString(),
+                                        "id_publicacao"
+                                    )
+                                    navController.navigate("expandedPublication")
                                 },
                         ) {
                             Column(
@@ -171,13 +216,13 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                                     verticalArrangement = Arrangement.Top
                                 ) {
                                     Text(
-                                        text = "Beltrana dos Santos Silva",
+                                        text = shortTitle,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Contraste
                                     )
                                     Text(
-                                        text = "Descrição",
+                                        text = shortDesc,
                                         fontSize = 10.sp,
                                         fontWeight = FontWeight.SemiBold,
                                         color = Color.Gray

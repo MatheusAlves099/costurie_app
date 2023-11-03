@@ -35,13 +35,14 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.ShapeButton
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
+import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 
 
 @Composable
 fun ModalTags2(
     color1: Color,
     color2: Color,
-    viewModel: UserViewModel,
+    viewModel: UserViewModel2,
 
     ) {
     var isDialogOpen by remember { mutableStateOf(false) }
@@ -105,12 +106,14 @@ fun ModalTags2(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(viewModel.tags?.toList() ?: emptyList()) { tag ->
-                        GradientButtonTags(
-                            onClick = {},
-                            text = tag.nome_tag,
+                    items(viewModel.tags!!.toList()) { tag ->
+                        GradientButtonTag(
+                            onClick = { /*TODO*/ },
                             color1 = Destaque1,
-                            color2 = Destaque2
+                            color2 = Destaque2,
+                            tagId = tag.id,
+                            text = tag.nome_tag,
+                            textColor =  Color(168, 155, 255, 255)
                         )
                     }
                 }

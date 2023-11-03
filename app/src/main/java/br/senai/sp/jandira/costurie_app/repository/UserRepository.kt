@@ -3,6 +3,8 @@ package br.senai.sp.jandira.costurie_app.repository
 import android.net.Uri
 import android.util.Log
 import br.senai.sp.jandira.costurie_app.model.TagResponseId
+import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetResponse
 import br.senai.sp.jandira.costurie_app.model.UserResponse
 import br.senai.sp.jandira.costurie_app.model.UserTagsResponse
 import br.senai.sp.jandira.costurie_app.service.RetrofitFactory
@@ -14,7 +16,7 @@ import retrofit2.Response
 class UserRepository {
     private val apiService = RetrofitFactory.getInstance().create(UserService::class.java)
 
-    suspend fun getUser(id: Int, token: String): Response<JsonObject> {
+    suspend fun getUser(id: Int, token: String): Response<UserGetIDResponse> {
         return apiService.getUser(id, token)
     }
 

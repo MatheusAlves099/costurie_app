@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.costurie_app.service
 
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
+import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponseTag
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
@@ -27,11 +28,15 @@ interface PublicationService {
 
     @Headers("Content-Type: application/json")
     @GET("/publicacao/select_all")
-
     suspend fun getAllPublications(
         @Header("x-access-token") token: String
     ): Response<BaseResponsePublication>
 
+    @Headers("Content-Type: application/json")
+    @GET("/publicacao/populares")
+    suspend fun getPupularPublication(
+        @Header("x-access-token") token: String
+    ): Response<BaseResponsePopularPublication>
 
     @Headers("Content-Type: application/json")
     @GET("/publicacao/select_by_id/{id}")

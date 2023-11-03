@@ -40,6 +40,7 @@ import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.TagsViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
+import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberAnimatedNavController()
                 val viewModelPassword = viewModel<PasswordResetViewModel>()
                 val viewModelUser = viewModel<UserViewModel>()
+                val viewModelUser2 = viewModel<UserViewModel2>()
                 val viewModelTags = viewModel<TagsViewModel>()
                 val viewModelUserTags = viewModel<UserTagViewModel>()
                 val viewModelTagsPublication = viewModel<TagPublicationViewModel>()
@@ -69,15 +71,15 @@ class MainActivity : ComponentActivity() {
                     composable(route = "validationCode") { ValidationCodeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelPassword) }
                     composable(route = "tradePassword") { TradePasswordScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelPassword) }
                     composable(route = "loading") { LoadingScreen(navController = navController, lifecycleScope = lifecycleScope) }
-                    composable(route = "home") { HomeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelUser) }
+                    composable(route = "home") { HomeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelUser2) }
                     composable(route = "explore") { ExploreScreen(navController = navController, localStorage = localStorage) }
 //                    composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
                     composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage) }
                     composable(route = "services") { ServicesScreen(navController = navController, lifecycleScope = lifecycleScope, categories = emptyList(), filterings = emptyList(), viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "chats") { ChatsScreen(navController = navController) }
-                    composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser,  localStorage = localStorage) }
-                    composable(route = "profileViewed") { ProfileViewedScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser, localStorage = localStorage) }
+                    composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2,  localStorage = localStorage) }
+                    composable(route = "profileViewed") { ProfileViewedScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2, localStorage = localStorage) }
                     composable(route = "profileList") { ProfileListScreen(navController = navController, lifecycleScope = lifecycleScope, profiles = emptyList(), viewModel = viewModelUser, viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "editProfile") { EditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModel = viewModelUser, localStorage = localStorage) }
                     composable(route = "tagsEditProfile") { TagsEditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModelUser = viewModelUser, viewModelTags = viewModelTags, localStorage = localStorage) }

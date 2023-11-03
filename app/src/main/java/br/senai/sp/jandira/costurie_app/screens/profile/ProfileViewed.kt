@@ -3,6 +3,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,16 +53,21 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.GradientButtonSmall
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
+import br.senai.sp.jandira.costurie_app.components.GradientButtonTags
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.components.WhiteButtonSmall
+import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
+import br.senai.sp.jandira.costurie_app.model.TagResponse
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
 import br.senai.sp.jandira.costurie_app.repository.UserRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
+import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -69,7 +79,7 @@ import org.json.JSONObject
 fun ProfileViewedScreen(
     lifecycleScope: LifecycleCoroutineScope,
     navController: NavController,
-    viewModel: UserViewModel,
+    viewModel: UserViewModel2,
     localStorage: Storage
 ) {
 
@@ -128,12 +138,13 @@ fun ProfileViewedScreen(
     var email by remember {
         mutableStateOf("")
     }
-
+    val userState = remember { mutableStateOf<UserGetIDResponse?>(null) }
+    var publicationList by remember { mutableStateOf<List<PublicationGetResponse>>(emptyList()) }
 
     fun user(
         id: Int,
         token: String,
-        viewModel: UserViewModel
+        viewModel: UserViewModel2
     ) {
         val userRepository = UserRepository()
 
@@ -148,46 +159,54 @@ fun ProfileViewedScreen(
 
             if (response.isSuccessful) {
                 Log.e(MainActivity::class.java.simpleName, "Usuario sucedido")
-                Log.e("user", "user: ${response.body()}")
+                Log.e("user", "user: ${response.body()?.usuario}")
 
-                val jsonString = response.body().toString()
-                val jsonObject = JSONObject(jsonString)
-                val usuarioObject = jsonObject.getJSONObject("usuario")
+                userState.value = response.body()
 
-                if (usuarioObject.has("tags")) {
-                    val tagsArray = usuarioObject.getJSONArray("tags")
-                    val tagsList = mutableListOf<TagsResponse>()
+                val userResponse = response.body()
 
-                    // Processar tags como antes
-                    for (i in 0 until tagsArray.length()) {
-                        val tagObject = tagsArray.getJSONObject(i)
-                        val idTag = tagObject.getInt("id_tag")
-                        val nomeTag = tagObject.getString("nome_tag")
-                        val imagem_tag = tagObject.getString("imagem_tag")
-                        val id_categoria = tagObject.getInt("id_categoria")
-                        //val nome_categoria = tagObject.getString("nome_categoria")
+                if (userResponse != null) {
+                    id_usuario = userResponse.usuario.id!!
+                    nome = userResponse.usuario.nome
+                    descricao = userResponse.usuario.descricao
+                    nome_de_usuario = userResponse.usuario.nome_de_usuario
+                    val fotoUrl = userResponse.usuario.foto
+                    fotoUri = Uri.parse(fotoUrl)
+                    email = userResponse.usuario.email
+                    cidade = userResponse.usuario.cidade
+                    estado = userResponse.usuario.estado
+                    bairro = userResponse.usuario.bairro
+                    id_localizacao = userResponse.usuario.id_localizacao!!
 
-                        val tagResponse = TagsResponse(idTag, nomeTag, imagem_tag, id_categoria)
-                        tagsList.add(tagResponse)
+                    publicationList = userResponse.usuario.publicacao
 
-                        viewModel.tags = tagsList
+                    Log.d("dado", "vendo se tem dado rs: $publicationList")
+                    localStorage.salvarValor(context, cidade, "cidade")
+                    localStorage.salvarValor(context, estado, "estado")
+                    localStorage.salvarValor(context, bairro, "bairro")
+
+                    viewModel.id_usuario = id_usuario
+                    viewModel.nome = nome
+                    viewModel.descricao = descricao
+                    viewModel.nome_de_usuario = nome_de_usuario
+                    viewModel.foto = fotoUri
+                    viewModel.email = email
+                    viewModel.estados.value = listOf(estado)
+                    viewModel.cidades.value = listOf(cidade)
+                    viewModel.bairros.value = listOf(bairro)
+                    viewModel.id_localizacao = id_localizacao
+
+                    if (userResponse.usuario.tag.isNotEmpty()) {
+                        viewModel.tags = userResponse.usuario.tag
+                    } else {
+                        viewModel.tags = null
                     }
+
+                    Log.i("Thiago", "${viewModel.nome}, $fotoUri")
                 } else {
+                    // Lógica de tratamento caso a resposta seja nula
                 }
 
-                id_usuario = usuarioObject.getInt("id_usuario")
-                nome = usuarioObject.getString("nome")
-                descricao = usuarioObject.getString("descricao")
-                nome_de_usuario = usuarioObject.getString("nome_de_usuario")
-                val fotoUrl = usuarioObject.getString("foto")
-                fotoUri = Uri.parse(fotoUrl)
-                email = usuarioObject.getString("email")
-                cidade = usuarioObject.getString("cidade")
-                estado = usuarioObject.getString("estado")
-                bairro = usuarioObject.getString("bairro")
-                id_localizacao = usuarioObject.getInt("id_localizacao")
-
-                Log.i("Thiago", "${viewModel.nome}, $fotoUri")
 
             } else {
                 val errorBody = response.errorBody()?.string()
@@ -276,14 +295,14 @@ fun ProfileViewedScreen(
                     )
 
                     Image(
-                            painter = painterResource(id = R.drawable.icon_chat),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(35.dp)
-                                .clickable {
+                        painter = painterResource(id = R.drawable.icon_chat),
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(35.dp)
+                            .clickable {
 
-                                },
-                            alignment = Alignment.TopEnd
+                            },
+                        alignment = Alignment.TopEnd
                     )
                 }
 
@@ -300,7 +319,10 @@ fun ProfileViewedScreen(
                         modifier = Modifier
                             .size(100.dp)
                             .border(
-                                BorderStroke(br.senai.sp.jandira.costurie_app.screens.editProfile.borderWidth, Color.White),
+                                BorderStroke(
+                                    br.senai.sp.jandira.costurie_app.screens.editProfile.borderWidth,
+                                    Color.White
+                                ),
                                 RoundedCornerShape(10.dp)
                             )
                             .padding(br.senai.sp.jandira.costurie_app.screens.editProfile.borderWidth)
@@ -368,67 +390,120 @@ fun ProfileViewedScreen(
 
                 Spacer(modifier = Modifier.height(5.dp))
 
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Spacer(modifier = Modifier.height(40.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Spacer(modifier = Modifier.height(40.dp))
 
-                        WhiteButtonSmall(
-                            onClick = {
+                    WhiteButtonSmall(
+                        onClick = {
 
-                            },
-                            text = stringResource(id = R.string.botao_recomendacoes).uppercase()
-                        )
-
-                        Spacer(modifier = Modifier.width(20.dp))
-
-                        WhiteButtonSmall(
-                            onClick = {},
-                            text = stringResource(id = R.string.botao_recomendados).uppercase()
-                        )
-                    }
-
-                    Text(
-                        color = Contraste,
-                        text = descricao,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 25.dp),
-                        textAlign = TextAlign.Center
+                        },
+                        text = stringResource(id = R.string.botao_recomendacoes).uppercase()
                     )
 
-                    Spacer(modifier = Modifier.height(25.dp))
+                    Spacer(modifier = Modifier.width(20.dp))
 
-                    if (viewModel.tags == null) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
+                    WhiteButtonSmall(
+                        onClick = {},
+                        text = stringResource(id = R.string.botao_recomendados).uppercase()
+                    )
+                }
 
+                Text(
+                    color = Contraste,
+                    text = descricao,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 25.dp),
+                    textAlign = TextAlign.Justify
+                )
+
+                Spacer(modifier = Modifier.height(25.dp))
+
+                if (viewModel.tags == null) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+
+                    }
+
+                } else {
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp)
+                            .fillMaxWidth(),
+                        Arrangement.SpaceEvenly
+                    ) {
+                        viewModel.tags?.take(2)?.forEach { tag ->
+                            GradientButtonTags(
+                                onClick = {},
+                                text = tag.nome_tag,
+                                color1 = Destaque1,
+                                color2 = Destaque2,
+                            )
                         }
+                        if ((viewModel.tags?.size ?: 0) > 1) {
+                            ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel)
+                        }
+                    }
+                }
+                Log.w("Lista Publicacao", "Lista Publicacao FORA: $publicationList ")
+                //Log.w("Lista Usuario", "Lista Publicacao FORA: ${userState.value?.usuario!!.publicacao} ", )
+                Spacer(modifier = Modifier.height(10.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .padding(2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(publicationList) { publicacao ->
 
-                    } else {
-                        Row(
+                        Log.w("Lista Publicacao", "Lista Publicacao DENTRO: $publicationList ")
+                        Card(
                             modifier = Modifier
-                                .padding(start = 16.dp, end = 16.dp)
-                                .fillMaxWidth(),
-                            Arrangement.SpaceEvenly
+                                .width(95.dp)
+                                .height(120.dp)
+                                .padding(start = 12.dp, 2.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .clickable {
+                                    localStorage.salvarValor(
+                                        context,
+                                        publicacao.id.toString(),
+                                        "id_publicacao"
+                                    )
+                                    navController.navigate("expandedPublication")
+                                },
+                            backgroundColor = Color.White,
+                            elevation = 20.dp
                         ) {
-//                        viewModel.tags?.take(1)?.forEach { tag ->
-//                            GradientButtonTag(
-//                                onClick = {
-//                                    // Faça algo quando uma tag for clicada
-//                                },
-//                                text = tag.nome_tag,
-//                                color1 = Destaque1,
-//                                color2 = Destaque2,
-//                                viewModel,
-//                            )
-//                        }
-                            if ((viewModel.tags?.size ?: 0) > 1) {
-                                ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel)
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(145.dp)
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color(168, 155, 255, 102),
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                ) {
+                                    AsyncImage(
+                                        model = publicacao.anexos[0].anexo,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .size(150.dp, 140.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
                             }
                         }
                     }
@@ -436,3 +511,4 @@ fun ProfileViewedScreen(
             }
         }
     }
+}

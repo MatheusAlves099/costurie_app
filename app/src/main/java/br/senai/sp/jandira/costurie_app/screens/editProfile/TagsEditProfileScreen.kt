@@ -305,7 +305,6 @@ fun TagsEditProfileScreen(
                                 "Dados em viewModelUser.tags: ${viewModelTags.tags}"
                             )
 
-                            var arrayTags by remember { mutableStateOf(listOf<TagResponse>()) }
 
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),

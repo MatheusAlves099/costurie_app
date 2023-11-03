@@ -2,6 +2,7 @@ package br.senai.sp.jandira.costurie_app.repository
 
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
+import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponseTag
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
@@ -57,6 +58,11 @@ class PublicationRepository {
 
         return apiService.getAllPublications(token)
     }
+    suspend fun getPopularPublication(token: String): Response<BaseResponsePopularPublication> {
+
+        return apiService.getPupularPublication(token)
+    }
+
 
     suspend fun getPublicationById(token: String, id: Int): Response<BaseResponseIdPublication> {
 

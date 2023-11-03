@@ -4,6 +4,8 @@ import br.senai.sp.jandira.costurie_app.model.BaseResponse
 import br.senai.sp.jandira.costurie_app.model.CityResponse
 import br.senai.sp.jandira.costurie_app.model.NeighborhoodResponse
 import br.senai.sp.jandira.costurie_app.model.StateResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetResponse
 import br.senai.sp.jandira.costurie_app.model.UserJsonResponse
 import br.senai.sp.jandira.costurie_app.model.UserResponse
 import br.senai.sp.jandira.costurie_app.model.UserTagsResponse
@@ -63,7 +65,7 @@ interface UserService {
     suspend fun getUser(
         @Path("id") id: Int,
         @Header("x-access-token") token: String
-    ): Response<JsonObject>
+    ): Response<UserGetIDResponse>
 
     @Headers("Content-Type: application/json")
     @PUT("/usuario/editar_perfil")

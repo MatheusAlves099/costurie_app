@@ -94,8 +94,8 @@ fun ModalEditDeletePublication(
             },
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
-                .offset(x = 30.dp),
+                .fillMaxWidth(),
+                //.offset(x = 30.dp),
             title = {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

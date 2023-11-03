@@ -3,6 +3,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +17,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -31,11 +36,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -53,10 +64,18 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.components.WhiteButtonSmall
+import br.senai.sp.jandira.costurie_app.model.AnexoGetResponse
+import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
+import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
+import br.senai.sp.jandira.costurie_app.model.UserGetResponse
+import br.senai.sp.jandira.costurie_app.model.UserResponse
 import br.senai.sp.jandira.costurie_app.repository.UserRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
+import br.senai.sp.jandira.costurie_app.ui.theme.Kufam
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
+import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -68,7 +87,7 @@ import org.json.JSONObject
 fun ProfileScreen(
     lifecycleScope: LifecycleCoroutineScope,
     navController: NavController,
-    viewModel: UserViewModel,
+    viewModel: UserViewModel2,
     localStorage: Storage,
 ) {
 
@@ -126,11 +145,18 @@ fun ProfileScreen(
         mutableStateOf("")
     }
 
+    //var publicationList = listOf<PublicationGetResponse>()
+
+    var anexoList = mutableListOf<AnexoGetResponse>()
+
+    val publicationState = remember { mutableStateOf<PublicationGetResponse?>(null) }
+    val userState = remember { mutableStateOf<UserGetIDResponse?>(null) }
+    var publicationList by remember { mutableStateOf<List<PublicationGetResponse>>(emptyList()) }
 
     fun user(
         id: Int,
         token: String,
-        viewModel: UserViewModel
+        viewModel: UserViewModel2
     ) {
         val userRepository = UserRepository()
 
@@ -145,63 +171,54 @@ fun ProfileScreen(
 
             if (response.isSuccessful) {
                 Log.e(MainActivity::class.java.simpleName, "Usuario sucedido")
-                Log.e("user", "user: ${response.body()}")
+                Log.e("user", "user: ${response.body()?.usuario}")
 
-                val jsonString = response.body().toString()
-                val jsonObject = JSONObject(jsonString)
-                val usuarioObject = jsonObject.getJSONObject("usuario")
+                userState.value = response.body()
 
-                if (usuarioObject.has("tags")) {
-                    val tagsArray = usuarioObject.getJSONArray("tags")
-                    val tagsList = mutableListOf<TagsResponse>()
+                val userResponse = response.body()
 
-                    // Processar tags como antes
-                    for (i in 0 until tagsArray.length()) {
-                        val tagObject = tagsArray.getJSONObject(i)
-                        val idTag = tagObject.getInt("id_tag")
-                        val nomeTag = tagObject.getString("nome_tag")
-                        val imagem_tag = tagObject.getString("imagem_tag")
-                        val id_categoria = tagObject.getInt("id_categoria")
-                        //val nome_categoria = tagObject.getString("nome_categoria")
+                if (userResponse != null) {
+                    id_usuario = userResponse.usuario.id!!
+                    nome = userResponse.usuario.nome
+                    descricao = userResponse.usuario.descricao
+                    nome_de_usuario = userResponse.usuario.nome_de_usuario
+                    val fotoUrl = userResponse.usuario.foto
+                    fotoUri = Uri.parse(fotoUrl)
+                    email = userResponse.usuario.email
+                    cidade = userResponse.usuario.cidade
+                    estado = userResponse.usuario.estado
+                    bairro = userResponse.usuario.bairro
+                    id_localizacao = userResponse.usuario.id_localizacao!!
 
-                        val tagResponse = TagsResponse(idTag, nomeTag, imagem_tag, id_categoria)
-                        tagsList.add(tagResponse)
+                    publicationList = userResponse.usuario.publicacao
 
-                        viewModel.tags = tagsList
+                    Log.d("dado", "vendo se tem dado rs: $publicationList")
+                    localStorage.salvarValor(context, cidade, "cidade")
+                    localStorage.salvarValor(context, estado, "estado")
+                    localStorage.salvarValor(context, bairro, "bairro")
+
+                    viewModel.id_usuario = id_usuario
+                    viewModel.nome = nome
+                    viewModel.descricao = descricao
+                    viewModel.nome_de_usuario = nome_de_usuario
+                    viewModel.foto = fotoUri
+                    viewModel.email = email
+                    viewModel.estados.value = listOf(estado)
+                    viewModel.cidades.value = listOf(cidade)
+                    viewModel.bairros.value = listOf(bairro)
+                    viewModel.id_localizacao = id_localizacao
+
+                    if (userResponse.usuario.tag.isNotEmpty()) {
+                        viewModel.tags = userResponse.usuario.tag
+                    } else {
+                        viewModel.tags = null
                     }
+
+                    Log.i("Thiago", "${viewModel.nome}, $fotoUri")
                 } else {
-                    viewModel.tags = null
+                    // Lógica de tratamento caso a resposta seja nula
                 }
 
-                id_usuario = usuarioObject.getInt("id_usuario")
-                nome = usuarioObject.getString("nome")
-                descricao = usuarioObject.getString("descricao")
-                nome_de_usuario = usuarioObject.getString("nome_de_usuario")
-                val fotoUrl = usuarioObject.getString("foto")
-                fotoUri = Uri.parse(fotoUrl)
-                email = usuarioObject.getString("email")
-                cidade = usuarioObject.getString("cidade")
-                estado = usuarioObject.getString("estado")
-                bairro = usuarioObject.getString("bairro")
-                id_localizacao = usuarioObject.getInt("id_localizacao")
-
-                localStorage.salvarValor(context, cidade, "cidade")
-                localStorage.salvarValor(context, estado, "estado")
-                localStorage.salvarValor(context, bairro, "bairro")
-
-                viewModel.id_usuario = id_usuario
-                viewModel.nome = nome
-                viewModel.descricao = descricao
-                viewModel.nome_de_usuario = nome_de_usuario
-                viewModel.foto = fotoUri
-                viewModel.email = email
-                viewModel.estados.value = listOf(estado)
-                viewModel.cidades.value = listOf(cidade)
-                viewModel.bairros.value = listOf(bairro)
-                viewModel.id_localizacao = id_localizacao
-
-
-                Log.i("Thiago", "${viewModel.nome}, $fotoUri")
 
             } else {
                 val errorBody = response.errorBody()?.string()
@@ -302,7 +319,8 @@ fun ProfileScreen(
                             painter = painterResource(id = R.drawable.settings_icon),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(35.dp).clickable {
+                                .size(35.dp)
+                                .clickable {
                                     navController.navigate("settings")
                                 }
                         )
@@ -321,7 +339,8 @@ fun ProfileScreen(
                         contentDescription = "",
                         modifier = Modifier
                             .size(100.dp)
-                            .border(BorderStroke(borderWidth, Color.White),
+                            .border(
+                                BorderStroke(borderWidth, Color.White),
                                 RoundedCornerShape(10.dp)
                             )
                             .padding(borderWidth)
@@ -400,21 +419,20 @@ fun ProfileScreen(
                     color = Contraste,
                     text = descricao,
                     style = MaterialTheme.typography.bodySmall,
-                    fontSize = 18.sp,
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Medium,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 25.dp),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Justify
                 )
 
-                Spacer(modifier = Modifier.height(25.dp))
+                Spacer(modifier = Modifier.height(15.dp))
 
                 if (viewModel.tags == null) {
                     Row(modifier = Modifier.fillMaxWidth()) {
 
                     }
-
                 } else {
                     Row(
                         modifier = Modifier
@@ -422,7 +440,7 @@ fun ProfileScreen(
                             .fillMaxWidth(),
                         Arrangement.SpaceEvenly
                     ) {
-                        viewModel.tags?.take(1)?.forEach { tag ->
+                        viewModel.tags?.take(2)?.forEach { tag ->
                             GradientButtonTags(
                                 onClick = {},
                                 text = tag.nome_tag,
@@ -432,6 +450,63 @@ fun ProfileScreen(
                         }
                         if ((viewModel.tags?.size ?: 0) > 1) {
                             ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel)
+                        }
+                    }
+                }
+                Log.w("Lista Publicacao", "Lista Publicacao FORA: $publicationList ", )
+                //Log.w("Lista Usuario", "Lista Publicacao FORA: ${userState.value?.usuario!!.publicacao} ", )
+                Spacer(modifier = Modifier.height(10.dp))
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(3),
+                    modifier = Modifier
+                        .padding(2.dp),
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    items(publicationList) { publicacao ->
+
+                        Log.w("Lista Publicacao", "Lista Publicacao DENTRO: $publicationList ", )
+                        Card(
+                            modifier = Modifier
+                                .width(95.dp)
+                                .height(120.dp)
+                                .padding(start = 12.dp, 2.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .clickable {
+                                    localStorage.salvarValor(
+                                        context,
+                                        publicacao.id.toString(),
+                                        "id_publicacao"
+                                    )
+                                    navController.navigate("expandedPublication")
+                                },
+                            backgroundColor = Color.White,
+                            elevation = 20.dp
+                        ) {
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(145.dp)
+                                        .fillMaxWidth()
+                                        .background(
+                                            Color(168, 155, 255, 102),
+                                            shape = RoundedCornerShape(16.dp)
+                                        )
+                                ) {
+                                    AsyncImage(
+                                        model = publicacao.anexos[0].anexo,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .size(150.dp, 140.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
+                            }
                         }
                     }
                 }

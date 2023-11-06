@@ -434,7 +434,7 @@ fun ProfileViewedScreen(
                 } else {
                     Row(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp)
+                            .padding(start = 12.dp, end = 12.dp)
                             .fillMaxWidth(),
                         Arrangement.SpaceEvenly
                     ) {
@@ -498,7 +498,7 @@ fun ProfileViewedScreen(
                                         model = publicacao.anexos[0].anexo,
                                         contentDescription = "",
                                         modifier = Modifier
-                                            .size(150.dp, 140.dp)
+                                            .size(105.dp, 110.dp)
                                             .clip(shape = RoundedCornerShape(10.dp)),
                                         contentScale = ContentScale.Crop
                                     )

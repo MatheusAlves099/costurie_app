@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.costurie_app.screens.expandedPublication
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -135,6 +136,34 @@ fun ExpandedPublicationScreen(
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("EDICAO DE PERFIL", "updateUser: $errorBody")
+        }
+    }
+
+    suspend fun postGivePoint() {
+        val publicationRepository = PublicationRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        Log.d("postGivePoint", "Chamando postGivePoint")
+        val response = publicationRepository.givePoint(user.token, id!!.toInt())
+        Log.d("postGivePoint", "Resposta: $response")
+        if (response.isSuccessful) {
+            Log.d("give point", "postGivePoint: $response")
+            val publications = response.body()
+            Toast.makeText(
+                context,
+                publications!!.message,
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.i("dar ponto", "dei o ponto: ${publications}")
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("CURTIR UMA PUBLICAÇÃO", "Erro: $errorBody")
+            Toast.makeText(
+                context,
+                "Erro ao dar ponto em na publicação: $errorBody",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
@@ -361,14 +390,30 @@ fun ExpandedPublicationScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         GradientButtonSmall(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                lifecycleScope.launch {
+                                    postGivePoint()
+                                    Log.d(
+                                        "MURYLLOOO",
+                                        "ExpandedPublicationScreen: ${postGivePoint()}"
+                                    )
+                                }
+                            },
                             text = stringResource(id = R.string.botao_responder),
                             color1 = Destaque1,
                             color2 = Destaque2
                         )
 
                         ButtonGivePoint(
-                            onClick = { /*TODO*/ },
+                            onClick = {
+                                lifecycleScope.launch {
+                                    postGivePoint()
+                                    Log.d(
+                                        "MURYLLOOO",
+                                        "ExpandedPublicationScreen: ${postGivePoint()}"
+                                    )
+                                }
+                            },
                             text = "DAR PONTO"
                         )
 
@@ -377,6 +422,11 @@ fun ExpandedPublicationScreen(
                                 scope.launch {
                                     if (sheetState.isCollapsed) {
                                         sheetState.expand()
+                                        localStorage.salvarValor(
+                                            context,
+                                            id.toString(),
+                                            "id_publicacao"
+                                        )
                                     } else {
                                         sheetState.collapse()
                                     }

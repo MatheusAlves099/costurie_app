@@ -143,15 +143,13 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
 
                 Text(
                     modifier = Modifier
-                        .padding(top = 10.dp)
                         .fillMaxWidth()
-                        .padding(start = 30.dp),
+                        .padding(start = 30.dp, top = 10.dp),
                     color = Color.Black,
                     text = stringResource(id = R.string.mais_populares_text),
                     style = MaterialTheme.typography.bodySmall,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    letterSpacing = 2.sp,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.SemiBold
                 )
 
                 LazyRow(
@@ -199,8 +197,8 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                                             shape = RoundedCornerShape(16.dp)
                                         )
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.mulher_publicacao),
+                                    AsyncImage(
+                                        model = publication.anexos[0].anexo,
                                         contentDescription = "",
                                         modifier = Modifier
                                             .size(150.dp, 140.dp)

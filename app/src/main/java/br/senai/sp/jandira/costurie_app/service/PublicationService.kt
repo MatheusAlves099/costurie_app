@@ -4,6 +4,7 @@ import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponseTag
+import br.senai.sp.jandira.costurie_app.model.GivePointResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationResponse
 import br.senai.sp.jandira.costurie_app.model.UserResponse
@@ -51,5 +52,12 @@ interface PublicationService {
         @Header("x-access-token") token: String,
         @Path("id") id: Int
     ): Response<JsonObject>
+
+    @Headers("Content-Type: application/json")
+    @POST("/publicacao/curtir/{id}")
+    suspend fun givePoint(
+        @Header("x-access-token") token: String,
+        @Path("id") id: Int
+    ): Response<GivePointResponse>
 
 }

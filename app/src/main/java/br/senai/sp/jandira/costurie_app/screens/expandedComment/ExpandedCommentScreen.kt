@@ -32,6 +32,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -271,6 +272,13 @@ fun ExpandedCommentScreen(
                                     color = Color.Gray
                                 )
                             }
+
+                            Image(
+                                painter = painterResource(id = R.drawable.trash_icon_purple),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(25.dp)
+                            )
                         }
                     }
                 }

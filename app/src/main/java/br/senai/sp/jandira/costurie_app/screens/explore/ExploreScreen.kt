@@ -171,9 +171,9 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                         }
                         Card(
                             modifier = Modifier
-                                .width(170.dp)
-                                .height(260.dp)
-                                .padding(start = 16.dp, 2.dp)
+                                .width(190.dp)
+                                .height(230.dp)
+                                .padding(start = 32.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {
                                     localStorage.salvarValor(
@@ -230,7 +230,7 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -261,9 +261,9 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
 
                         Card(
                             modifier = Modifier
-                                .width(170.dp)
+                                .width(190.dp)
                                 .height(260.dp)
-                                .padding(start = 16.dp, 2.dp)
+                                .padding(start = 32.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .clickable {
                                     localStorage.salvarValor(

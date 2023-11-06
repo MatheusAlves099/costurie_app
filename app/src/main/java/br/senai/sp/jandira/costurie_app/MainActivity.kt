@@ -21,6 +21,8 @@ import br.senai.sp.jandira.costurie_app.screens.loading.LoadingScreen
 import br.senai.sp.jandira.costurie_app.screens.login.LoginScreen
 import br.senai.sp.jandira.costurie_app.screens.main.MainScreen
 import br.senai.sp.jandira.costurie_app.screens.password.PasswordScreen
+import br.senai.sp.jandira.costurie_app.screens.personalization.ChangeEmailScreen
+import br.senai.sp.jandira.costurie_app.screens.personalization.ChangePasswordScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.DescriptionScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.LocationScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.NameScreen
@@ -32,6 +34,7 @@ import br.senai.sp.jandira.costurie_app.screens.publish.PublishScreen
 import br.senai.sp.jandira.costurie_app.screens.register.RegisterScreen
 import br.senai.sp.jandira.costurie_app.screens.services.ServicesScreen
 import br.senai.sp.jandira.costurie_app.screens.settings.SettingsScreen
+import br.senai.sp.jandira.costurie_app.screens.settings.YourAccountScreen
 import br.senai.sp.jandira.costurie_app.screens.tradePassword.TradePasswordScreen
 import br.senai.sp.jandira.costurie_app.screens.validationCode.ValidationCodeScreen
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -61,7 +64,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home")
+                    startDestination = "changePassword")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }
@@ -83,8 +86,13 @@ class MainActivity : ComponentActivity() {
                     composable(route = "profileList") { ProfileListScreen(navController = navController, lifecycleScope = lifecycleScope, profiles = emptyList(), viewModel = viewModelUser, viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "editProfile") { EditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModel = viewModelUser, localStorage = localStorage) }
                     composable(route = "tagsEditProfile") { TagsEditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModelUser = viewModelUser, viewModelTags = viewModelTags, localStorage = localStorage) }
-                    composable(route = "settings") { SettingsScreen(lifecycleScope = lifecycleScope, navController = navController) }
                     composable(route = "editPublication") { EditPublicationScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage, viewModelTag = viewModelTagsPublication) }
+
+                    //telas de configuracões
+                    composable(route = "settings") { SettingsScreen(lifecycleScope = lifecycleScope, navController = navController) }
+                    composable(route = "yourAccount") { YourAccountScreen(lifecycleScope = lifecycleScope, navController = navController) }
+                    composable(route = "changeEmail") { ChangeEmailScreen(navController = navController, localStorage = localStorage) }
+                    composable(route = "changePassword") { ChangePasswordScreen(navController = navController, localStorage = localStorage) }
 
                     //telas de personalização
                     composable(route = "name") { NameScreen(navController = navController, localStorage) }

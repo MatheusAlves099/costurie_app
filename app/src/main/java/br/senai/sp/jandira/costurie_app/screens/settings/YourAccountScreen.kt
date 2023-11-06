@@ -52,7 +52,7 @@ import coil.compose.AsyncImage
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun SettingsScreen(
+fun YourAccountScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
 ) {
@@ -108,7 +108,7 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(50.dp))
 
                     ButtonSettings(
-                        onClick = { navController.navigate("yourAccount") }, text = "Sua conta".uppercase(), icon = painterResource(
+                        onClick = { navController.navigate("changeEmail")}, text = stringResource(id = R.string.text_change_email).uppercase(), icon = painterResource(
                             id = R.drawable.icone_voltar_button
                         )
                     )
@@ -116,41 +116,12 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(50.dp))
 
                     ButtonSettings(
-                        onClick = { /*TODO*/ }, text = "TERMOS E CONDIÇÕES".uppercase(), icon = painterResource(
+                        onClick = { /*TODO*/ }, text = "Alterar senha".uppercase(), icon = painterResource(
                             id = R.drawable.icone_voltar_button
                         )
                     )
 
                     Spacer(modifier = Modifier.height(50.dp))
-
-                    ButtonSettings(
-                        onClick = { /*TODO*/ }, text = "AJUDA E SUPORTE".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    ButtonSettings(
-                        onClick = { /*TODO*/ }, text = "SOBRE".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    ButtonSettings(
-                        onClick = {
-                            val array = UserRepositorySqlite(context).findUsers()
-
-                            val user = array[0]
-                                  deleteUserSQLite(context, user.id.toInt())
-                            navController.navigate("login")
-
-                        }, text = "Sair".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
-                    )
                 }
             }
         }

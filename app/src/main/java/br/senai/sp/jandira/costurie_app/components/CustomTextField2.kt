@@ -63,7 +63,7 @@ fun CustomOutlinedTextField2(
                     shape = RoundedCornerShape(20.dp)
                 ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Black,
+                focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = borderColor,
                 cursorColor = Color(65, 57, 70, 255)
             ),

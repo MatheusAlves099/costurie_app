@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -33,54 +34,58 @@ fun ButtonGivePoint(
     onClick: () -> Unit,
     text: String
 ) {
-    Row(
-        modifier = Modifier
-            .width(145.dp),
-        horizontalArrangement = Arrangement.SpaceAround
-
-    ) {
-        Surface(
+    Button(onClick, modifier = Modifier.width(145.dp)) {
+        Row(
             modifier = Modifier
-                .border(
-                    width = 1.dp,
-                    color = colorResource(id = R.color.destaque_2),
-                    shape = ShapeButton.large
-                )
-                .width(130.dp)
-                .height(30.dp),
-            color = Color.White
+                .fillMaxWidth()
+            ,
+            horizontalArrangement = Arrangement.SpaceAround
+
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically,
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { onClick },
+                    .border(
+                        width = 1.dp,
+                        color = colorResource(id = R.color.destaque_2),
+                        shape = ShapeButton.large
+                    )
+                    .width(130.dp)
+                    .height(30.dp),
+                color = Color.White
             ) {
-
-
-                Image(
-                    painter = painterResource(id = R.drawable.icon_agulha),
-                    contentDescription = "image description",
-                    contentScale = ContentScale.FillBounds,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(24.dp)
-                        .width(10.dp)
-                )
+                        .fillMaxWidth()
+                        .clickable { },
+                ) {
 
-                Text(
-                    text = text,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight(600),
-                    color = colorResource(id = R.color.destaque_2),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.height(18.dp)
-                )
+
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_agulha),
+                        contentDescription = "image description",
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .width(10.dp)
+                    )
+
+                    Text(
+                        text = text,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight(600),
+                        color = colorResource(id = R.color.destaque_2),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.height(18.dp)
+                    )
+                }
+
             }
-
         }
     }
+
 }
 
 @Preview(showBackground = true)

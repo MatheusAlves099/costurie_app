@@ -1,5 +1,8 @@
 package br.senai.sp.jandira.costurie_app.screens.expandedComment
 
+import android.annotation.SuppressLint
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,6 +35,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -58,7 +63,12 @@ import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.model.CommentResponse
+import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
+import br.senai.sp.jandira.costurie_app.repository.CommentRepository
+import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedPublication.ExpandedPublicationScreen
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
@@ -67,6 +77,7 @@ import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandedCommentScreen(
@@ -75,9 +86,47 @@ fun ExpandedCommentScreen(
     viewModel: TagPublicationViewModel,
     localStorage: Storage
 ) {
+    var context = LocalContext.current
+
+    val commentState = remember { mutableStateOf(emptyList<CommentResponse>()) }
+
+    var id = localStorage.lerValor(context, "id_publicacao")
+
+    suspend fun getCommentByPublication() {
+        val commentRepository = CommentRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = commentRepository.getCommentByPublication(user.token, id!!.toInt())
+
+        if (response.isSuccessful) {
+            val comments = response.body()?.comentarios ?: emptyList()
+            commentState.value = comments
+            Log.i("comentatios", "getCommentByPublication: ${comments}")
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("TODOS OS COMENTARIOS", "Erro: $errorBody")
+//            Toast.makeText(
+//                context,
+//                "Erro ao buscar todos os comentarios: $errorBody",
+//                Toast.LENGTH_SHORT
+//            ).show()
+        }
+    }
+
+    LaunchedEffect(key1 = true) {
+        val array = UserRepositorySqlite(context).findUsers()
+
+        val user = array[0]
+
+        getCommentByPublication()
+
+        Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
+    }
+
     Costurie_appTheme {
 
-        var commentState by remember {
+        var comentarioState by remember {
             mutableStateOf("")
         }
 
@@ -88,45 +137,64 @@ fun ExpandedCommentScreen(
             bottomSheetState = sheetState
         )
 
-            Box(modifier = Modifier
+        Box(
+            modifier = Modifier
                 .fillMaxWidth()
                 .height(120.dp)
+        ) {
+            Row(
+                Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
             ) {
-                Row (
-                    Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.bar_icon),
-                        contentDescription = "",
-                        Modifier.size(75.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                Row (
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, top = 60.dp, end = 30.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.close_icon),
-                        contentDescription = "",
-                        Modifier
-                            .size(35.dp)
-                            .clickable { navController.popBackStack() }
-                    )
-                }
+                Image(
+                    painter = painterResource(id = R.drawable.bar_icon),
+                    contentDescription = "",
+                    Modifier.size(75.dp)
+                )
             }
 
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(start = 30.dp, top = 60.dp, end = 30.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.close_icon),
+                    contentDescription = "",
+                    Modifier
+                        .size(35.dp)
+//                            .clickable { navController.popBackStack() }
+                        .clickable {
+                            lifecycleScope.launch {
+                                getCommentByPublication()
+                            }
+
+                        }
+                )
+            }
+        }
+
+        if (commentState.value.isEmpty()) {
+            Spacer(modifier = Modifier.height(18.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Text(
+                    text = "Essa publicação não há comentários",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+            }
+            Spacer(modifier = Modifier.height(27.dp))
+        } else {
             LazyColumn(
                 modifier = Modifier
                     .height(630.dp)
             ) {
-                items(7) {
+                items(commentState.value) {
                     Card(
                         modifier = Modifier
                             .size(380.dp, 85.dp)
@@ -149,8 +217,8 @@ fun ExpandedCommentScreen(
                                     .clip(shape = RoundedCornerShape(10.dp))
                                     .background(Color(168, 155, 255, 102))
                             ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.mulher_publicacao),
+                                AsyncImage(
+                                    model = it.usuario.foto,
                                     contentDescription = "",
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -158,11 +226,20 @@ fun ExpandedCommentScreen(
                                         .clip(shape = RoundedCornerShape(10.dp)),
                                     contentScale = ContentScale.Crop
                                 )
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.mulher_publicacao),
+//                                    contentDescription = "",
+//                                    modifier = Modifier
+//                                        .fillMaxSize()
+//                                        .padding(bottom = 5.dp, end = 2.dp)
+//                                        .clip(shape = RoundedCornerShape(10.dp)),
+//                                    contentScale = ContentScale.Crop
+//                                )
                             }
 
                             Column {
                                 Text(
-                                    text = "Cyclanilda Soares",
+                                    text = it.usuario.nome_de_usuario,
                                     textAlign = TextAlign.Start,
                                     modifier = Modifier
                                         .width(250.dp)
@@ -173,7 +250,7 @@ fun ExpandedCommentScreen(
                                 )
 
                                 Text(
-                                    text = "Parabéns pelo trabalho!!",
+                                    text = it.mensagem,
                                     textAlign = TextAlign.Start,
                                     modifier = Modifier
                                         .width(250.dp)
@@ -198,13 +275,13 @@ fun ExpandedCommentScreen(
                     }
                 }
             }
-
-            CustomOutlinedTextFieldComment(
-                value = commentState,
-                onValueChange = {
-                    commentState = it
-                },
-                label = stringResource(id = R.string.label_comentarios)
-            )
+        }
+        CustomOutlinedTextFieldComment(
+            value = comentarioState,
+            onValueChange = {
+                comentarioState = it
+            },
+            label = stringResource(id = R.string.label_comentarios)
+        )
     }
 }

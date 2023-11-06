@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.screens.expandedComment
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.rememberBottomSheetScaffoldState
 import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -67,6 +69,7 @@ import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandedCommentScreen(
@@ -194,6 +197,13 @@ fun ExpandedCommentScreen(
                                     color = Color.Gray
                                 )
                             }
+
+                            Image(
+                                painter = painterResource(id = R.drawable.trash_icon_purple),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(25.dp)
+                            )
                         }
                     }
                 }

@@ -436,9 +436,9 @@ fun ProfileScreen(
                 } else {
                     Row(
                         modifier = Modifier
-                            .padding(start = 16.dp, end = 16.dp)
-                            .fillMaxWidth(),
-                        Arrangement.SpaceEvenly
+                            .fillMaxWidth()
+                            .padding(start = 12.dp, end = 12.dp),
+                        Arrangement.SpaceBetween
                     ) {
                         viewModel.tags?.take(2)?.forEach { tag ->
                             GradientButtonTags(
@@ -500,7 +500,7 @@ fun ProfileScreen(
                                         model = publicacao.anexos[0].anexo,
                                         contentDescription = "",
                                         modifier = Modifier
-                                            .size(150.dp, 140.dp)
+                                            .size(105.dp, 110.dp)
                                             .clip(shape = RoundedCornerShape(10.dp)),
                                         contentScale = ContentScale.Crop
                                     )

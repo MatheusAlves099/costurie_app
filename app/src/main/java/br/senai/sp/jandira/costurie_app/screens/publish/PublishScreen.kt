@@ -128,15 +128,7 @@ fun PublishScreen(
     }
     var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoResponse>()) }
     var selectedMediaUrl by remember { mutableStateOf(arrayListOf<AnexoResponse>()) }
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        if (uri != null) {
-            val anexoResponse = AnexoResponse(conteudo = uri.toString())
-//            selectedMedia = selectedMedia + anexoResponse
-            selectedMediaUri += anexoResponse
-        }
-    }
+
 
     val array = UserRepositorySqlite(context).findUsers()
 
@@ -226,101 +218,78 @@ fun PublishScreen(
 
     }
 
+    fun urlDownload(it: String): String {
+        var url = ""
 
-    Costurie_appTheme {
-        fun urlDownload() {
-            for (it in selectedMediaUri) {
+        storageRef
+            .putFile(Uri.parse(it))
+            .addOnCompleteListener { task ->
 
-                storageRef
-                    .putFile(Uri.parse(it.conteudo))
-                    .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
 
-                        if (task.isSuccessful) {
+                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                        val map = HashMap<String, Any>()
+                        map["pic"] = uri.toString()
 
-                            storageRef.downloadUrl.addOnSuccessListener { uri ->
-                                val map = HashMap<String, Any>()
-                                map["pic"] = uri.toString()
+                        firebaseFirestore
+                            .collection("images")
+                            .add(map)
+                            .addOnCompleteListener { firestoreTask ->
+                                if (firestoreTask.isSuccessful) {
 
-                                anexo.conteudo = uri.toString()
-                                selectedMediaUrl.add(anexo)
-
-                                Log.i(
-                                    "urlDown",
-                                    "PublishScreenFora: ${anexo.conteudo}"
-                                )
-
-                                firebaseFirestore
-                                    .collection("images")
-                                    .add(map)
-                                    .addOnCompleteListener { firestoreTask ->
-
-                                        if (firestoreTask.isSuccessful) {
-//                                                            Log.i(
-//                                                                "fotossuccess", "PublishScreen: ${
-//                                                                    selectedMediaUri.indexOf(
-//                                                                        uri
-//                                                                    )
-//                                                                }"
-//                                                            )
-//                                                            Toast
-//                                                                .makeText(
-//                                                                    context,
-//                                                                    "UPLOAD REALIZADO COM SUCESSO ${
-//                                                                        selectedMediaUri.indexOf(
-//                                                                            uri
-//                                                                        )
-//                                                                    }",
-//                                                                    Toast.LENGTH_SHORT
-//                                                                )
-//                                                                .show(
-
-
-                                        } else {
-//                                                            Log.i(
-//                                                                "fotoserro", "PublishScreen: ${
-//                                                                    selectedMediaUri.indexOf(
-//                                                                        uri
-//                                                                    )
-//                                                                }"
-//                                                            )
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    "ERRO AO TENTAR REALIZAR O UPLOAD",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-                                        }
-                                        //BARRA DE PROGRESSO DO UPLOAD
-                                    }
+                                    url = uri.toString()
+                                    Log.i(
+                                        "urlDown",
+                                        "fora do storage: ${url}"
+                                    )
+                                } else {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
+                                //BARRA DE PROGRESSO DO UPLOAD
                             }
-
-
-                            Log.i(
-                                "urlDown",
-                                "PublishScreenS: ${anexo.conteudo}"
-                            )
-
-
-                        } else {
-
-                            Toast
-                                .makeText(
-                                    context,
-                                    "ERRO AO TENTAR REALIZAR O UPLOAD",
-                                    Toast.LENGTH_SHORT
-                                )
-                                .show()
-
-                        }
-
-
-                        //BARRA DE PROGRESSO DO UPLOAD
-
                     }
 
+
+                } else {
+
+
+
+                    Toast
+                        .makeText(
+                            context,
+                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+
+                }
+
+
+                //BARRA DE PROGRESSO DO UPLOAD
+
             }
+
+        return url
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            val anexoResponse = AnexoResponse(conteudo = uri.toString())
+            selectedMediaUrl.add(AnexoResponse(urlDownload(uri.toString())))
+            selectedMediaUri += anexoResponse
         }
+    }
+
+    Costurie_appTheme {
+
 
         Column(
             modifier = Modifier
@@ -361,20 +330,19 @@ fun PublishScreen(
                     Modifier
                         .size(35.dp)
                         .clickable {
-                            lifecycleScope.launch {
-                                urlDownload()
-                                if (selectedMediaUrl.size == selectedMediaUri.size) {
-                                    createPublication(
-                                        id_usuario = user.id.toInt(),
-                                        token = user.token,
-                                        titulo = titleState,
-                                        descricao = descriptionState,
-                                        anexos = selectedMediaUrl,
-                                        tags = tagsArray
-                                    )
-                                }
+
+
+                            if (selectedMediaUrl.size == selectedMediaUri.size) {
+                                createPublication(
+                                    id_usuario = user.id.toInt(),
+                                    token = user.token,
+                                    titulo = titleState,
+                                    descricao = descriptionState,
+                                    anexos = selectedMediaUrl,
+                                    tags = tagsArray
+                                )
                             }
-                            Log.i("testeUri", "PublishScreen: ${selectedMediaUri}")
+
 
                         }
                 )
@@ -408,6 +376,7 @@ fun PublishScreen(
                             .size(50.dp)
                             .clickable {
                                 launcher.launch("image/*")
+
                             }
                     )
                 }

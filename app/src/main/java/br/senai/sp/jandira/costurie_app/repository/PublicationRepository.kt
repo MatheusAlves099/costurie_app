@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.repository
 
+import android.util.Log
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
@@ -42,6 +43,8 @@ class PublicationRepository {
             val anexosArray = JsonArray()
             if (anexos != null) {
                 for (anexo in anexos) {
+                    Log.i("anexos", "createPublication: ${anexos}")
+                    Log.i("anexo", "createPublication: ${anexo}")
                     val anexoObject = JsonObject().apply {
                         addProperty("conteudo", anexo.conteudo)
                     }

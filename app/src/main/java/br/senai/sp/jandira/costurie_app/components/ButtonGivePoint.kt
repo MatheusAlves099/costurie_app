@@ -34,57 +34,55 @@ fun ButtonGivePoint(
     onClick: () -> Unit,
     text: String
 ) {
-    Button(onClick, modifier = Modifier.width(145.dp)) {
-        Row(
+    Row(
+        horizontalArrangement = Arrangement.SpaceAround
+    ) {
+        Surface(
             modifier = Modifier
-                .fillMaxWidth()
-            ,
-            horizontalArrangement = Arrangement.SpaceAround
+                .border(
+                    width = 1.dp,
+                    color = colorResource(id = R.color.destaque_2),
+                    shape = ShapeButton.large
+                )
+                .width(130.dp)
+                .height(30.dp)
+                .clickable {
 
+                },
+            color = Color.White
         ) {
-            Surface(
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        color = colorResource(id = R.color.destaque_2),
-                        shape = ShapeButton.large
-                    )
-                    .width(130.dp)
-                    .height(30.dp),
-                color = Color.White
+                    .fillMaxWidth()
+                    .clickable { onClick() },
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically,
+
+
+                Image(
+                    painter = painterResource(id = R.drawable.icon_agulha),
+                    contentDescription = "image description",
+                    contentScale = ContentScale.FillBounds,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { },
-                ) {
+                        .size(24.dp)
+                        .width(10.dp)
+                )
 
-
-                    Image(
-                        painter = painterResource(id = R.drawable.icon_agulha),
-                        contentDescription = "image description",
-                        contentScale = ContentScale.FillBounds,
-                        modifier = Modifier
-                            .size(24.dp)
-                            .width(10.dp)
-                    )
-
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight(600),
-                        color = colorResource(id = R.color.destaque_2),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.height(18.dp)
-                    )
-                }
-
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight(600),
+                    color = colorResource(id = R.color.destaque_2),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.height(18.dp)
+                )
             }
+
         }
     }
+
 
 }
 

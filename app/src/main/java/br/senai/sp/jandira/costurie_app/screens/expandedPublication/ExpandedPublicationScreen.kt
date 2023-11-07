@@ -145,7 +145,7 @@ fun ExpandedPublicationScreen(
         val user = array[0]
 
         Log.d("postGivePoint", "Chamando postGivePoint")
-        val response = publicationRepository.givePoint(user.token, id!!.toInt())
+        val response = publicationRepository.givePoint(user.token, user.id.toInt(), id!!.toInt())
         Log.d("postGivePoint", "Resposta: $response")
         if (response.isSuccessful) {
             Log.d("give point", "postGivePoint: $response")
@@ -391,13 +391,7 @@ fun ExpandedPublicationScreen(
                     ) {
                         GradientButtonSmall(
                             onClick = {
-                                lifecycleScope.launch {
-                                    postGivePoint()
-                                    Log.d(
-                                        "MURYLLOOO",
-                                        "ExpandedPublicationScreen: ${postGivePoint()}"
-                                    )
-                                }
+
                             },
                             text = stringResource(id = R.string.botao_responder),
                             color1 = Destaque1,

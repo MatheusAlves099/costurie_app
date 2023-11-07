@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.costurie_app.repository
 
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
+import br.senai.sp.jandira.costurie_app.model.BaseResponseGivePoint
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
@@ -59,6 +60,7 @@ class PublicationRepository {
 
         return apiService.getAllPublications(token)
     }
+
     suspend fun getPopularPublication(token: String): Response<BaseResponsePopularPublication> {
 
         return apiService.getPupularPublication(token)
@@ -70,12 +72,20 @@ class PublicationRepository {
         return apiService.getPublicationById(token, id)
     }
 
-    suspend fun deletePublication(token: String, id: Int): Response<JsonObject>{
+    suspend fun deletePublication(token: String, id: Int): Response<JsonObject> {
         return apiService.deletePublicationById(token, id)
     }
 
-    suspend fun givePoint(token: String, id: Int): Response<GivePointResponse>{
-        return apiService.givePoint(token, id)
-    }
+    suspend fun givePoint(
+        token: String,
+        id_usuario: Int,
+        id_publicacao: Int
+    ): Response<GivePointResponse> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_usuario", id_usuario)
+            addProperty("id_publicacao", id_publicacao)
+        }
 
+        return apiService.givePoint(token, requestBody)
+    }
 }

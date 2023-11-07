@@ -65,6 +65,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
+import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldPassword
 import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
@@ -164,7 +165,7 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                     )
                 }
 
-                CustomOutlinedTextField(
+                CustomOutlinedTextFieldPassword(
                     value = passwordState,
                     onValueChange = { passwordState = it },
                     label = stringResource(id = R.string.text_change_password_outlined),
@@ -173,7 +174,6 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                     isPasswordField = true,
                     isPasswordVisible = isPasswordVisible,
                     onVisibilityChange = { isPasswordVisible = it },
-                    leadingIconImageVector = Icons.Default.Password,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -184,7 +184,49 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                     borderColor = Color.Transparent
                 )
 
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+
+                CustomOutlinedTextFieldPassword(
+                    value = passwordState,
+                    onValueChange = { passwordState = it },
+                    label = stringResource(id = R.string.text_change_new_password_outlined),
+                    showError = !validatePassword,
+                    errorMessage = validatePasswordError,
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onVisibilityChange = { isPasswordVisible = it },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.clearFocus() }
+                    ),
+                    borderColor = Color.Transparent
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                CustomOutlinedTextFieldPassword(
+                    value = passwordState,
+                    onValueChange = { passwordState = it },
+                    label = stringResource(id = R.string.text_change_new_password_outlined_repeat),
+                    showError = !validatePassword,
+                    errorMessage = validatePasswordError,
+                    isPasswordField = true,
+                    isPasswordVisible = isPasswordVisible,
+                    onVisibilityChange = { isPasswordVisible = it },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = { focusManager.clearFocus() }
+                    ),
+                    borderColor = Color.Transparent
+                )
+
+                Spacer(modifier = Modifier.height(100.dp))
 
                 GradientButton(
                     onClick = { },

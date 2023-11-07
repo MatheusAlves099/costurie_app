@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.costurie_app.screens.settings
+package br.senai.sp.jandira.costurie_app.screens.chats
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -46,13 +46,15 @@ import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
+import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
+import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun YourAccountScreen(
+fun ChatScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
 ) {
@@ -62,7 +64,7 @@ fun YourAccountScreen(
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
-            color = Color.White
+            color = Principal2
         ) {
             Column(
                 modifier = Modifier
@@ -94,6 +96,26 @@ fun YourAccountScreen(
                                     navController.popBackStack()
                                 }
                         )
+
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(Color(255, 255, 255, 255))
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.mulher_publicacao),
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(bottom = 5.dp, end = 2.dp)
+                                    .clip(shape = RoundedCornerShape(10.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        Column {
+
+                        }
                     }
                 }
 

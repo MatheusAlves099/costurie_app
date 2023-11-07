@@ -9,7 +9,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import br.senai.sp.jandira.costurie_app.screens.chats.ChatsScreen
+import br.senai.sp.jandira.costurie_app.screens.chats.ChatListScreen
+import br.senai.sp.jandira.costurie_app.screens.chats.ChatScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.EditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.TagsEditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editPublication.EditPublicationScreen
@@ -80,13 +81,16 @@ class MainActivity : ComponentActivity() {
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
                     composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage) }
                     composable(route = "services") { ServicesScreen(navController = navController, lifecycleScope = lifecycleScope, categories = emptyList(), filterings = emptyList(), viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
-                    composable(route = "chats") { ChatsScreen(navController = navController) }
                     composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2,  localStorage = localStorage) }
                     composable(route = "profileViewed") { ProfileViewedScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2, localStorage = localStorage) }
                     composable(route = "profileList") { ProfileListScreen(navController = navController, lifecycleScope = lifecycleScope, profiles = emptyList(), viewModel = viewModelUser, viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "editProfile") { EditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModel = viewModelUser, localStorage = localStorage) }
                     composable(route = "tagsEditProfile") { TagsEditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModelUser = viewModelUser, viewModelTags = viewModelTags, localStorage = localStorage) }
                     composable(route = "editPublication") { EditPublicationScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage, viewModelTag = viewModelTagsPublication) }
+
+                    //telas de chat
+                    composable(route = "chatList") { ChatListScreen(navController = navController) }
+                    composable(route = "chat") { ChatScreen(lifecycleScope = lifecycleScope, navController = navController) }
 
                     //telas de configuracões
                     composable(route = "settings") { SettingsScreen(lifecycleScope = lifecycleScope, navController = navController) }

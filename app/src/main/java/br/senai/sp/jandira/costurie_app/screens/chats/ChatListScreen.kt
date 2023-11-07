@@ -13,7 +13,7 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 
 @Composable
-fun ChatsScreen (navController: NavController) {
+fun ChatListScreen (navController: NavController) {
     Costurie_appTheme {
         Surface(
             modifier = Modifier

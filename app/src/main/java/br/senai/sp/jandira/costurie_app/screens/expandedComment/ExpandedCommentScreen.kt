@@ -58,14 +58,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.CommentResponse
 import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
+import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.repository.CommentRepository
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedPublication.ExpandedPublicationScreen
@@ -114,6 +117,7 @@ fun ExpandedCommentScreen(
 //            ).show()
         }
     }
+
 
     LaunchedEffect(key1 = true) {
         val array = UserRepositorySqlite(context).findUsers()
@@ -289,7 +293,9 @@ fun ExpandedCommentScreen(
             onValueChange = {
                 comentarioState = it
             },
-            label = stringResource(id = R.string.label_comentarios)
+            label = stringResource(id = R.string.label_comentarios),
+            localStorage,
+            lifecycleScope
         )
     }
 }

@@ -449,8 +449,23 @@ fun EditPublicationScreen(
                     modifier = Modifier.padding(12.dp)
                 ) {
                     val tags = filtro(pesquisaState)
-                    val allTags = tagsState.value + filtro(pesquisaState)
-                    items(allTags) {
+                    val tagsSelected = tagsState.value
+                    for(tag in tags) {
+                        for (tagSelect in tagsSelected) {
+                            if (tag.id == tagSelect.id) {
+                                viewModel.setTagColor(tagSelect.id, Destaque1, Destaque2)
+                                viewModel.setTagTextColor(
+                                    tagSelect.id,
+                                    Color.White,
+                                    Color.White
+                                )
+                                if (!tagsArray.contains(TagResponseId(tagSelect.id))) {
+                                    tagsArray.add(TagResponseId(tagSelect.id))
+                                }
+                            }
+                        }
+                    }
+                    items(tags) {
                         GradientButtonTag(
                             onClick = {
                                 isClicked = !isClicked

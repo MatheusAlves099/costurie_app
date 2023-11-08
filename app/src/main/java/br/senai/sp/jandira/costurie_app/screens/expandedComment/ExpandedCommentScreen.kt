@@ -46,10 +46,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.model.CommentResponse
+import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.model.AnexoResponse
+import br.senai.sp.jandira.costurie_app.model.CommentResponse
+import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
+import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.repository.CommentRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
@@ -58,7 +64,7 @@ import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
-@SuppressLint("SuspiciousIndentation")
+@SuppressLint("SuspiciousIndentation", "CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ExpandedCommentScreen(
@@ -70,6 +76,10 @@ fun ExpandedCommentScreen(
     var context = LocalContext.current
 
     val commentState = remember { mutableStateOf(emptyList<CommentResponse>()) }
+
+    var shouldUpdateComments by remember { mutableStateOf(false) }
+
+
 
     var id = localStorage.lerValor(context, "id_publicacao")
 
@@ -92,6 +102,29 @@ fun ExpandedCommentScreen(
 //                "Erro ao buscar todos os comentarios: $errorBody",
 //                Toast.LENGTH_SHORT
 //            ).show()
+        }
+    }
+
+    suspend fun deleteComment() {
+        val commentRepository = CommentRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = commentRepository.deleteComment(user.token, commentState.value[0].id)
+
+        if (response.isSuccessful) {
+            Log.e(MainActivity::class.java.simpleName, "Comentario Deletado com Sucesso!")
+            Log.e("comentário", "comentário: ${response.body()} ")
+            Toast.makeText(
+                context,
+                response.body()?.get("message").toString(),
+                Toast.LENGTH_SHORT
+            ).show()
+
+            shouldUpdateComments = true
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("DELETAR COMENTÁRIO", "Deletar um comentário: $errorBody")
         }
     }
 
@@ -249,6 +282,11 @@ fun ExpandedCommentScreen(
                                 contentDescription = "",
                                 modifier = Modifier
                                     .size(25.dp)
+                                    .clickable {
+                                        lifecycleScope.launch {
+                                            deleteComment()
+                                        }
+                                    }
                             )
                         }
                     }
@@ -260,7 +298,20 @@ fun ExpandedCommentScreen(
             onValueChange = {
                 comentarioState = it
             },
-            label = stringResource(id = R.string.label_comentarios)
+            label = stringResource(id = R.string.label_comentarios),
+            localStorage,
+            lifecycleScope,
+            onCommentCreated = {
+                shouldUpdateComments = true
+            }
         )
+
+        if (shouldUpdateComments) {
+            shouldUpdateComments = false
+            lifecycleScope.launch {
+                getCommentByPublication()
+            }
+
+        }
     }
 }

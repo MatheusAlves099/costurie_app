@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.service
 
+import br.senai.sp.jandira.costurie_app.model.BaseResponseGivePoint
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePublication
@@ -54,10 +55,10 @@ interface PublicationService {
     ): Response<JsonObject>
 
     @Headers("Content-Type: application/json")
-    @POST("/publicacao/curtir/{id}")
+    @POST("/publicacao/curtir")
     suspend fun givePoint(
         @Header("x-access-token") token: String,
-        @Path("id") id: Int
+        @Body body: JsonObject
     ): Response<GivePointResponse>
 
 }

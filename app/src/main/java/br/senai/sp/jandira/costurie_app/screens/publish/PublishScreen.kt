@@ -218,18 +218,30 @@ fun PublishScreen(
 
     }
 
-    fun urlDownload(it: String): String {
-        var url = ""
+    fun urlDownload(it: String){
 
-        storageRef
-            .putFile(Uri.parse(it))
-            .addOnCompleteListener { task ->
+        val riversRef = storageRef.child("${Uri.parse(it).lastPathSegment}-${System.currentTimeMillis()}.jpg")
+
+        var uploadTask = storageRef.putFile(Uri.parse(it))
+
+            uploadTask.addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
-
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    Log.i(
+                        "urlDown",
+                        "it: ${it}"
+                    )
+                    riversRef.downloadUrl.addOnSuccessListener { uri ->
                         val map = HashMap<String, Any>()
                         map["pic"] = uri.toString()
+                        Log.i(
+                            "urlDown",
+                            "uri: ${uri}"
+                        )
+                        Log.i(
+                            "urlDown",
+                            "it: ${it}"
+                        )
 
                         firebaseFirestore
                             .collection("images")
@@ -237,11 +249,13 @@ fun PublishScreen(
                             .addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {
 
-                                    url = uri.toString()
+                                    val anexo = AnexoResponse(uri.toString())
+                                    selectedMediaUrl.add(anexo)
                                     Log.i(
                                         "urlDown",
-                                        "fora do storage: ${url}"
+                                        "selectedMediaUrl: ${selectedMediaUrl}"
                                     )
+
                                 } else {
                                     Toast
                                         .makeText(
@@ -266,7 +280,6 @@ fun PublishScreen(
                 }
             }
 
-        return url
     }
 
     val launcher = rememberLauncherForActivityResult(
@@ -274,8 +287,8 @@ fun PublishScreen(
     ) { uri ->
         if (uri != null) {
             val anexoResponse = AnexoResponse(conteudo = uri.toString())
-            selectedMediaUrl.add(AnexoResponse(urlDownload(uri.toString())))
             selectedMediaUri += anexoResponse
+            urlDownload(uri.toString())
         }
     }
 

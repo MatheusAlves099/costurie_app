@@ -59,6 +59,7 @@ import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTags
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
+import br.senai.sp.jandira.costurie_app.components.ProgressBar
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
@@ -102,6 +103,8 @@ fun ProfileScreen(
     var id_usuario by remember {
         mutableStateOf(0)
     }
+
+    var isLoading = false
 
     var nome by remember {
         mutableStateOf("")
@@ -327,185 +330,190 @@ fun ProfileScreen(
                     }
                 }
 
-                Row(
-                    modifier = Modifier
-                        .padding(start = 16.dp, top = 20.dp)
-                        .width(320.dp),
-                    Arrangement.Start
-                ) {
-
-                    AsyncImage(
-                        model = "$fotoUri",
-                        contentDescription = "",
-                        modifier = Modifier
-                            .size(100.dp)
-                            .border(
-                                BorderStroke(borderWidth, Color.White),
-                                RoundedCornerShape(10.dp)
-                            )
-                            .padding(borderWidth)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-
-
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    Column(
-                    ) {
-                        Text(
-                            color = Color.White,
-                            text = nome,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.height(28.dp)
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Text(
-                            color = Color.White,
-                            text = nome_de_usuario,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium,
-                            modifier = Modifier.height(22.dp)
-                        )
-                        Spacer(modifier = Modifier.width(20.dp))
-                        Row {
-                            Image(
-                                painter = painterResource(id = R.drawable.icon_location),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(23.dp)
-                            )
-
-                            Text(
-                                color = Color.White,
-                                text = "$cidade, $estado",
-                                style = MaterialTheme.typography.bodySmall,
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Medium,
-                                modifier = Modifier.height(20.dp)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    WhiteButtonSmall(
-                        onClick = {
-
-                        },
-                        text = stringResource(id = R.string.botao_recomendacoes).uppercase()
-                    )
-
-                    Spacer(modifier = Modifier.width(20.dp))
-
-                    WhiteButtonSmall(
-                        onClick = {},
-                        text = stringResource(id = R.string.botao_recomendados).uppercase()
-                    )
-                }
-
-                Text(
-                    color = Contraste,
-                    text = descricao,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 25.dp),
-                    textAlign = TextAlign.Justify
-                )
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                if (viewModel.tags == null) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-
-                    }
+                if (userState.value == null) {
+                    isLoading = true
+                    ProgressBar(isDisplayed = isLoading)
                 } else {
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp, end = 12.dp),
-                        Arrangement.SpaceBetween
+                            .padding(start = 16.dp, top = 20.dp)
+                            .width(320.dp),
+                        Arrangement.Start
                     ) {
-                        viewModel.tags?.take(2)?.forEach { tag ->
-                            GradientButtonTags(
-                                onClick = {},
-                                text = tag.nome_tag,
-                                color1 = Destaque1,
-                                color2 = Destaque2,
+
+                        AsyncImage(
+                            model = "$fotoUri",
+                            contentDescription = "",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .border(
+                                    BorderStroke(borderWidth, Color.White),
+                                    RoundedCornerShape(10.dp)
+                                )
+                                .padding(borderWidth)
+                                .clip(RoundedCornerShape(10.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        Column(
+                        ) {
+                            Text(
+                                color = Color.White,
+                                text = nome,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.height(28.dp)
                             )
-                        }
-                        if ((viewModel.tags?.size ?: 0) > 1) {
-                            ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel)
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Text(
+                                color = Color.White,
+                                text = nome_de_usuario,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.height(22.dp)
+                            )
+                            Spacer(modifier = Modifier.width(20.dp))
+                            Row {
+                                Image(
+                                    painter = painterResource(id = R.drawable.icon_location),
+                                    contentDescription = "",
+                                    modifier = Modifier
+                                        .size(23.dp)
+                                )
+
+                                Text(
+                                    color = Color.White,
+                                    text = "$cidade, $estado",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    modifier = Modifier.height(20.dp)
+                                )
+                            }
                         }
                     }
-                }
-                Log.w("Lista Publicacao", "Lista Publicacao FORA: $publicationList ", )
-                //Log.w("Lista Usuario", "Lista Publicacao FORA: ${userState.value?.usuario!!.publicacao} ", )
-                Spacer(modifier = Modifier.height(10.dp))
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(3),
-                    modifier = Modifier
-                        .padding(2.dp),
-                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    items(publicationList) { publicacao ->
 
-                        Log.w("Lista Publicacao", "Lista Publicacao DENTRO: $publicationList ", )
-                        Card(
+                    Spacer(modifier = Modifier.height(40.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        WhiteButtonSmall(
+                            onClick = {
+
+                            },
+                            text = stringResource(id = R.string.botao_recomendacoes).uppercase()
+                        )
+
+                        Spacer(modifier = Modifier.width(20.dp))
+
+                        WhiteButtonSmall(
+                            onClick = {},
+                            text = stringResource(id = R.string.botao_recomendados).uppercase()
+                        )
+                    }
+
+                    Text(
+                        color = Contraste,
+                        text = descricao,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 25.dp),
+                        textAlign = TextAlign.Justify
+                    )
+
+                    Spacer(modifier = Modifier.height(15.dp))
+
+                    if (viewModel.tags == null) {
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+                        }
+                    } else {
+                        Row(
                             modifier = Modifier
-                                .width(95.dp)
-                                .height(120.dp)
-                                .padding(start = 12.dp, 2.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .clickable {
-                                    localStorage.salvarValor(
-                                        context,
-                                        publicacao.id.toString(),
-                                        "id_publicacao"
-                                    )
-                                    navController.navigate("expandedPublication")
-                                },
-                            backgroundColor = Color.White,
-                            elevation = 20.dp
+                                .fillMaxWidth()
+                                .padding(start = 12.dp, end = 12.dp),
+                            Arrangement.SpaceBetween
                         ) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Top
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(145.dp)
-                                        .fillMaxWidth()
-                                        .background(
-                                            Color(168, 155, 255, 102),
-                                            shape = RoundedCornerShape(16.dp)
-                                        )
-                                ) {
-                                    AsyncImage(
-                                        model = publicacao.anexos[0].anexo,
-                                        contentDescription = "",
-                                        modifier = Modifier
-                                            .size(105.dp, 110.dp)
-                                            .clip(shape = RoundedCornerShape(10.dp)),
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
+                            viewModel.tags?.take(2)?.forEach { tag ->
+                                GradientButtonTags(
+                                    onClick = {},
+                                    text = tag.nome_tag,
+                                    color1 = Destaque1,
+                                    color2 = Destaque2,
+                                )
+                            }
+                            if ((viewModel.tags?.size ?: 0) > 1) {
+                                ModalTags2(color1 = Destaque1, color2 = Destaque2, viewModel)
+                            }
+                        }
+                    }
+                    Log.w("Lista Publicacao", "Lista Publicacao FORA: $publicationList ")
+                    //Log.w("Lista Usuario", "Lista Publicacao FORA: ${userState.value?.usuario!!.publicacao} ", )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(3),
+                        modifier = Modifier
+                            .padding(2.dp),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        items(publicationList) { publicacao ->
 
+                            Log.w("Lista Publicacao", "Lista Publicacao DENTRO: $publicationList ")
+                            Card(
+                                modifier = Modifier
+                                    .width(95.dp)
+                                    .height(120.dp)
+                                    .padding(start = 12.dp, 2.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        localStorage.salvarValor(
+                                            context,
+                                            publicacao.id.toString(),
+                                            "id_publicacao"
+                                        )
+                                        navController.navigate("expandedPublication")
+                                    },
+                                backgroundColor = Color.White,
+                                elevation = 20.dp
+                            ) {
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Top
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .height(145.dp)
+                                            .fillMaxWidth()
+                                            .background(
+                                                Color(168, 155, 255, 102),
+                                                shape = RoundedCornerShape(16.dp)
+                                            )
+                                    ) {
+                                        AsyncImage(
+                                            model = publicacao.anexos[0].anexo,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .size(105.dp, 110.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+
+                                }
                             }
                         }
                     }

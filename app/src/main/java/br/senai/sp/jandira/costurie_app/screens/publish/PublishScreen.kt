@@ -47,6 +47,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -467,6 +468,7 @@ fun PublishScreen(
                     .fillMaxWidth()
                     .height(62.dp)
                     .padding(horizontal = 35.dp)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
             )
 
             Spacer(modifier = Modifier.height(15.dp))
@@ -482,6 +484,7 @@ fun PublishScreen(
                     .fillMaxWidth()
                     .height(90.dp)
                     .padding(horizontal = 35.dp)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -545,7 +548,7 @@ fun PublishScreen(
                                     }
                                 }
 
-                                Log.e("it.nome", "mometag: ${it.nome_tag}")
+                                Log.e("it.nome", "nometag: ${it.nome_tag}")
                                 Log.e("it.id", "id: ${it.id}")
                                 Log.e("array", "array: $tagsArray")
                             },

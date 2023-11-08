@@ -33,4 +33,9 @@ class CommentRepository {
 
         return apiService.createComment(requestBody, token)
     }
+
+    suspend fun deleteComment(token: String, id: Int): Response<JsonObject> {
+        return apiService.deleteComment(token, id)
+    }
+
 }

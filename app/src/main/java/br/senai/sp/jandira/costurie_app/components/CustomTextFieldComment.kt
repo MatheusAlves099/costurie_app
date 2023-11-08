@@ -39,9 +39,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
@@ -49,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -72,23 +76,23 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CustomOutlinedTextFieldComment(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = "",
     localStorage: Storage,
-    lifecycleScope: LifecycleCoroutineScope
+    lifecycleScope: LifecycleCoroutineScope,
+    onCommentCreated: () -> Unit
 ) {
     var context = LocalContext.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     fun createComment(
-        id_usuario: Int,
-        token: String,
-        id_publicacao: Int,
         mensagem: String
     ) {
         val commentRepository = CommentRepository()
@@ -112,6 +116,7 @@ fun CustomOutlinedTextFieldComment(
                 Log.e(MainActivity::class.java.simpleName, "Comentário Feito com Sucesso!")
                 Log.e("comentario", "comentario: ${response.body()} ")
 
+                onCommentCreated()
                 //navController.navigate("home")
 
             } else {
@@ -149,12 +154,12 @@ fun CustomOutlinedTextFieldComment(
         modifier = Modifier
             .fillMaxWidth()
             .border(
-            BorderStroke(
-                width = 2.dp,
-                brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
+                BorderStroke(
+                    width = 2.dp,
+                    brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
+                ),
+                shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
             ),
-            shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
-        ),
         trailingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.send_icon),
@@ -162,7 +167,9 @@ fun CustomOutlinedTextFieldComment(
                 modifier = Modifier
                     .size(30.dp)
                     .clickable {
-                               createComment()
+                        createComment(value)
+                        keyboardController?.hide()
+
                     },
                 tint = Destaque2
             )

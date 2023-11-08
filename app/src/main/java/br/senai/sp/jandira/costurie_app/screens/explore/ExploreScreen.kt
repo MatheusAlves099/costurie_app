@@ -43,6 +43,7 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
+import br.senai.sp.jandira.costurie_app.components.ProgressBar
 import br.senai.sp.jandira.costurie_app.model.BaseResponsePopularPublication
 import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
@@ -53,13 +54,16 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import coil.compose.AsyncImage
 
 @Composable
-fun ExploreScreen(navController: NavController,  localStorage: Storage) {
+fun ExploreScreen(navController: NavController, localStorage: Storage) {
 
     var context = LocalContext.current
 
+    var isLoading = false
+
     val publicationsState = remember { mutableStateOf(emptyList<PublicationGetResponse>()) }
 
-    val publicationsPopularState = remember { mutableStateOf(emptyList<PopularPublicationResponse>()) }
+    val publicationsPopularState =
+        remember { mutableStateOf(emptyList<PopularPublicationResponse>()) }
 
     suspend fun getAllPublications() {
         val publicationRepository = PublicationRepository()
@@ -152,79 +156,83 @@ fun ExploreScreen(navController: NavController,  localStorage: Storage) {
                     fontWeight = FontWeight.SemiBold
                 )
 
-                LazyRow(
-                ) {
-                    items(publicationsPopularState.value) { publication ->
-                        var shortDesc = publication.descricao
-                        var titleList = publication.titulo.split(" ")
-                        var shortTitle = ""
+                if (publicationsPopularState.value.isEmpty()) {
+                    isLoading = true
+                    ProgressBar(isDisplayed = isLoading)
+                } else {
+                    LazyRow {
+                        items(publicationsPopularState.value) { publication ->
+                            var shortDesc = publication.descricao
+                            var titleList = publication.titulo.split(" ")
+                            var shortTitle = ""
 
-                        if (shortDesc.length > 30) {
-                            shortDesc = shortDesc.substring(0, 30).plus("...")
-                        }
-                        titleList.forEach { string ->
-                            if (titleList.indexOf(string) < 4) {
-                                shortTitle += "$string "
-                            } else if (titleList.indexOf(string) == 4) {
-                                shortTitle += "..."
+                            if (shortDesc.length > 30) {
+                                shortDesc = shortDesc.substring(0, 30).plus("...")
                             }
-                        }
-                        Card(
-                            modifier = Modifier
-                                .width(190.dp)
-                                .height(230.dp)
-                                .padding(start = 32.dp)
-                                .clip(RoundedCornerShape(16.dp))
-                                .clickable {
-                                    localStorage.salvarValor(
-                                        context,
-                                        publication.id.toString(),
-                                        "id_publicacao"
-                                    )
-                                    navController.navigate("expandedPublication")
-                                },
-                        ) {
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Top
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(145.dp)
-                                        .fillMaxWidth()
-                                        .background(
-                                            Color(168, 155, 255, 102),
-                                            shape = RoundedCornerShape(16.dp)
-                                        )
-                                ) {
-                                    AsyncImage(
-                                        model = publication.anexos[0].anexo,
-                                        contentDescription = "",
-                                        modifier = Modifier
-                                            .size(150.dp, 140.dp)
-                                            .clip(shape = RoundedCornerShape(10.dp)),
-                                        contentScale = ContentScale.Crop
-                                    )
+                            titleList.forEach { string ->
+                                if (titleList.indexOf(string) < 4) {
+                                    shortTitle += "$string "
+                                } else if (titleList.indexOf(string) == 4) {
+                                    shortTitle += "..."
                                 }
+                            }
+                            Card(
+                                modifier = Modifier
+                                    .width(190.dp)
+                                    .height(230.dp)
+                                    .padding(start = 32.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable {
+                                        localStorage.salvarValor(
+                                            context,
+                                            publication.id.toString(),
+                                            "id_publicacao"
+                                        )
+                                        navController.navigate("expandedPublication")
+                                    },
+                            ) {
                                 Column(
-                                    modifier = Modifier
-                                        .padding(8.dp)
-                                        .fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start,
+                                    modifier = Modifier.fillMaxSize(),
                                     verticalArrangement = Arrangement.Top
                                 ) {
-                                    Text(
-                                        text = shortTitle,
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Contraste
-                                    )
-                                    Text(
-                                        text = shortDesc,
-                                        fontSize = 10.sp,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = Color.Gray
-                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .height(145.dp)
+                                            .fillMaxWidth()
+                                            .background(
+                                                Color(168, 155, 255, 102),
+                                                shape = RoundedCornerShape(16.dp)
+                                            )
+                                    ) {
+                                        AsyncImage(
+                                            model = publication.anexos[0].anexo,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .size(150.dp, 140.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(8.dp)
+                                            .fillMaxWidth(),
+                                        horizontalAlignment = Alignment.Start,
+                                        verticalArrangement = Arrangement.Top
+                                    ) {
+                                        Text(
+                                            text = shortTitle,
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Contraste
+                                        )
+                                        Text(
+                                            text = shortDesc,
+                                            fontSize = 10.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                            color = Color.Gray
+                                        )
+                                    }
                                 }
                             }
                         }

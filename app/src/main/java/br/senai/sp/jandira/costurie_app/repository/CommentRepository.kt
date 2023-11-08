@@ -3,6 +3,7 @@ package br.senai.sp.jandira.costurie_app.repository
 import br.senai.sp.jandira.costurie_app.model.BaseCommentResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseComment
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
+import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyComment
 import br.senai.sp.jandira.costurie_app.model.GivePointResponse
 import br.senai.sp.jandira.costurie_app.service.CommentService
 import br.senai.sp.jandira.costurie_app.service.RetrofitFactory
@@ -36,6 +37,21 @@ class CommentRepository {
 
     suspend fun deleteComment(token: String, id: Int): Response<JsonObject> {
         return apiService.deleteComment(token, id)
+    }
+
+    suspend fun postReplyComment(
+        token: String,
+        id_usuario: Int,
+        id_comentario: Int,
+        mensagem: String
+    ): Response<BaseResponseReplyComment> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_usuario", id_usuario)
+            addProperty("id_comentario", id_comentario)
+            addProperty("mensagem", mensagem)
+        }
+
+        return apiService.createReplyComment(requestBody, token)
     }
 
 }

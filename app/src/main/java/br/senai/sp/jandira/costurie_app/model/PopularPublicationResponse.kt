@@ -9,7 +9,6 @@ data class PopularPublicationResponse(
     @SerializedName("data_publicacao") var data_publicacao: String = "",
     @SerializedName("hora") var hora: String = "",
     @SerializedName("id_usuario") var id_usuario: Int = 0,
-    @SerializedName("curtidas") var curtidas: Any = 0,
     @SerializedName("anexos") var anexos: List<AnexoGetResponse> = mutableListOf(),
 
 )

@@ -265,15 +265,10 @@ fun PublishScreen(
                                         )
                                         .show()
                                 }
-                                //BARRA DE PROGRESSO DO UPLOAD
                             }
                     }
 
-
                 } else {
-
-
-
                     Toast
                         .makeText(
                             context,
@@ -283,10 +278,6 @@ fun PublishScreen(
                         .show()
 
                 }
-
-
-                //BARRA DE PROGRESSO DO UPLOAD
-
             }
 
     }
@@ -355,8 +346,6 @@ fun PublishScreen(
                                     tags = tagsArray
                                 )
                             }
-
-
                         }
                 )
             }
@@ -563,8 +552,6 @@ fun PublishScreen(
                 }
             }
         }
-
-
     }
 }
 

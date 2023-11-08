@@ -4,25 +4,22 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,20 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
-import br.senai.sp.jandira.costurie_app.Storage
-import br.senai.sp.jandira.costurie_app.components.ButtonSettings
-import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
-import br.senai.sp.jandira.costurie_app.components.ModalFilter
-import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
-import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
-import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
+import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
+import br.senai.sp.jandira.costurie_app.model.MessageResponse
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
+import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
-import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
-import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
-import coil.compose.AsyncImage
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
@@ -59,6 +49,8 @@ fun ChatScreen(
     lifecycleScope: LifecycleCoroutineScope,
 ) {
     var context = LocalContext.current
+
+    var messageState = remember { mutableStateOf(emptyList<MessageResponse>()) }
 
     Costurie_appTheme {
         Surface(
@@ -84,7 +76,6 @@ fun ChatScreen(
                         modifier = Modifier
                             .width(370.dp)
                             .padding(top = 15.dp, start = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
@@ -114,37 +105,111 @@ fun ChatScreen(
                             )
                         }
                         Column {
+                            Text(
+                                text = "Beltrana da Silva Santos",
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .width(250.dp)
+                                    .height(20.dp),
+                                fontSize = 15.sp,
+                                color = Principal1
+                            )
 
+                            Text(
+                                text = "Online",
+                                textAlign = TextAlign.Start,
+                                modifier = Modifier
+                                    .padding(start = 5.dp)
+                                    .width(250.dp),
+                                fontSize = 12.sp,
+                                color = Color(252, 246, 255, 179)
+                            )
                         }
                     }
                 }
 
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.SpaceBetween
+                Column (
+                    modifier = Modifier.height(644.dp)
                 ) {
+                    Row (
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 20.dp, start = 310.dp)
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .size(80.dp, 35.dp),
+                            backgroundColor = Destaque2,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                                Column {
+                                    Text(
+                                        text = "Teste",
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .padding(start = 10.dp)
+                                            .width(250.dp)
+                                            .height(20.dp),
+                                        fontSize = 14.sp,
+                                        color = Principal1
+                                    )
 
-                    Spacer(modifier = Modifier.height(35.dp))
+                                    Text(
+                                        text = "15:20",
+                                        textAlign = TextAlign.End,
+                                        modifier = Modifier
+                                            .padding(end = 3.dp)
+                                            .width(250.dp),
+                                        fontSize = 8.sp,
+                                        color = Principal1
+                                    )
+                                }
+                        }
+                    }
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Row (
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(top = 10.dp, start = 16.dp)
+                    ) {
+                        Card(
+                            modifier = Modifier
+                                .size(80.dp, 35.dp),
+                            backgroundColor = Contraste,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Teste",
+                                    textAlign = TextAlign.Start,
+                                    modifier = Modifier
+                                        .padding(start = 10.dp)
+                                        .width(250.dp)
+                                        .height(20.dp),
+                                    fontSize = 14.sp,
+                                    color = Principal1
+                                )
 
-                    ButtonSettings(
-                        onClick = { navController.navigate("changeEmail") }, text = stringResource(id = R.string.text_change_email).uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(50.dp))
-
-                    ButtonSettings(
-                        onClick = { navController.navigate("changePassword") }, text = "Alterar senha".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(50.dp))
+                                Text(
+                                    text = "15:20",
+                                    textAlign = TextAlign.End,
+                                    modifier = Modifier
+                                        .padding(end = 3.dp)
+                                        .width(250.dp),
+                                    fontSize = 8.sp,
+                                    color = Principal1
+                                )
+                            }
+                        }
+                    }
                 }
+
+                CustomOutlinedTextFieldComment(
+                    value = "",
+                    onValueChange = {
+
+                    },
+                    label = stringResource(id = R.string.text_outlined_chat)
+                )
             }
         }
     }

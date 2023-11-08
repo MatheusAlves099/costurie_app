@@ -2,6 +2,7 @@ package br.senai.sp.jandira.costurie_app.service
 
 import br.senai.sp.jandira.costurie_app.model.BaseCommentResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseComment
+import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyComment
 import br.senai.sp.jandira.costurie_app.model.PublicationResponse
 import com.google.gson.JsonObject
 import retrofit2.Response
@@ -34,5 +35,12 @@ interface CommentService {
         @Header("x-access-token") token: String,
         @Path("id") id: Int
     ): Response<JsonObject>
+
+    @Headers("Content-Type: application/json")
+    @POST("/respostas_comentario/inserir")
+    suspend fun createReplyComment(
+        @Body body: JsonObject,
+        @Header("x-access-token") token: String
+    ): Response<BaseResponseReplyComment>
 
 }

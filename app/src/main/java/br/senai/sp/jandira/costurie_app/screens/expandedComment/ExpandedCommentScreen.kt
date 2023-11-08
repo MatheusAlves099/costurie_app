@@ -303,8 +303,12 @@ fun ExpandedCommentScreen(
             lifecycleScope,
             onCommentCreated = {
                 shouldUpdateComments = true
+            },
+            onReplyCommentCreated = {
+                Log.e("teste", "teste: teste", )
             }
         )
+
 
         if (shouldUpdateComments) {
             shouldUpdateComments = false

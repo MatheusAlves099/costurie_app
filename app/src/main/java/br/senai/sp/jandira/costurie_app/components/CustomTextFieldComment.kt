@@ -58,7 +58,8 @@ fun CustomOutlinedTextFieldComment(
     label: String = "",
     localStorage: Storage,
     lifecycleScope: LifecycleCoroutineScope,
-    onCommentCreated: () -> Unit
+    onCommentCreated: () -> Unit,
+    onReplyCommentCreated: () -> Unit
 ) {
     var context = LocalContext.current
 
@@ -120,6 +121,70 @@ fun CustomOutlinedTextFieldComment(
 
     }
 
+    fun createReplyComment(
+        mensagem: String
+    ) {
+        val commentRepository = CommentRepository()
+        lifecycleScope.launch {
+            val array = UserRepositorySqlite(context).findUsers()
+
+            val user = array[0]
+
+            val response = commentRepository.postReplyComment(
+                user.token,
+                id!!.toInt(),
+                user.id.toInt(),
+                mensagem
+            )
+
+            Log.e("RESPOSTA COMENTARIO0", "user: $response")
+            Log.i("RESPOSTA COMENTARIO1", "user: ${response.body()}")
+
+            if (response.isSuccessful) {
+
+                Log.e(MainActivity::class.java.simpleName, "Resposta de Comentário Feito com Sucesso!")
+                Log.e("RespostaComentario", "comentario: ${response.body()} ")
+
+                onCommentCreated()
+                //navController.navigate("home")
+
+            } else {
+                val errorBody = response.errorBody()?.string()
+
+                Log.e(
+                        MainActivity::class.java.simpleName,
+                        "Erro durante inserir uma resposta de comentario: $errorBody"
+                    )
+                    Toast.makeText(
+                        context,
+                        "Erro durante inserir uma resposta de comentario",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                val checagem = response.body()
+//                if (checagem?.comentario[0].mensagem == "") {
+//                    Toast.makeText(
+//                        context,
+//                        "Campos obrigatórios não foram preenchidos.",
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                } else {
+//                    Log.e(
+//                        MainActivity::class.java.simpleName,
+//                        "Erro durante inserir um comentario: $errorBody"
+//                    )
+//                    Toast.makeText(
+//                        context,
+//                        "Erro durante inserir um comentario",
+//                        Toast.LENGTH_SHORT
+//                    )
+//                        .show()
+//                }
+            }
+        }
+
+    }
+
     TextField(
         value = value,
         onValueChange = {
@@ -142,9 +207,9 @@ fun CustomOutlinedTextFieldComment(
                 modifier = Modifier
                     .size(30.dp)
                     .clickable {
-                        createComment(value)
-                        keyboardController?.hide()
-
+//                        createComment(value)
+//                        keyboardController?.hide()
+                            onReplyCommentCreated()
                     },
                 tint = Destaque2
             )

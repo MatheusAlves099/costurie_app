@@ -109,7 +109,7 @@ fun PublishScreen(
     }
 
     //REFERENCIA PARA ACESSO E MANiPULACAO DO CLOUD STORAGE
-    val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("test")
+    val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("teste")
 
     //REFERENCIA PARA ACESSO E MANIPULACAO DO CLOUD FIRESTORE
     val firebaseFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -218,8 +218,11 @@ fun PublishScreen(
 
     }
     fun urlDownload(it: String){
-            storageRef.child("${it}")
-                .putFile(Uri.parse(it))
+
+        val riversRef = storageRef.child("${System.currentTimeMillis()}")
+        val uploadTask = riversRef.putFile(Uri.parse(it))
+
+            uploadTask
                 .addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
@@ -240,7 +243,7 @@ fun PublishScreen(
                         )
 
                         firebaseFirestore
-                            .collection("marcelo")
+                            .collection("images")
                             .add(map)
                             .addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {

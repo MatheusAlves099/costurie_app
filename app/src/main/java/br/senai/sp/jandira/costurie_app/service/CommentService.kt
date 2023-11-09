@@ -3,6 +3,7 @@ package br.senai.sp.jandira.costurie_app.service
 import br.senai.sp.jandira.costurie_app.model.BaseCommentResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseComment
 import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyComment
+import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyCommentGet
 import br.senai.sp.jandira.costurie_app.model.PublicationResponse
 import com.google.gson.JsonObject
 import retrofit2.Response
@@ -21,6 +22,7 @@ interface CommentService {
         @Path("id") id: Int,
         @Header("x-access-token") token: String
     ): Response<BaseCommentResponse>
+
 
     @Headers("Content-Type: application/json")
     @POST("/comentario/inserir")
@@ -43,4 +45,9 @@ interface CommentService {
         @Header("x-access-token") token: String
     ): Response<BaseResponseReplyComment>
 
+    @GET("/respostas_comentario/{id}")
+    suspend fun getReplyComment(
+        @Path("id") id: Int,
+        @Header("x-access-token") token: String
+    ): Response<BaseResponseReplyCommentGet>
 }

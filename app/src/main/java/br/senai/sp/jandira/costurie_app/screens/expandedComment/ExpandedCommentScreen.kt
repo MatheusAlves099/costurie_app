@@ -34,11 +34,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +54,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.model.CommentResponse
+import br.senai.sp.jandira.costurie_app.model.ReplyCommentGetResponse
 import br.senai.sp.jandira.costurie_app.repository.CommentRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
@@ -61,7 +64,7 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ExpandedCommentScreen(
     navController: NavController,
@@ -73,9 +76,13 @@ fun ExpandedCommentScreen(
 
     val commentState = remember { mutableStateOf(emptyList<CommentResponse>()) }
 
+    val replyCommentState = remember { mutableStateOf(emptyList<ReplyCommentGetResponse>()) }
+
     var shouldUpdateComments by remember { mutableStateOf(false) }
 
+    var isReplyMode by remember { mutableStateOf(false) }
 
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
 
@@ -90,6 +97,9 @@ fun ExpandedCommentScreen(
             val comments = response.body()?.comentarios ?: emptyList()
             commentState.value = comments
             Log.i("comentatios", "getCommentByPublication: ${comments}")
+
+            val id_comentario = localStorage.salvarValor(context, commentState.value[0].id.toString(), "id_comentario")
+
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("TODOS OS COMENTARIOS", "Erro: $errorBody")
@@ -100,6 +110,8 @@ fun ExpandedCommentScreen(
 //            ).show()
         }
     }
+
+    val comment = localStorage.lerValor(context, "id_comentario")
 
     suspend fun deleteComment() {
         val commentRepository = CommentRepository()
@@ -124,12 +136,38 @@ fun ExpandedCommentScreen(
         }
     }
 
+    suspend fun getReplyComment() {
+        val commentRepository = CommentRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = commentRepository.getReplyComment(user.token, comment!!.toInt())
+
+        if (response.isSuccessful) {
+            val replyComments = response.body()?.resposta ?: emptyList()
+            replyCommentState.value = replyComments
+            Log.i("repostasComentario", "getReplyComment: ${replyComments}")
+
+            localStorage.salvarValor(context, commentState.value[0].id.toString(), "id_comentario")
+
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("TODAS AS RESPOSTAS DE COMENTARIOS", "Erro: $errorBody")
+//            Toast.makeText(
+//                context,
+//                "Erro ao buscar todos os comentarios: $errorBody",
+//                Toast.LENGTH_SHORT
+//            ).show()
+        }
+    }
+
     LaunchedEffect(key1 = true) {
         val array = UserRepositorySqlite(context).findUsers()
 
         val user = array[0]
 
         getCommentByPublication()
+        getReplyComment()
 
         Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
     }
@@ -205,87 +243,225 @@ fun ExpandedCommentScreen(
                     .height(630.dp)
             ) {
                 items(commentState.value) {
-                    Card(
-                        modifier = Modifier
-                            .size(380.dp, 85.dp)
-                            .padding(start = 25.dp, top = 4.dp, bottom = 4.dp)
-                            .clickable {
-                            },
-                        backgroundColor = Color.White,
-                        shape = RoundedCornerShape(15.dp),
-                        elevation = AppBarDefaults.TopAppBarElevation
-                    ) {
-                        Row(
+                    if(replyCommentState.value.isEmpty()){
+                        Card(
                             modifier = Modifier
-                                .width(300.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
+                                .size(380.dp, 85.dp)
+                                .padding(start = 25.dp, top = 4.dp, bottom = 4.dp)
+                                .clickable {
+                                },
+                            backgroundColor = Color.White,
+                            shape = RoundedCornerShape(15.dp),
+                            elevation = AppBarDefaults.TopAppBarElevation
                         ) {
-                            Box(
+                            Row(
                                 modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(shape = RoundedCornerShape(10.dp))
-                                    .background(Color(168, 155, 255, 102))
+                                    .width(300.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                AsyncImage(
-                                    model = it.usuario.foto,
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(shape = RoundedCornerShape(10.dp))
+                                        .background(Color(168, 155, 255, 102))
+                                ) {
+                                    AsyncImage(
+                                        model = it.usuario.foto,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(bottom = 5.dp, end = 2.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
+                                Column {
+                                    Text(
+                                        text = it.usuario.nome_de_usuario,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+
+                                    Text(
+                                        text = it.mensagem,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste
+                                    )
+
+                                    Text(
+                                        text = "Responder",
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(25.dp)
+                                            .clickable {
+                                                keyboardController?.show()
+                                                isReplyMode = true
+                                            },
+                                        fontSize = 10.sp,
+                                        color = Color.Gray
+                                    )
+                                }
+
+                                Image(
+                                    painter = painterResource(id = R.drawable.trash_icon_purple),
                                     contentDescription = "",
                                     modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = 5.dp, end = 2.dp)
-                                        .clip(shape = RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-                            }
-
-                            Column {
-                                Text(
-                                    text = it.usuario.nome_de_usuario,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(250.dp)
-                                        .height(18.dp),
-                                    fontSize = 12.sp,
-                                    color = Contraste,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-
-                                Text(
-                                    text = it.mensagem,
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(250.dp)
-                                        .height(18.dp),
-                                    fontSize = 12.sp,
-                                    color = Contraste
-                                )
-
-                                Text(
-                                    text = "Responder",
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(250.dp)
-                                        .height(25.dp)
+                                        .size(25.dp)
                                         .clickable {
-                                        },
-                                    fontSize = 10.sp,
-                                    color = Color.Gray
+                                            lifecycleScope.launch {
+                                                deleteComment()
+                                            }
+                                        }
                                 )
                             }
-
-                            Image(
-                                painter = painterResource(id = R.drawable.trash_icon_purple),
-                                contentDescription = "",
+                        }
+                    } else if (
+                        commentState.value[0].id == replyCommentState.value[0].id_comentario
+                    ){
+                        Card(
+                            modifier = Modifier
+                                .size(380.dp, 170.dp)
+                                .padding(start = 25.dp, top = 4.dp, bottom = 4.dp)
+                                .clickable {
+                                },
+                            backgroundColor = Color.White,
+                            shape = RoundedCornerShape(15.dp),
+                            elevation = AppBarDefaults.TopAppBarElevation
+                        ) {
+                            Row(
                                 modifier = Modifier
-                                    .size(25.dp)
-                                    .clickable {
-                                        lifecycleScope.launch {
-                                            deleteComment()
-                                        }
-                                    }
-                            )
+                                    .width(300.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(shape = RoundedCornerShape(10.dp))
+                                        .background(Color(168, 155, 255, 102))
+                                ) {
+                                    AsyncImage(
+                                        model = it.usuario.foto,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(bottom = 5.dp, end = 2.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
+                                Column {
+                                    Text(
+                                        text = it.usuario.nome_de_usuario,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+
+                                    Text(
+                                        text = it.mensagem,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste
+                                    )
+
+//                                    Text(
+//                                        text = "Responder",
+//                                        textAlign = TextAlign.Start,
+//                                        modifier = Modifier
+//                                            .width(250.dp)
+//                                            .height(25.dp)
+//                                            .clickable {
+//                                                keyboardController?.show()
+//                                                isReplyMode = true
+//                                            },
+//                                        fontSize = 10.sp,
+//                                        color = Color.Gray
+//                                    )
+                                }
+
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.trash_icon_purple),
+//                                    contentDescription = "",
+//                                    modifier = Modifier
+//                                        .size(25.dp)
+//                                        .clickable {
+//                                            lifecycleScope.launch {
+//                                                deleteComment()
+//                                            }
+//                                        }
+//                                )
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .width(300.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(60.dp)
+                                        .clip(shape = RoundedCornerShape(10.dp))
+                                        .background(Color(168, 155, 255, 102))
+                                ) {
+                                    AsyncImage(
+                                        model = replyCommentState.value[0].usuario.foto,
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(bottom = 5.dp, end = 2.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp)),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+
+                                Column {
+                                    Text(
+                                        text = replyCommentState.value[0].usuario.nome_de_usuario,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+
+                                    Text(
+                                        text = replyCommentState.value[0].mensagem,
+                                        textAlign = TextAlign.Start,
+                                        modifier = Modifier
+                                            .width(250.dp)
+                                            .height(18.dp),
+                                        fontSize = 12.sp,
+                                        color = Contraste
+                                    )
+                                }
+
+                            }
                         }
                     }
+
                 }
             }
         }
@@ -300,9 +476,7 @@ fun ExpandedCommentScreen(
             onCommentCreated = {
                 shouldUpdateComments = true
             },
-            onReplyCommentCreated = {
-                Log.e("teste", "teste: teste", )
-            }
+            isReplyMode = isReplyMode
         )
 
 

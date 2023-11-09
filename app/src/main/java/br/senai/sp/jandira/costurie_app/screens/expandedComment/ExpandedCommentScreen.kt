@@ -2,6 +2,7 @@ package br.senai.sp.jandira.costurie_app.screens.expandedComment
 
 import android.annotation.SuppressLint
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,11 +52,6 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
 import br.senai.sp.jandira.costurie_app.model.CommentResponse
-import br.senai.sp.jandira.costurie_app.components.GradientButton
-import br.senai.sp.jandira.costurie_app.model.AnexoResponse
-import br.senai.sp.jandira.costurie_app.model.CommentResponse
-import br.senai.sp.jandira.costurie_app.model.PopularPublicationResponse
-import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.repository.CommentRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste

@@ -203,13 +203,13 @@ fun ChatScreen(
                     }
                 }
 
-                CustomOutlinedTextFieldComment(
-                    value = "",
-                    onValueChange = {
-
-                    },
-                    label = stringResource(id = R.string.text_outlined_chat)
-                )
+//                CustomOutlinedTextFieldComment(
+//                    value = "",
+//                    onValueChange = {
+//
+//                    },
+//                    label = stringResource(id = R.string.text_outlined_chat)
+//                )
             }
         }
     }

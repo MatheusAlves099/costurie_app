@@ -91,4 +91,43 @@ class PublicationRepository {
 
         return apiService.givePoint(token, requestBody)
     }
+
+    suspend fun updatePublication(
+        id_publicacao: Int,
+        id_usuario: Int,
+        token: String,
+        titulo: String,
+        descricao: String,
+        tags: MutableList<TagResponseId>,
+        anexos: List<AnexoResponse>
+    ): Response<JsonObject> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_publicacao", id_publicacao)
+            addProperty("id_usuario", id_usuario)
+            addProperty("titulo", titulo)
+            addProperty("descricao", descricao)
+            val tagsArray = JsonArray()
+            if (tags != null) {
+                for (tag in tags) {
+                    val tagObject = JsonObject().apply {
+                        addProperty("id_tag", tag.id)
+                    }
+                    tagsArray.add(tagObject)
+                }
+            }
+            add("tags", tagsArray)
+            val anexosArray = JsonArray()
+            if (anexos != null) {
+                for (anexo in anexos) {
+                    val anexoObject = JsonObject().apply {
+                        addProperty("conteudo", anexo.conteudo)
+                    }
+                    anexosArray.add(anexoObject)
+                }
+            }
+            add("anexos", anexosArray)
+        }
+
+        return apiService.updatePublication(token, requestBody)
+    }
 }

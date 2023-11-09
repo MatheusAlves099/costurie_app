@@ -17,6 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface PublicationService {
@@ -60,5 +61,12 @@ interface PublicationService {
         @Header("x-access-token") token: String,
         @Body body: JsonObject
     ): Response<GivePointResponse>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/publicacao/editar_publicacao")
+    suspend fun updatePublication(
+        @Header("x-access-token") token: String,
+        @Body body: JsonObject
+    ): Response<JsonObject>
 
 }

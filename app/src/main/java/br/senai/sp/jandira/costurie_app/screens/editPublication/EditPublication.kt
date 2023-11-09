@@ -121,8 +121,72 @@ fun EditPublicationScreen(
     var anexo by remember {
         mutableStateOf(AnexoResponse(""))
     }
-    var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoGetResponse>()) }
+
     var selectedMediaUrl by remember { mutableStateOf(arrayListOf<AnexoResponse>()) }
+    var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoGetResponse>()) }
+
+//    fun urlDownload(it: String) {
+//        storageRef.child("${it}")
+//            .putFile(Uri.parse(it))
+//            .addOnCompleteListener { task ->
+//
+//                if (task.isSuccessful) {
+//                    Log.i(
+//                        "urlDown",
+//                        "it: ${it}"
+//                    )
+//                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+//                        val map = HashMap<String, Any>()
+//                        map["pic"] = uri.toString()
+//                        Log.i(
+//                            "urlDown",
+//                            "uri: ${uri}"
+//                        )
+//                        Log.i(
+//                            "urlDown",
+//                            "it: ${it}"
+//                        )
+//
+//                        firebaseFirestore
+//                            .collection("marcelo")
+//                            .add(map)
+//                            .addOnCompleteListener { firestoreTask ->
+//                                if (firestoreTask.isSuccessful) {
+//
+//                                    val anexo = AnexoResponse(uri.toString())
+//                                    selectedMediaUrl.add(anexo)
+//                                    Log.i(
+//                                        "urlDown",
+//                                        "selectedMediaUrl: $selectedMediaUrl"
+//                                    )
+//
+//                                } else {
+//                                    Toast
+//                                        .makeText(
+//                                            context,
+//                                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+//                                            Toast.LENGTH_SHORT
+//                                        )
+//                                        .show()
+//                                }
+//                            }
+//                    }
+//
+//                } else {
+//                    Toast
+//                        .makeText(
+//                            context,
+//                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+//                            Toast.LENGTH_SHORT
+//                        )
+//                        .show()
+//
+//                }
+//            }
+//
+//    }
+
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -130,6 +194,7 @@ fun EditPublicationScreen(
             val anexoResponse = AnexoGetResponse(anexo = uri.toString())
 //            selectedMedia = selectedMedia + anexoResponse
             selectedMediaUri += anexoResponse
+            //urlDownload(uri.toString())
         }
     }
 
@@ -223,12 +288,65 @@ fun EditPublicationScreen(
         }
     }
 
+    fun updatePublication(
+        titulo: String,
+        descricao: String,
+        tags: MutableList<TagResponseId>,
+        anexos: List<AnexoResponse>
+    ) {
+        val publicationRepository = PublicationRepository()
+        lifecycleScope.launch {
+            val array = UserRepositorySqlite(context).findUsers()
+
+            val user = array[0]
+
+            val response = publicationRepository.updatePublication(
+                id!!.toInt(),
+                user.id.toInt(),
+                user.token,
+                titulo,
+                descricao,
+                tags,
+                anexos
+            )
+
+            Log.e("PUBLICATION0", "user: $response")
+            Log.i("PUBLICATION1", "user: ${response.body()}")
+
+            if (response.isSuccessful) {
+
+                Log.e(MainActivity::class.java.simpleName, "Publicação Editada com Sucesso!")
+                Log.e("publication", "publication: ${response.body()} ")
+
+                navController.popBackStack()
+
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e(
+                    MainActivity::class.java.simpleName,
+                    "Erro durante atualizar uma publicação: $errorBody"
+                )
+                Toast.makeText(
+                    context,
+                    "Erro durante atualizar uma publicação",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+
+            }
+        }
+    }
 
     LaunchedEffect(key1 = true) {
 
         getPublicationById()
         tagsState.value = viewModelTag.tags?.map { tagGetResponse ->
-            TagEditResponse(id = tagGetResponse.id, nome_tag = tagGetResponse.nome_tag, id_categoria = tagGetResponse.id_categoria, imagem = tagGetResponse.imagem)
+            TagEditResponse(
+                id = tagGetResponse.id,
+                nome_tag = tagGetResponse.nome_tag,
+                id_categoria = tagGetResponse.id_categoria,
+                imagem = tagGetResponse.imagem
+            )
         } ?: emptyList()
 
         val tags = filtro(pesquisaState)
@@ -248,7 +366,7 @@ fun EditPublicationScreen(
                 Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
-           ) {}
+            ) {}
 
             Row(
                 Modifier
@@ -273,6 +391,19 @@ fun EditPublicationScreen(
                     Modifier
                         .size(35.dp)
                         .clickable {
+                            val selectedMediaUrl = selectedMediaUri.map { anexoGetResponse ->
+                                AnexoResponse(conteudo = anexoGetResponse.anexo)
+                            }
+
+                            updatePublication(
+                                titleState,
+                                descriptionState,
+                                tagsArray,
+                                selectedMediaUrl
+                            )
+                            if (selectedMediaUrl.size == selectedMediaUri.size) {
+
+                            }
 //                            lifecycleScope.launch {
 //                                urlDownload()
 //                                if (selectedMediaUrl.size == selectedMediaUri.size) {
@@ -286,7 +417,8 @@ fun EditPublicationScreen(
 //                                    )
 //                                }
 //                            }
-                            Log.i("testeUri", "PublishScreen: ${selectedMediaUri}")
+                            Log.i("testeUri", "PublishScreen: ${selectedMediaUrl}")
+                            Log.w("UHU", "EditPublicationScreen: ${updatePublication(titleState, descriptionState, tagsArray, selectedMediaUrl)} " )
 
                         }
                 )
@@ -450,7 +582,7 @@ fun EditPublicationScreen(
                 ) {
                     val tags = filtro(pesquisaState)
                     val tagsSelected = tagsState.value
-                    for(tag in tags) {
+                    for (tag in tags) {
                         for (tagSelect in tagsSelected) {
                             if (tag.id == tagSelect.id) {
                                 viewModel.setTagColor(tagSelect.id, Destaque1, Destaque2)

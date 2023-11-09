@@ -59,11 +59,13 @@ fun CustomOutlinedTextFieldComment(
     localStorage: Storage,
     lifecycleScope: LifecycleCoroutineScope,
     onCommentCreated: () -> Unit,
-    onReplyCommentCreated: () -> Unit
+    isReplyMode: Boolean
 ) {
     var context = LocalContext.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
+
+    var id_comentario = localStorage.lerValor(context, "id_comentario")
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -132,8 +134,8 @@ fun CustomOutlinedTextFieldComment(
 
             val response = commentRepository.postReplyComment(
                 user.token,
-                id!!.toInt(),
                 user.id.toInt(),
+                id_comentario!!.toInt(),
                 mensagem
             )
 
@@ -142,25 +144,27 @@ fun CustomOutlinedTextFieldComment(
 
             if (response.isSuccessful) {
 
-                Log.e(MainActivity::class.java.simpleName, "Resposta de Comentário Feito com Sucesso!")
+                Log.e(
+                    MainActivity::class.java.simpleName,
+                    "Resposta de Comentário Feito com Sucesso!"
+                )
                 Log.e("RespostaComentario", "comentario: ${response.body()} ")
 
-                onCommentCreated()
                 //navController.navigate("home")
 
             } else {
                 val errorBody = response.errorBody()?.string()
 
                 Log.e(
-                        MainActivity::class.java.simpleName,
-                        "Erro durante inserir uma resposta de comentario: $errorBody"
-                    )
-                    Toast.makeText(
-                        context,
-                        "Erro durante inserir uma resposta de comentario",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    MainActivity::class.java.simpleName,
+                    "Erro durante inserir uma resposta de comentario: $errorBody"
+                )
+                Toast.makeText(
+                    context,
+                    "Erro durante inserir uma resposta de comentario",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
                 val checagem = response.body()
 //                if (checagem?.comentario[0].mensagem == "") {
 //                    Toast.makeText(
@@ -202,14 +206,22 @@ fun CustomOutlinedTextFieldComment(
             ),
         trailingIcon = {
             Icon(
-                painter = painterResource(id = R.drawable.send_icon),
+                painter = if (isReplyMode) {
+                    painterResource(id = R.drawable.send_icon) // Altere para o ícone desejado para a resposta
+                } else {
+                    painterResource(id = R.drawable.send_icon) // Ícone padrão
+                },
                 contentDescription = "",
                 modifier = Modifier
                     .size(30.dp)
                     .clickable {
-//                        createComment(value)
-//                        keyboardController?.hide()
-                            onReplyCommentCreated()
+                        if (isReplyMode) {
+                            createReplyComment(value)
+                            keyboardController?.hide()
+                        } else {
+                            createComment(value)
+                            keyboardController?.hide()
+                        }
                     },
                 tint = Destaque2
             )

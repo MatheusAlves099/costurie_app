@@ -4,6 +4,7 @@ import br.senai.sp.jandira.costurie_app.model.BaseCommentResponse
 import br.senai.sp.jandira.costurie_app.model.BaseResponseComment
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyComment
+import br.senai.sp.jandira.costurie_app.model.BaseResponseReplyCommentGet
 import br.senai.sp.jandira.costurie_app.model.GivePointResponse
 import br.senai.sp.jandira.costurie_app.service.CommentService
 import br.senai.sp.jandira.costurie_app.service.RetrofitFactory
@@ -54,4 +55,8 @@ class CommentRepository {
         return apiService.createReplyComment(requestBody, token)
     }
 
+    suspend fun getReplyComment(token: String, id: Int): Response<BaseResponseReplyCommentGet> {
+
+        return apiService.getReplyComment(id, token)
+    }
 }

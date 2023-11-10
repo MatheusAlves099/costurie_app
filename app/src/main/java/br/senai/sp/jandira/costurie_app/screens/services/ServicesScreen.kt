@@ -276,8 +276,6 @@ fun ServicesScreen(
                     letterSpacing = 2.sp
                 )
 
-               
-
                 if (listTags.isEmpty()) {
                     isLoading = true
                     ProgressBar(isDisplayed = isLoading)
@@ -337,7 +335,6 @@ fun ServicesScreen(
                         }
                     }
                 }
-
 
                 Row(
                     modifier = Modifier

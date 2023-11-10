@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home")
+                    startDestination = "main")
    {
                     composable(route = "main") { MainScreen(navController = navController) }
                     composable(route = "register") { RegisterScreen(navController = navController, lifecycleScope = lifecycleScope) }
@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = "editPublication") { EditPublicationScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage, viewModelTag = viewModelTagsPublication) }
 
                     //telas de chat
-                    composable(route = "chatList") { ChatListScreen(navController = navController) }
+                    composable(route = "chatList") { ChatListScreen(navController = navController, lifecycleScope = lifecycleScope) }
                     composable(route = "chat") { ChatScreen(lifecycleScope = lifecycleScope, navController = navController) }
 
                     //telas de configuracões

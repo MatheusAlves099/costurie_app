@@ -57,6 +57,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.viewModel.BairroViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.EstadoViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
+import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -70,7 +71,7 @@ import kotlinx.coroutines.launch
 fun EditProfileScreen(
     lifecycleScope: LifecycleCoroutineScope,
     navController: NavController,
-    viewModel: UserViewModel,
+    viewModel: UserViewModel2,
     localStorage: Storage
 ) {
 
@@ -127,7 +128,7 @@ fun EditProfileScreen(
     var cidadeStateUser by remember { mutableStateOf(localStorage.lerValor(context, "cidade")) }
     var estadoStateUser by remember { mutableStateOf(localStorage.lerValor(context, "estado")) }
     var bairroStateUser by remember { mutableStateOf(localStorage.lerValor(context, "bairro")) }
-
+    Log.i("locals", "ProfileScreen: ${viewModelNome}")
     val estados = viewModel.estados.value ?: emptyList()
     val cidades = viewModel.cidades.value ?: emptyList()
     val bairros = viewModel.bairros.value ?: emptyList()
@@ -523,6 +524,7 @@ fun EditProfileScreen(
                         DropdownEstado(
                             lifecycleScope = lifecycleScope,
                             viewModelEstado,
+                            localStorage.lerValor(context, "estado")!!
                         ) { selectedEstado ->
                             estadoStateUser = selectedEstado
                         }
@@ -543,7 +545,8 @@ fun EditProfileScreen(
                             DropdownCidade(
                                 lifecycleScope = lifecycleScope,
                                 viewModelEstado,
-                                viewModelCidade
+                                viewModelCidade,
+                                localStorage.lerValor(context, "cidade")!!
                             ) { selectedCidade ->
                                 cidadeStateUser = selectedCidade
                             }
@@ -557,7 +560,8 @@ fun EditProfileScreen(
                             Text(text = "Bairro", fontSize = 20.sp, color = Color.Black)
                             DropdownBairro(
                                 lifecycleScope = lifecycleScope,
-                                viewModelCidade
+                                viewModelCidade,
+                                localStorage.lerValor(context, "bairro")!!,
                             ) { selectedBairro ->
                                 bairroStateUser = selectedBairro
                             }

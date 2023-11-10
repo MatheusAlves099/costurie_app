@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material3.MaterialTheme
@@ -36,17 +35,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
-import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,7 +49,6 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
-import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTags
 import br.senai.sp.jandira.costurie_app.components.ModalTags2
 import br.senai.sp.jandira.costurie_app.components.ProgressBar
@@ -66,22 +58,16 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.components.WhiteButtonSmall
 import br.senai.sp.jandira.costurie_app.model.AnexoGetResponse
-import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
-import br.senai.sp.jandira.costurie_app.model.TagsResponse
+import br.senai.sp.jandira.costurie_app.model.TagResponse
 import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
-import br.senai.sp.jandira.costurie_app.model.UserGetResponse
-import br.senai.sp.jandira.costurie_app.model.UserResponse
 import br.senai.sp.jandira.costurie_app.repository.UserRepository
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
-import br.senai.sp.jandira.costurie_app.ui.theme.Kufam
-import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 
 @Composable
@@ -260,6 +246,8 @@ fun ProfileScreen(
         Log.e("TAG@", "ProfileScreen: ${user.id}, ${user.token}")
     }
     Costurie_appTheme {
+
+
 
         Surface(
             modifier = Modifier

@@ -53,6 +53,7 @@ import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
+import br.senai.sp.jandira.costurie_app.model.BaseCommentResponse
 import br.senai.sp.jandira.costurie_app.model.CommentResponse
 import br.senai.sp.jandira.costurie_app.model.ReplyCommentGetResponse
 import br.senai.sp.jandira.costurie_app.repository.CommentRepository
@@ -77,6 +78,8 @@ fun ExpandedCommentScreen(
     val commentState = remember { mutableStateOf(emptyList<CommentResponse>()) }
 
     //val replyCommentState = remember { mutableStateOf(emptyList<ReplyCommentGetResponse>()) }
+
+
 
     var shouldUpdateComments by remember { mutableStateOf(false) }
 
@@ -115,8 +118,6 @@ fun ExpandedCommentScreen(
         }
     }
 
-    val comment = localStorage.lerValor(context, "id_comentario")
-
     suspend fun deleteComment() {
         val commentRepository = CommentRepository()
         val array = UserRepositorySqlite(context).findUsers()
@@ -139,6 +140,7 @@ fun ExpandedCommentScreen(
             Log.e("DELETAR COMENTÁRIO", "Deletar um comentário: $errorBody")
         }
     }
+
 
 //    suspend fun getReplyComment() {
 //        val commentRepository = CommentRepository()
@@ -165,15 +167,20 @@ fun ExpandedCommentScreen(
 //        }
 //    }
 
+
     LaunchedEffect(key1 = true) {
         val array = UserRepositorySqlite(context).findUsers()
-
         val user = array[0]
 
         getCommentByPublication()
 
-        Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
+        if (commentState.value.isNotEmpty()) {
+
+            Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
+
+        }
     }
+
 
     Costurie_appTheme {
 
@@ -261,10 +268,11 @@ fun ExpandedCommentScreen(
                         }
                     }
                     //val temrespostas = replyCommentState.value[0].id_comentario == commentState.value[0].id
+
                     Card(
                         modifier = Modifier
+                            //.size(380.dp, if (temRespostas) 170.dp else 85.dp)
                             .size(380.dp, 85.dp)
-                            //.size(380.dp, if(temrespostas) 190.dp else 85.dp)
                             .padding(start = 25.dp, top = 4.dp, bottom = 4.dp)
                             .clickable {
                             },

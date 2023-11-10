@@ -10,4 +10,5 @@ data class CommentResponse(
     @SerializedName("id_publicacao") var id_publicacao: Int = 0,
     @SerializedName("id_usuario") var id_usuario: Int = 0,
     @SerializedName("usuario") var usuario: UserCommentResponse,
+    val respostas: List<ReplyCommentGetResponse>
 )

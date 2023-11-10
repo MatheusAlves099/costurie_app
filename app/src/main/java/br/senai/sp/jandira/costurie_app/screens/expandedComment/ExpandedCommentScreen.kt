@@ -167,7 +167,7 @@ fun ExpandedCommentScreen(
         val user = array[0]
 
         getCommentByPublication()
-        getReplyComment()
+        //getReplyComment()
 
         Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
     }

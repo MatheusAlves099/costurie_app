@@ -67,6 +67,7 @@ fun DropdownCidade(
     lifecycleScope: LifecycleCoroutineScope,
     viewModel: EstadoViewModel,
     viewModelCidade: BairroViewModel,
+    cidade: String = "",
     onCidadeSelected: (String) -> Unit
 ) {
 
@@ -79,7 +80,7 @@ fun DropdownCidade(
     }
 
     var cidade by remember {
-        mutableStateOf("")
+        mutableStateOf(cidade)
     }
 
     val cidades = remember { mutableStateListOf<CityResponse>() }
@@ -162,7 +163,7 @@ fun DropdownCidade(
                             textFieldSize = coordinates.size.toSize()
                         },
                     value = cidade,
-                    onValueChange = {
+                    onValueChange = { it ->
                         cidade = it
                         isExpanded = true
                     },

@@ -5,5 +5,5 @@ import com.google.gson.annotations.SerializedName
 data class BaseResponseReplyCommentGet(
     @SerializedName("message") var message: String = "",
     @SerializedName("status") var status: String = "",
-    @SerializedName("resposta") var resposta: List<ReplyCommentGetResponse>
+    @SerializedName("respostas") var resposta: List<ReplyCommentGetResponse>
 )

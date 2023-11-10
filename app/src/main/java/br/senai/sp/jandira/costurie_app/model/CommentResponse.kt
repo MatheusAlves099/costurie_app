@@ -9,5 +9,6 @@ data class CommentResponse(
     @SerializedName("mensagem") var mensagem: String = "",
     @SerializedName("id_publicacao") var id_publicacao: Int = 0,
     @SerializedName("id_usuario") var id_usuario: Int = 0,
+    @SerializedName("respostas") var respostas: Any = 0,
     @SerializedName("usuario") var usuario: UserCommentResponse,
 )

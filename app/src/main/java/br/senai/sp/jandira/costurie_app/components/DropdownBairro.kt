@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.toSize
 import androidx.lifecycle.LifecycleCoroutineScope
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.model.NeighborhoodResponse
 import br.senai.sp.jandira.costurie_app.repository.LocationRepository
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
@@ -67,6 +68,7 @@ import kotlinx.coroutines.launch
 fun DropdownBairro(
     lifecycleScope: LifecycleCoroutineScope,
     viewModelCidade: BairroViewModel,
+    bairro: String = "",
     onBairroSelected: (String) -> Unit
 ) {
 
@@ -79,7 +81,7 @@ fun DropdownBairro(
     }
 
     var bairro by remember {
-        mutableStateOf("")
+        mutableStateOf(bairro)
     }
 
     val bairros = remember { mutableStateListOf<NeighborhoodResponse>() }

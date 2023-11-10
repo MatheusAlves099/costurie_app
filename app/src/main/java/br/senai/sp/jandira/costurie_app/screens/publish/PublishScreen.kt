@@ -217,20 +217,23 @@ fun PublishScreen(
         }
 
     }
-    fun urlDownload(it: String){
 
-        val riversRef = storageRef.child("${System.currentTimeMillis()}")
-        val uploadTask = riversRef.putFile(Uri.parse(it))
+    fun urlDownload(it: String) {
+        val storageRefs: StorageReference =
+            FirebaseStorage.getInstance().reference.child("teste/${Uri.parse(it)}")
 
-            uploadTask
-                .addOnCompleteListener { task ->
+
+        val uploadTask = storageRefs.putFile(Uri.parse(it))
+
+        uploadTask
+            .addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
                     Log.i(
                         "urlDown",
                         "it: ${it}"
                     )
-                    storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    storageRefs.downloadUrl.addOnSuccessListener { uri ->
                         val map = HashMap<String, Any>()
                         map["pic"] = uri.toString()
                         Log.i(

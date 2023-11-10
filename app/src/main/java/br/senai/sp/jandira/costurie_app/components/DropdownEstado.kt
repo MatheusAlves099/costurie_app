@@ -67,6 +67,7 @@ import kotlinx.coroutines.launch
 fun DropdownEstado(
     lifecycleScope: LifecycleCoroutineScope,
     viewModel: EstadoViewModel,
+    estado: String = "",
     onEstadoSelected: (String) -> Unit,
 ) {
 
@@ -79,7 +80,7 @@ fun DropdownEstado(
     val estados = remember { mutableStateListOf<String>() }
 
     var estado by remember {
-        mutableStateOf("")
+        mutableStateOf(estado)
     }
 
     var textFieldSize by remember {

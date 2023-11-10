@@ -64,12 +64,6 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
-//@Preview(showBackground = true, showSystemUi = true)
-//@Composable
-//fun typeProfileScreenPreview() {
-//    TypeProfileScreen()
-//}
-
 @Composable
 fun ProfileListScreen(
     navController: NavController,

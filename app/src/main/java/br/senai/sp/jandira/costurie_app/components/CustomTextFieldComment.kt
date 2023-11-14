@@ -166,24 +166,6 @@ fun CustomOutlinedTextFieldComment(
                 )
                     .show()
                 val checagem = response.body()
-//                if (checagem?.comentario[0].mensagem == "") {
-//                    Toast.makeText(
-//                        context,
-//                        "Campos obrigatórios não foram preenchidos.",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                } else {
-//                    Log.e(
-//                        MainActivity::class.java.simpleName,
-//                        "Erro durante inserir um comentario: $errorBody"
-//                    )
-//                    Toast.makeText(
-//                        context,
-//                        "Erro durante inserir um comentario",
-//                        Toast.LENGTH_SHORT
-//                    )
-//                        .show()
-//                }
             }
         }
 

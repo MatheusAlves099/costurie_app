@@ -10,9 +10,8 @@ object RetrofitFactory {
     //IP DO MURYLLO, NÃO TIRA SÓ COMENTAAA
     //private const val BASE_URL = "http://192.168.3.7:3000"
   
-    private const val BASE_URL = "http://10.107.144.8:3000"
-
-    //private const val BASE_URL = "http://10.107.144.6:3000"
+    private const val BASE_URL = "http://10.107.144.8:3000
+  
     object HttpClientProvider {
         val client: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS) // Tempo limite de conexão

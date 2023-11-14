@@ -27,6 +27,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -196,14 +197,16 @@ fun ProfileScreen(
                     viewModel.cidades.value = listOf(cidade)
                     viewModel.bairros.value = listOf(bairro)
                     viewModel.id_localizacao = id_localizacao
-
-                    if (userResponse.usuario.tag.isNotEmpty()) {
+                    Log.i("Thiago", "${ viewModel.tags }")
+                    Log.i("aaaaa", "aaaa ${viewModel.foto}")
+                    Log.i("aaaaa", "ProfileScreen: ${fotoUri}")
+                    if (userResponse.usuario.tag.isEmpty()) {
                         viewModel.tags = userResponse.usuario.tag
                     } else {
-                        viewModel.tags = null
+                        viewModel.tags = mutableListOf()
                     }
 
-                    Log.i("Thiago", "${viewModel.nome}, $fotoUri")
+
                 } else {
                     // Lógica de tratamento caso a resposta seja nula
                 }
@@ -225,12 +228,10 @@ fun ProfileScreen(
         }
 
     }
+    val array = UserRepositorySqlite(context).findUsers()
 
+    val user = array[0]
     LaunchedEffect(key1 = true) {
-        val array = UserRepositorySqlite(context).findUsers()
-
-        val user = array[0]
-
         user(
             id = user.id.toInt(),
             token = user.token,
@@ -328,9 +329,9 @@ fun ProfileScreen(
                             .width(320.dp),
                         Arrangement.Start
                     ) {
-
+                        Log.i("aaaaa", "ProfileScreessssn: ${fotoUri}")
                         AsyncImage(
-                            model = "$fotoUri",
+                            model = fotoUri,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(100.dp)

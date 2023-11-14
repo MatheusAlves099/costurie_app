@@ -14,12 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,18 +28,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
-import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldComment
+import br.senai.sp.jandira.costurie_app.components.MessageBar
+import br.senai.sp.jandira.costurie_app.components.ReceivedMesssage
+import br.senai.sp.jandira.costurie_app.components.SendMesssage
 import br.senai.sp.jandira.costurie_app.model.MessageResponse
-import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
-import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
 
@@ -50,7 +50,9 @@ fun ChatScreen(
 ) {
     var context = LocalContext.current
 
-    var messageState = remember { mutableStateOf(emptyList<MessageResponse>()) }
+    var messageState by remember {
+        mutableStateOf("")
+    }
 
     Costurie_appTheme {
         Surface(
@@ -129,87 +131,25 @@ fun ChatScreen(
                     }
                 }
 
-                Column (
+                Column(
                     modifier = Modifier.height(644.dp)
                 ) {
-                    Row (
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(top = 20.dp, start = 310.dp)
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .size(80.dp, 35.dp),
-                            backgroundColor = Destaque2,
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                                Column {
-                                    Text(
-                                        text = "Teste",
-                                        textAlign = TextAlign.Start,
-                                        modifier = Modifier
-                                            .padding(start = 10.dp)
-                                            .width(250.dp)
-                                            .height(20.dp),
-                                        fontSize = 14.sp,
-                                        color = Principal1
-                                    )
+                    SendMesssage(
+                        message = "Teste",
+                        time = "15:20"
+                    )
 
-                                    Text(
-                                        text = "15:20",
-                                        textAlign = TextAlign.End,
-                                        modifier = Modifier
-                                            .padding(end = 3.dp)
-                                            .width(250.dp),
-                                        fontSize = 8.sp,
-                                        color = Principal1
-                                    )
-                                }
-                        }
-                    }
-
-                    Row (
-                        modifier = Modifier.fillMaxWidth()
-                            .padding(top = 10.dp, start = 16.dp)
-                    ) {
-                        Card(
-                            modifier = Modifier
-                                .size(80.dp, 35.dp),
-                            backgroundColor = Contraste,
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Teste",
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .padding(start = 10.dp)
-                                        .width(250.dp)
-                                        .height(20.dp),
-                                    fontSize = 14.sp,
-                                    color = Principal1
-                                )
-
-                                Text(
-                                    text = "15:20",
-                                    textAlign = TextAlign.End,
-                                    modifier = Modifier
-                                        .padding(end = 3.dp)
-                                        .width(250.dp),
-                                    fontSize = 8.sp,
-                                    color = Principal1
-                                )
-                            }
-                        }
-                    }
+                    ReceivedMesssage(
+                        message = "Opa",
+                        time = "15:21"
+                    )
                 }
 
-//                CustomOutlinedTextFieldComment(
-//                    value = "",
-//                    onValueChange = {
-//
-//                    },
-//                    label = stringResource(id = R.string.text_outlined_chat)
-//                )
+                MessageBar(
+                    value = messageState,
+                    onValueChange = { },
+                    isReplyMode = true
+                )
             }
         }
     }

@@ -22,6 +22,7 @@ import br.senai.sp.jandira.costurie_app.screens.loading.LoadingScreen
 import br.senai.sp.jandira.costurie_app.screens.login.LoginScreen
 import br.senai.sp.jandira.costurie_app.screens.main.MainScreen
 import br.senai.sp.jandira.costurie_app.screens.password.PasswordScreen
+import br.senai.sp.jandira.costurie_app.screens.personalization.AboutScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.ChangeEmailScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.ChangePasswordScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.DescriptionScreen
@@ -29,6 +30,7 @@ import br.senai.sp.jandira.costurie_app.screens.personalization.LocationScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.NameScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.ProfilePicScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.TagSelectScreen
+import br.senai.sp.jandira.costurie_app.screens.personalization.TermsAndConditionsScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.TypeProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.profile.ProfileListScreen
 import br.senai.sp.jandira.costurie_app.screens.publish.PublishScreen
@@ -65,7 +67,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main")
+                    startDestination = "settings")
    {
                     composable(route = "main") { MainScreen(navController = navController) }
                     composable(route = "register") { RegisterScreen(navController = navController, lifecycleScope = lifecycleScope) }
@@ -96,6 +98,8 @@ class MainActivity : ComponentActivity() {
                     composable(route = "yourAccount") { YourAccountScreen(lifecycleScope = lifecycleScope, navController = navController) }
                     composable(route = "changeEmail") { ChangeEmailScreen(navController = navController, localStorage = localStorage) }
                     composable(route = "changePassword") { ChangePasswordScreen(navController = navController, localStorage = localStorage) }
+                    composable(route = "about") { AboutScreen(navController = navController) }
+                    composable(route = "termsAndConditions") { TermsAndConditionsScreen(navController = navController) }
 
                     //telas de personalização
                     composable(route = "name") { NameScreen(navController = navController, localStorage) }

@@ -44,7 +44,7 @@ fun ButtonGivePoint(
                     color = colorResource(id = R.color.destaque_2),
                     shape = ShapeButton.large
                 )
-                .width(130.dp)
+                .width(170.dp)
                 .height(30.dp)
                 .clickable {
 

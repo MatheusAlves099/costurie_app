@@ -79,8 +79,6 @@ fun ExpandedCommentScreen(
 
     //val replyCommentState = remember { mutableStateOf(emptyList<ReplyCommentGetResponse>()) }
 
-
-
     var shouldUpdateComments by remember { mutableStateOf(false) }
 
     var isReplyMode by remember { mutableStateOf(false) }
@@ -254,27 +252,17 @@ fun ExpandedCommentScreen(
             ) {
                 items(commentState.value) {
                     val resposta = it.respostas
-                    when (resposta) {
-                        is Boolean -> {
-                            // "curtida" é um Int
-                            // Faça alguma coisa com o valor Int
-                        }
-//                        is List<T> -> {
-//                            // "curtida" é uma String
-//                            // Faça alguma coisa com a String
-//                        }
-                        else -> {
-                            // "curtida" é de outro tipo (caso especial)
-                        }
-                    }
-                    //val temrespostas = replyCommentState.value[0].id_comentario == commentState.value[0].id
+                    val temRespostas = resposta is List<*> && resposta.isNotEmpty() && resposta.any { it is ReplyCommentGetResponse }
+                    Log.e("tem1", "tem respostas: $temRespostas")
+
+                    val cardHeight = if (temRespostas) 200.dp else 85.dp
 
                     Card(
                         modifier = Modifier
-                            //.size(380.dp, if (temRespostas) 170.dp else 85.dp)
-                            .size(380.dp, 85.dp)
+                            .size(380.dp, cardHeight)
                             .padding(start = 25.dp, top = 4.dp, bottom = 4.dp)
                             .clickable {
+                                // Faça algo quando o Card for clicado
                             },
                         backgroundColor = Color.White,
                         shape = RoundedCornerShape(15.dp),
@@ -339,6 +327,53 @@ fun ExpandedCommentScreen(
                                     color = Color.Gray
                                 )
                             }
+                            Log.e("tem2", "tem respostas: $temRespostas", )
+                            if (temRespostas) {
+                                // Corrigindo a iteração sobre as respostas
+                                Log.e("tem3", "tem respostas: $temRespostas", )
+                                for (respostaItem in resposta as List<ReplyCommentGetResponse>) {
+                                    Log.e("tem4", "tem respostas: $temRespostas", )
+                                    Box(
+                                        modifier = Modifier
+                                            .size(60.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp))
+                                            .background(Color(168, 155, 255, 102))
+                                    ) {
+                                        AsyncImage(
+                                            model = respostaItem.usuario.foto,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(bottom = 5.dp, end = 2.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+                                    }
+
+                                    Column {
+                                        Text(
+                                            text = respostaItem.usuario.nome_de_usuario,
+                                            textAlign = TextAlign.Start,
+                                            modifier = Modifier
+                                                .width(250.dp)
+                                                .height(18.dp),
+                                            fontSize = 12.sp,
+                                            color = Contraste,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+
+                                        Text(
+                                            text = respostaItem.mensagem,
+                                            textAlign = TextAlign.Start,
+                                            modifier = Modifier
+                                                .width(250.dp)
+                                                .height(18.dp),
+                                            fontSize = 12.sp,
+                                            color = Contraste
+                                        )
+                                    }
+                                }
+                            }
 
                             Image(
                                 painter = painterResource(id = R.drawable.trash_icon_purple),
@@ -353,10 +388,9 @@ fun ExpandedCommentScreen(
                             )
                         }
                     }
-
-
                 }
             }
+
         }
         CustomOutlinedTextFieldComment(
             value = comentarioState,

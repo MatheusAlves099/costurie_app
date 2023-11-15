@@ -78,6 +78,7 @@
     <string name="botao_responder">RESPONDER</string>
     <string name="botao_comentarios">COMENTÁRIOS</string>
     <string name="label_comentarios">Adicione um comentário</string>
+    <string name="label_resposta_comentario">Adicione uma resposta</string>
     <string name="text_change_email">Alterar e-mail</string>
     <string name="text_change_email_repeat">Repita o e-mail</string>
     <string name="description_change_email">Nesta tela você pode alterar seu e-mail.</string>

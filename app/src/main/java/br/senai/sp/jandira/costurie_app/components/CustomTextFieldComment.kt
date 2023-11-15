@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,11 +56,12 @@ import kotlinx.coroutines.launch
 fun CustomOutlinedTextFieldComment(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String = "",
     localStorage: Storage,
     lifecycleScope: LifecycleCoroutineScope,
     onCommentCreated: () -> Unit,
-    isReplyMode: Boolean
+    onReplyCommentCreated: () -> Unit,
+    isReplyMode: Boolean,
+    idComentario: String?
 ) {
     var context = LocalContext.current
 
@@ -124,7 +126,8 @@ fun CustomOutlinedTextFieldComment(
     }
 
     fun createReplyComment(
-        mensagem: String
+        mensagem: String,
+        idComentario: String?
     ) {
         val commentRepository = CommentRepository()
         lifecycleScope.launch {
@@ -135,7 +138,7 @@ fun CustomOutlinedTextFieldComment(
             val response = commentRepository.postReplyComment(
                 user.token,
                 user.id.toInt(),
-                id_comentario!!.toInt(),
+                idComentario!!.toInt(),
                 mensagem
             )
 
@@ -149,6 +152,9 @@ fun CustomOutlinedTextFieldComment(
                     "Resposta de Comentário Feito com Sucesso!"
                 )
                 Log.e("RespostaComentario", "comentario: ${response.body()} ")
+
+                onReplyCommentCreated()
+
 
                 //navController.navigate("home")
 
@@ -198,7 +204,7 @@ fun CustomOutlinedTextFieldComment(
                     .size(30.dp)
                     .clickable {
                         if (isReplyMode) {
-                            createReplyComment(value)
+                            createReplyComment(value, idComentario)
                             keyboardController?.hide()
                         } else {
                             createComment(value)
@@ -217,7 +223,7 @@ fun CustomOutlinedTextFieldComment(
         shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp),
         placeholder = {
             Text(
-                text = label,
+                text = if (isReplyMode) stringResource(id = R.string.label_resposta_comentario) else stringResource(id = R.string.label_comentarios),
                 fontSize = 18.sp,
                 color = Contraste2,
                 maxLines = 1

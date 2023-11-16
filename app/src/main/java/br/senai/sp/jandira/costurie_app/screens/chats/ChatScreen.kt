@@ -148,7 +148,6 @@ fun ChatScreen(
                 MessageBar(
                     value = messageState,
                     onValueChange = { },
-                    isReplyMode = true
                 )
             }
         }

@@ -108,7 +108,7 @@ fun AboutScreen(navController: NavController) {
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
-                                    navController.popBackStack()
+                                    navController.navigate("settings")
                                 }
                         )
                     }

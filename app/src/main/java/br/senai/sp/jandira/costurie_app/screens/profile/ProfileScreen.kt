@@ -59,6 +59,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.components.WhiteButtonSmall
 import br.senai.sp.jandira.costurie_app.model.AnexoGetResponse
+import br.senai.sp.jandira.costurie_app.model.LocationGetResponse
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.TagResponse
 import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
@@ -175,12 +176,30 @@ fun ProfileScreen(
                     val fotoUrl = userResponse.usuario.foto
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
-                    cidade = userResponse.usuario.cidade
-                    estado = userResponse.usuario.estado
-                    bairro = userResponse.usuario.bairro
-                    id_localizacao = userResponse.usuario.id_localizacao!!
 
-                    publicationList = userResponse.usuario.publicacao
+                    when(userResponse.localizacao){
+                        is LocationGetResponse -> {
+                            cidade = userResponse.localizacao.toString()
+                            estado = userResponse.usuario.estado
+                            bairro = userResponse.usuario.bairro
+                        }
+//                        is List<> -> {
+//
+//                        }
+
+                    }
+                    when (userResponse.usuario.id_localizacao) {
+
+                        is Int -> {
+                            id_localizacao = userResponse.usuario.id_localizacao as Int
+                        }
+
+                        else -> {
+
+                        }
+                    }
+
+                    publicationList = userResponse.publicacoes
 
                     Log.d("dado", "vendo se tem dado rs: $publicationList")
                     localStorage.salvarValor(context, cidade, "cidade")

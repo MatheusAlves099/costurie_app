@@ -118,4 +118,11 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.5.2")
     annotationProcessor ("androidx.room:room-compiler:2.5.2")
     ksp("androidx.room:room-compiler:2.5.2")
+
+    //SOCKET.IO CHAT
+    implementation ("io.socket:socket.io-client:2.1.0") {
+        // excluding org.json which is provided by Android
+        exclude("org.json", "json")
+    }
+    implementation("io.socket:engine.io-client:2.1.0")
 }

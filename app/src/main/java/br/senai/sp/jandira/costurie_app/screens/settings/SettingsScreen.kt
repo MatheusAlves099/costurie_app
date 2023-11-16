@@ -91,7 +91,7 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
-                                    navController.popBackStack()
+                                    navController.navigate("profile")
                                 }
                         )
                     }

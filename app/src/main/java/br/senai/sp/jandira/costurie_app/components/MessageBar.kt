@@ -32,7 +32,6 @@ fun MessageBar(
     value: String,
     onValueChange: (String) -> Unit,
     label: String = "",
-    isReplyMode: Boolean
 ) {
     var context = LocalContext.current
 
@@ -53,11 +52,7 @@ fun MessageBar(
             ),
         trailingIcon = {
             Icon(
-                painter = if (isReplyMode) {
-                    painterResource(id = R.drawable.send_icon) // Altere para o ícone desejado para a resposta
-                } else {
-                    painterResource(id = R.drawable.send_icon) // Ícone padrão
-                },
+                painter = painterResource(id = R.drawable.send_icon), // Altere para o ícone desejado para a resposta,
                 contentDescription = "",
                 modifier = Modifier
                     .size(30.dp)

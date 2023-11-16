@@ -464,6 +464,4 @@ class CategoryClickedViewModel : ViewModel() {
             }
         }
     }
-
-
 }

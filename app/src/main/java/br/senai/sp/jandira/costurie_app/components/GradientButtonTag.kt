@@ -102,10 +102,7 @@ fun GradientButtonTag(
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
         )
-
-
     }
-
 }
 
 class TagColorViewModel : ViewModel() {

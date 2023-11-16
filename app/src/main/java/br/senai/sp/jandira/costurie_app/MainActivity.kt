@@ -30,7 +30,7 @@ import br.senai.sp.jandira.costurie_app.screens.personalization.LocationScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.NameScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.ProfilePicScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.TagSelectScreen
-import br.senai.sp.jandira.costurie_app.screens.personalization.TermsAndConditionsScreen
+import br.senai.sp.jandira.costurie_app.screens.settings.TermsAndConditionsScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.TypeProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.profile.ProfileListScreen
 import br.senai.sp.jandira.costurie_app.screens.publish.PublishScreen
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home")
+                    startDestination = "main")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }

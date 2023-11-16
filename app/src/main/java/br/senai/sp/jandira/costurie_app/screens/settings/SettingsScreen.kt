@@ -91,7 +91,8 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
-                                    navController.navigate("profile")
+
+                                    navController.navigate("home")
                                 }
                         )
                     }
@@ -102,8 +103,6 @@ fun SettingsScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
-
-                    Spacer(modifier = Modifier.height(35.dp))
 
                     Spacer(modifier = Modifier.height(50.dp))
 

@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.costurie_app.screens.personalization
+package br.senai.sp.jandira.costurie_app.screens.settings
 
 import android.util.Log
 import android.widget.Toast
@@ -19,6 +19,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -115,7 +118,7 @@ fun TermsAndConditionsScreen(navController: NavController) {
                 }
                 Column(
                     modifier = Modifier
-                        .height(900.dp)
+                        .fillMaxHeight()
                         .fillMaxWidth()
                         .padding(horizontal = 35.dp, vertical = 56.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -134,7 +137,7 @@ fun TermsAndConditionsScreen(navController: NavController) {
 
                     Text(
                         modifier = Modifier
-                            .height(600.dp),
+                            .height(800.dp),
                         text = stringResource(id = R.string.description_terms_and_conditions),
                         fontSize = 14.sp,
                         textAlign = TextAlign.Justify,

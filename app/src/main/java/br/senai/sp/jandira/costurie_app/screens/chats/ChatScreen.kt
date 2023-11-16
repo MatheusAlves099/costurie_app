@@ -48,8 +48,6 @@ fun ChatScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
 ) {
-    var context = LocalContext.current
-
     var messageState by remember {
         mutableStateOf("")
     }

@@ -446,13 +446,12 @@ fun ExpandedCommentScreen(
                                     }
                                 }
                             }
-
                         }
                     }
                 }
             }
-
         }
+
         CustomOutlinedTextFieldComment(
             value = comentarioState,
             onValueChange = {

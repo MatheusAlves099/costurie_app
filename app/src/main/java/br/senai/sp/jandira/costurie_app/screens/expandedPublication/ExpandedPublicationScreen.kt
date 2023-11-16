@@ -189,12 +189,12 @@ fun ExpandedPublicationScreen(
                 sheetElevation = 10.dp,
                 sheetContent = {
 
-                        ExpandedCommentScreen(
-                            lifecycleScope = lifecycleScope,
-                            navController = navController,
-                            viewModel = viewModel,
-                            localStorage = localStorage
-                        )
+                    ExpandedCommentScreen(
+                        lifecycleScope = lifecycleScope,
+                        navController = navController,
+                        viewModel = viewModel,
+                        localStorage = localStorage
+                    )
 
                 },
                 sheetBackgroundColor = Color.White,

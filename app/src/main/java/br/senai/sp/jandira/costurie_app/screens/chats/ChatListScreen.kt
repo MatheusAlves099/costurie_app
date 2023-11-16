@@ -80,14 +80,36 @@ import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.socket.client.Socket
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
 @Composable
 fun ChatListScreen(
     navController: NavController,
-    lifecycleScope: LifecycleCoroutineScope
+    lifecycleScope: LifecycleCoroutineScope,
+//    socket: Socket
 ) {
+
+//    var listaContatos by remember {
+//        mutableStateOf(
+//            SocketRes
+//        )
+//    }
+//
+//    // Ouça o evento do socket
+//    socket.on("receive_contacts") { args ->
+//        args.let { d ->
+//            if (d.isNotEmpty()) {
+//                val data = d[0]
+//                if (data.toString().isNotEmpty()) {
+//                    val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
+//
+//                    listaContatos = chat
+//                }
+//            }
+//        }
+//    }
 
     var context = LocalContext.current
 

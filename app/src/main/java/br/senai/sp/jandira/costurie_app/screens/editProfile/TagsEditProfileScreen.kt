@@ -226,11 +226,10 @@ fun TagsEditProfileScreen(
                     modifier = Modifier
                         .fillMaxHeight()
                         .padding(20.dp)
-                        .shadow(elevation = 2.dp)
                         .border(
+                            shape = RoundedCornerShape(24.dp),
                             width = 1.dp, // Espessura da borda
                             color = Color.Black, // Cor da borda
-                            shape = RoundedCornerShape(24.dp)
                         ),
                     contentAlignment = Alignment.Center
                 ) {
@@ -259,6 +258,7 @@ fun TagsEditProfileScreen(
                                 painter = painterResource(id = R.drawable.save_icon),
                                 contentDescription = "",
                                 modifier = Modifier
+                                    .padding(end = 10.dp)
                                     .size(35.dp)
                                     //.padding(15.dp)
                                     .clickable {
@@ -308,6 +308,7 @@ fun TagsEditProfileScreen(
 
                             LazyVerticalGrid(
                                 columns = GridCells.Fixed(2),
+                                modifier = Modifier.padding(start = 16.dp, end = 16.dp),
                                 state = rememberLazyGridState(),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                                 verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -339,15 +340,12 @@ fun TagsEditProfileScreen(
                                         color2 = Destaque2,
                                         text = it.nome_tag,
                                         textColor = Color(168, 155, 255, 255),
-
                                     )
                                 }
                             }
                         }
                     }
-
                 }
-
             }
         }
     }

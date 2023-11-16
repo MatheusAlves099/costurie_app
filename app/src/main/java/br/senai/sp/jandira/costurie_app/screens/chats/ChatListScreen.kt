@@ -132,7 +132,7 @@ fun ChatListScreen(
                                 modifier = Modifier
                                     .size(45.dp)
                                     .clickable {
-                                        navController.navigate("chatList")
+                                        navController.navigate("home")
                                     }
                             )
 

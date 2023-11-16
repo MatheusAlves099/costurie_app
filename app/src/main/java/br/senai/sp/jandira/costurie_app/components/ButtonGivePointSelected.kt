@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.costurie_app.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +17,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -26,30 +29,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
+import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.ShapeButton
 
 
 @Composable
-fun ButtonGivePoint(
+fun ButtonGivePointSelected(
     onClick: () -> Unit,
     text: String
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Surface(
+        Button(
+            onClick,
             modifier = Modifier
                 .border(
                     width = 1.dp,
-                    color = colorResource(id = R.color.destaque_2),
+                    color = Color.White,
                     shape = ShapeButton.large
                 )
                 .width(130.dp)
                 .height(30.dp)
+                .background(
+                    Brush.horizontalGradient(colors = listOf(
+                        Destaque1,
+                        Destaque2
+                    ))
+                )
                 .clickable {
 
                 },
-            color = Color.White
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
@@ -61,12 +72,12 @@ fun ButtonGivePoint(
 
 
                 Image(
-                    painter = painterResource(id = R.drawable.icon_agulha),
+                    painter = painterResource(id = R.drawable.icon_agulha_white),
                     contentDescription = "image description",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier
                         .size(24.dp)
-                        .width(10.dp)
+                        .width(10.dp),
                 )
 
                 Text(
@@ -74,20 +85,17 @@ fun ButtonGivePoint(
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 12.sp,
                     fontWeight = FontWeight(600),
-                    color = colorResource(id = R.color.destaque_2),
+                    color = colorResource(id = R.color.principal_1),
                     textAlign = TextAlign.Center,
                     modifier = Modifier.height(18.dp)
                 )
             }
-
         }
     }
-
-
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ButtonGivePointPreview() {
-    ButtonGivePoint(onClick = { }, text = "")
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ButtonGivePointPreview() {
+//    ButtonGivePoint(onClick = { }, text = "")
+//}

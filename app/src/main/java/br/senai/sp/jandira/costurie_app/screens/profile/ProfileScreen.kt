@@ -501,7 +501,6 @@ fun ProfileScreen(
                                             contentScale = ContentScale.Crop
                                         )
                                     }
-
                                 }
                             }
                         }

@@ -81,6 +81,10 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
         mutableStateOf("")
     }
 
+    var newPasswordState by remember {
+        mutableStateOf("")
+    }
+
     var repeatPasswordState by remember {
         mutableStateOf("")
     }
@@ -130,7 +134,7 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
-                                    navController.popBackStack()
+                                    navController.navigate("yourAccount")
                                 }
                         )
                     }
@@ -187,8 +191,8 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 CustomOutlinedTextFieldPassword(
-                    value = passwordState,
-                    onValueChange = { passwordState = it },
+                    value = newPasswordState,
+                    onValueChange = { newPasswordState = it },
                     label = stringResource(id = R.string.text_change_new_password_outlined),
                     showError = !validatePassword,
                     errorMessage = validatePasswordError,
@@ -208,8 +212,8 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 CustomOutlinedTextFieldPassword(
-                    value = passwordState,
-                    onValueChange = { passwordState = it },
+                    value = repeatPasswordState,
+                    onValueChange = { repeatPasswordState = it },
                     label = stringResource(id = R.string.text_change_new_password_outlined_repeat),
                     showError = !validatePassword,
                     errorMessage = validatePasswordError,

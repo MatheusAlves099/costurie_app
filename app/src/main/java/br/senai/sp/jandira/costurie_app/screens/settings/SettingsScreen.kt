@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -40,6 +41,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.ButtonSettings
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
+import br.senai.sp.jandira.costurie_app.components.ModalExit
 import br.senai.sp.jandira.costurie_app.components.ModalFilter
 import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
@@ -55,6 +57,7 @@ import coil.compose.AsyncImage
 fun SettingsScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
+    localStorage: Storage
 ) {
     var context = LocalContext.current
 
@@ -99,56 +102,55 @@ fun SettingsScreen(
                 }
 
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(520.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(150.dp))
 
                     ButtonSettings(
-                        onClick = { navController.navigate("yourAccount") }, text = "Sua conta".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
+                        onClick = { navController.navigate("yourAccount") },
+                            text = stringResource(id = R.string.text_your_account_button).uppercase(),
+                            icon = painterResource(id = R.drawable.icone_voltar_button
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     ButtonSettings(
-                        onClick = { navController.navigate("termsAndConditions") }, text = "TERMOS E CONDIÇÕES".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
+                        onClick = { navController.navigate("termsAndConditions") },
+                        text = stringResource(id = R.string.text_terms_and_conditions).uppercase(),
+                        icon = painterResource(id = R.drawable.icone_voltar_button
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     ButtonSettings(
-                        onClick = { /*TODO*/ }, text = "AJUDA E SUPORTE".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
+                        onClick = { navController.navigate("helpAndSupport") },
+                        text = stringResource(id = R.string.text_help_and_support_button).uppercase(),
+                        icon = painterResource(id = R.drawable.icone_voltar_button
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
                     ButtonSettings(
-                        onClick = { navController.navigate("about") }, text = "SOBRE".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
+                        onClick = { navController.navigate("about") },
+                        text = stringResource(id = R.string.text_about_button).uppercase(),
+                        icon = painterResource(id = R.drawable.icone_voltar_button
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
 
-                    ButtonSettings(
-                        onClick = {
-                            val array = UserRepositorySqlite(context).findUsers()
-
-                            val user = array[0]
-                                  deleteUserSQLite(context, user.id.toInt())
-                            navController.navigate("login")
-
-                        }, text = "Sair".uppercase(), icon = painterResource(
-                            id = R.drawable.icone_voltar_button
-                        )
+                    ModalExit(
+                        lifecycleScope,
+                        localStorage,
+                        navController
                     )
                 }
             }

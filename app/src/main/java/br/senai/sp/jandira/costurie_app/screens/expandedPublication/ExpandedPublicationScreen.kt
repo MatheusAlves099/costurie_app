@@ -302,7 +302,7 @@ fun ExpandedPublicationScreen(
                                 textAlign = TextAlign.Start,
                                 modifier = Modifier
                                     .width(170.dp)
-                                    .height(45.dp)
+                                    .height(55.dp)
                                     .clickable {
                                         val array = UserRepositorySqlite(context).findUsers()
 

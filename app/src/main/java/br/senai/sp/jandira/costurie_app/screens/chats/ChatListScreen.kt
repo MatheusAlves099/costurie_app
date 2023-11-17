@@ -63,6 +63,7 @@ import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
+import br.senai.sp.jandira.costurie_app.components.ModalDeleteMessage
 import br.senai.sp.jandira.costurie_app.components.ModalFilter
 import br.senai.sp.jandira.costurie_app.components.ModalLocation
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
@@ -80,7 +81,6 @@ import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import io.socket.client.Socket
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
@@ -88,6 +88,8 @@ import java.lang.reflect.Type
 fun ChatListScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
+    localStorage: Storage
+
 //    socket: Socket
 ) {
 
@@ -158,14 +160,10 @@ fun ChatListScreen(
                                     }
                             )
 
-                            Image(
-                                painter = painterResource(id = R.drawable.trash_icon),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(40.dp)
-                                    .clickable {
-
-                                    }
+                            ModalDeleteMessage(
+                                lifecycleScope,
+                                localStorage,
+                                navController
                             )
                         }
                     } else {

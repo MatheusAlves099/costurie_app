@@ -93,12 +93,24 @@
     <string name="description_about">A Costuriê é a mais nova Startup brasileira de desenvolvimento de softwares, feita para aqueles que buscam eficácia e segurança ao contratar serviços em plataformas digitais. Tecnologia e inovação são as palavras que melhor definem a empresa.
                                      A ideia central é criar aplicativos e sistemas capazes de suprir as demandas de segmentos do mercado com pouco desenvolvimento tecnológico, os ajudando a evoluir e se tornarem mais eficientes.</string>
     <string name="text_terms_and_conditions">Termos e Condições</string>
-    <string name="description_terms_and_conditions">Bem-vindo ao Costuriê! Ao utilizar nosso aplicativo, você está concordando com os seguintes termos e condições. Por favor, leia atentamente:
-                                                    Ao se cadastrar no Costuriê, compromete-se a fornecer informações precisas e a manter sua conta atualizada. O uso responsável do aplicativo é essencial, abstendo-se de atividades ilegais, difamatórias ou prejudiciais.
-                                                    Entendemos que os usuários desejam compartilhar suas experiências. Ao criar e publicar conteúdo, concede ao Costuriê uma licença para utilizar, reproduzir e exibir esse conteúdo.
-                                                    É fundamental respeitar os direitos de propriedade intelectual. Não é permitido publicar conteúdo que infrinja direitos autorais, marcas registradas ou outros direitos similares.
-                                                    Nossa Política de Privacidade detalha como coletamos e processamos suas informações pessoais. Ao utilizar o Costuriê, concorda com os termos dessa política.
-                                                    Reservamo-nos o direito de encerrar contas que violem estes termos ou representem uma ameaça à segurança da comunidade Costuriê.
-                                                    Os termos de uso podem ser atualizados periodicamente. Recomendamos que revise regularmente para estar ciente de quaisquer alterações.
-                                                    Agradecemos por escolher o Costuriê como sua plataforma de conexão com costureiras. Ao continuar a utilizar nosso aplicativo, está concordando com estes termos e condições.</string>
+    <string name="description_terms_and_conditions_first">1. Aceitação dos Termos de Uso: Ao acessar o aplicativo, aceita e concorda com estes termos.</string>
+    <string name="description_terms_and_conditions_second">2. Cadastro e Informações da Conta: Fornecer informações precisas e manter a conta atualizada é responsabilidade do usuário.</string>
+    <string name="description_terms_and_conditions_third">3. Uso Responsável: Compromisso de agir eticamente, evitando atividades ilegais ou prejudiciais.</string>
+    <string name="description_terms_and_conditions_fourth">4. Publicações e Conteúdo do Usuário: Os usuários podem criar e compartilhar conteúdo, concedendo ao Costuriê licença para sua utilização.</string>
+    <string name="description_terms_and_conditions_fifth">5. Respeito à Propriedade Intelectual: Proibição de publicar conteúdo que infrinja direitos autorais ou outros direitos de propriedade intelectual.</string>
+    <string name="description_terms_and_conditions_sixth">6. Privacidade e Proteção de Dados: A coleta e processamento de informações pessoais seguem a Política de Privacidade do Costuriê.</string>
+    <string name="description_terms_and_conditions_seventh">7. Encerramento da Conta: O Costuriê reserva-se o direito de encerrar contas em violação aos termos.</string>
+    <string name="description_terms_and_conditions_eighth">8. Modificações nos Termos de Uso: Os termos podem ser atualizados, sendo recomendável revisá-los periodicamente.</string>
+    <string name="title_help_and_support">Ajuda e Suporte</string>
+    <string name="description_help_and_support">Se você encontrou algum problema ou bug durante a utilização do App, ou tem alguma sugestão de melhoria, deixe-nos saber para que possamos resolver e/ou melhorar o App. Envie uma mensagem breve do problema ou da sugestão e insira seu e-mail para contato. Agradecemos a ajuda!</string>
+    <string name="email_help_and_support">Digite seu e-mail</string>
+    <string name="description_label_help_and_support">Digite uma descrição</string>
+    <string name="text_your_account_button">Sua conta</string>
+    <string name="text_terms_and_conditions_button">Termos e condições</string>
+    <string name="text_help_and_support_button">Ajuda e suporte</string>
+    <string name="text_about_button">Sobre</string>
+    <string name="text_exit_button">Sair</string>
+    <string name="text_modal_exit">VOCÊ REALMENTE DESEJA SAIR?</string>
+    <string name="text_yes">Sim</string>
+    <string name="text_no">Não</string>
 </resources>

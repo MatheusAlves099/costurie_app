@@ -322,7 +322,7 @@ fun ProfileViewedScreen(
                         modifier = Modifier
                             .size(35.dp)
                             .clickable {
-
+                                navController.navigate("chat")
                             },
                         alignment = Alignment.TopEnd
                     )

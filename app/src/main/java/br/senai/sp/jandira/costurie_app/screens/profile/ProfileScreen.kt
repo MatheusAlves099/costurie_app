@@ -176,33 +176,14 @@ fun ProfileScreen(
                     val fotoUrl = userResponse.usuario.foto
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
-
-                    when(userResponse.usuario.localizacao){
-                        is LocationGetResponse -> {
-                            cidade = (userResponse.usuario.localizacao as LocationGetResponse).cidade
-                            estado = (userResponse.usuario.localizacao as LocationGetResponse).estado
-                            bairro = (userResponse.usuario.localizacao as LocationGetResponse).bairro
-                        }
-                        is List<*> -> {
-                            userResponse.usuario.localizacao = emptyList<Any>()
-                        }
-
-                    }
-                    when (userResponse.usuario.id_localizacao) {
-
-                        is Int -> {
-                            id_localizacao = userResponse.usuario.id_localizacao as Int
-                        }
-
-                        is Boolean -> {
-                            id_localizacao = 0
-                        }
-
-                    }
+                    id_localizacao = userResponse.usuario.id_localizacao
+                    cidade = userResponse.usuario.localizacao.cidade
+                    estado = userResponse.usuario.localizacao.estado
+                    bairro = userResponse.usuario.localizacao.bairro
 
                     publicationList = userResponse.usuario.publicacoes
 
-                    Log.d("dado", "vendo se tem dado rs: $publicationList")
+                    Log.d("dados", "vendo se tem dado rs: ${id_localizacao}")
                     localStorage.salvarValor(context, cidade, "cidade")
                     localStorage.salvarValor(context, estado, "estado")
                     localStorage.salvarValor(context, bairro, "bairro")
@@ -217,14 +198,11 @@ fun ProfileScreen(
                     viewModel.cidades.value = listOf(cidade)
                     viewModel.bairros.value = listOf(bairro)
                     viewModel.id_localizacao = id_localizacao
-                    Log.i("Thiago", "${ viewModel.tags }")
-                    Log.i("aaaaa", "aaaa ${viewModel.foto}")
+                    Log.i("Thiago", "${viewModel.tags}")
+                    Log.i("Thiago", "aaaa ${userResponse.usuario.tag}")
                     Log.i("aaaaa", "ProfileScreen: ${fotoUri}")
-                    if (userResponse.usuario.tag.isEmpty()) {
-                        viewModel.tags = userResponse.usuario.tag
-                    } else {
-                        viewModel.tags = mutableListOf()
-                    }
+
+                    viewModel.tags = userResponse.usuario.tag
 
 
                 } else {
@@ -248,6 +226,7 @@ fun ProfileScreen(
         }
 
     }
+
     val array = UserRepositorySqlite(context).findUsers()
 
     val user = array[0]
@@ -266,7 +245,6 @@ fun ProfileScreen(
         Log.e("TAG@", "ProfileScreen: ${user.id}, ${user.token}")
     }
     Costurie_appTheme {
-
 
 
         Surface(
@@ -444,16 +422,12 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    if (viewModel.tags == null) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-
-                        }
-                    } else {
+                    if (viewModel.tags != null) {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 12.dp, end = 12.dp),
-                            Arrangement.SpaceBetween
+                                .padding(start = 12.dp, end = 12.dp)
+                                .fillMaxWidth(),
+                            Arrangement.SpaceEvenly
                         ) {
                             viewModel.tags?.take(2)?.forEach { tag ->
                                 GradientButtonTags(
@@ -468,7 +442,7 @@ fun ProfileScreen(
                             }
                         }
                     }
-                    Log.w("Lista Publicacao", "Lista Publicacao FORA: $publicationList ")
+                    Log.i("tags", "Lista Publicacao FORA: ${viewModel.tags} ")
                     //Log.w("Lista Usuario", "Lista Publicacao FORA: ${userState.value?.usuario!!.publicacao} ", )
                     Spacer(modifier = Modifier.height(10.dp))
                     LazyVerticalGrid(

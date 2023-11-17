@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                 val localStorage: Storage = Storage()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main")
+                    startDestination = "login")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }

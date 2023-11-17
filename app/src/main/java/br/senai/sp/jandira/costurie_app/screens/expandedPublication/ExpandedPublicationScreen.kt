@@ -310,6 +310,8 @@ fun ExpandedPublicationScreen(
 
                                         var id = publicationState.value?.publicacao?.usuario?.id
 
+                                        Log.e("id_usuario", "id_usuario pra tela: $id", )
+
                                         if (user.id.toInt() == id) {
                                             navController.navigate("profile")
                                         } else {

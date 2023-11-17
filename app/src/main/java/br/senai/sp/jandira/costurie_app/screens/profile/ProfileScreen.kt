@@ -177,15 +177,15 @@ fun ProfileScreen(
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
 
-                    when(userResponse.localizacao){
+                    when(userResponse.usuario.localizacao){
                         is LocationGetResponse -> {
-                            cidade = userResponse.localizacao.toString()
-                            estado = userResponse.usuario.estado
-                            bairro = userResponse.usuario.bairro
+                            cidade = (userResponse.usuario.localizacao as LocationGetResponse).cidade
+                            estado = (userResponse.usuario.localizacao as LocationGetResponse).estado
+                            bairro = (userResponse.usuario.localizacao as LocationGetResponse).bairro
                         }
-//                        is List<> -> {
-//
-//                        }
+                        is List<*> -> {
+                            userResponse.usuario.localizacao = emptyList<Any>()
+                        }
 
                     }
                     when (userResponse.usuario.id_localizacao) {
@@ -194,12 +194,13 @@ fun ProfileScreen(
                             id_localizacao = userResponse.usuario.id_localizacao as Int
                         }
 
-                        else -> {
-
+                        is Boolean -> {
+                            id_localizacao = 0
                         }
+
                     }
 
-                    publicationList = userResponse.publicacoes
+                    publicationList = userResponse.usuario.publicacoes
 
                     Log.d("dado", "vendo se tem dado rs: $publicationList")
                     localStorage.salvarValor(context, cidade, "cidade")
@@ -258,8 +259,7 @@ fun ProfileScreen(
         )
 
         if (profileEditSuccess.value == true) {
-            viewModel.setProfileEditSuccess(false) // Redefina o sucesso para evitar recargas repetidas
-            // A edição de perfil foi bem-sucedida, recarregue os dados do usuário.
+            viewModel.setProfileEditSuccess(false)
             user(id = user.id.toInt(), token = user.token, viewModel)
         }
 

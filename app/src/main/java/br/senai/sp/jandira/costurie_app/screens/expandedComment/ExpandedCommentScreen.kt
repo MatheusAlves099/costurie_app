@@ -77,7 +77,8 @@ import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 
 @SuppressLint("SuspiciousIndentation", "CoroutineCreationDuringComposition")
-@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
+@OptIn(
+    ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class,
     ExperimentalMaterial3Api::class
 )
 @Composable
@@ -94,6 +95,8 @@ fun ExpandedCommentScreen(
     var replyComment by remember {
         mutableStateOf(0)
     }
+
+    val id_usuario = localStorage.lerValor(context, "idUsuario")
 
     //val replyCommentState = remember { mutableStateOf(emptyList<ReplyCommentGetResponse>()) }
 
@@ -373,19 +376,22 @@ fun ExpandedCommentScreen(
                                 Spacer(modifier = Modifier.width(150.dp))
 
                                 Log.e("tem2", "tem respostas: $temRespostas")
+                                val array = UserRepositorySqlite(context).findUsers()
 
-
-                                Image(
-                                    painter = painterResource(id = R.drawable.trash_icon_purple),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        //.size(25.dp)
-                                        .clickable {
-                                            lifecycleScope.launch {
-                                                deleteComment(it.id)
+                                val user = array[0]
+                                if (it.id_usuario == user.id.toInt() || id_usuario!!.toInt() == user.id.toInt()) {
+                                    Image(
+                                        painter = painterResource(id = R.drawable.trash_icon_purple),
+                                        contentDescription = "",
+                                        modifier = Modifier
+                                            //.size(25.dp)
+                                            .clickable {
+                                                lifecycleScope.launch {
+                                                    deleteComment(it.id)
+                                                }
                                             }
-                                        }
-                                )
+                                    )
+                                }
                             }
                             if (temRespostas) {
                                 Spacer(modifier = Modifier.height(10.dp))

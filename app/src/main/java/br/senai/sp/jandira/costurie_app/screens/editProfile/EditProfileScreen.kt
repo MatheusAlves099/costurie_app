@@ -144,6 +144,14 @@ fun EditProfileScreen(
 
     val scrollState = rememberScrollState()
 
+    val tagsArray = mutableListOf<TagResponseId>()
+
+    val tags = viewModel.tags
+
+    tags!!.forEach {
+       tagsArray.add(TagResponseId(it.id))
+    }
+
     Costurie_appTheme {
 
         Surface(
@@ -389,7 +397,7 @@ fun EditProfileScreen(
                                                         "nome_de_usuario"
                                                     )!!,
                                                     nome = localStorage.lerValor(context, "nome")!!,
-                                                    tags = emptyList<TagResponseId>()
+                                                    tags = tagsArray
                                                 )
 
                                                 if (response.isSuccessful) {

@@ -78,26 +78,6 @@ fun DescriptionScreen(
 
     val user = array[0]
 
-    //funcao update de nome, foto e descricao
-//    fun updateUser(
-//        id_usuario: Int,
-//        token: String,
-//        nome: String,
-//        descricao: String,
-//        foto: Uri?
-//    ) {
-//
-//        lifecycleScope.launch {
-//            userRepository.updateUserNamePicDesc(
-//                id = user.id.toInt(),
-//                token = user.token,
-//                nome = nome,
-//                descricao = descricao,
-//                foto = foto
-//            )
-//        }
-//    }
-
     Costurie_appTheme {
         Surface(
             modifier = Modifier

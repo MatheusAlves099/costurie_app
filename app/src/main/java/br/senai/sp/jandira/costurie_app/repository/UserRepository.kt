@@ -47,7 +47,7 @@ class UserRepository {
             }
             addProperty("nome_de_usuario", nome_de_usuario)
             val tagsArray = JsonArray()
-            if (tags != null) {
+            if (tags.isNotEmpty()) {
                 for (tag in tags) {
                     val tagObject = JsonObject().apply {
                         addProperty("id_tag", tag.id)

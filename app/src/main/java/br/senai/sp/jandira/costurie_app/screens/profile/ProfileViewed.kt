@@ -178,27 +178,11 @@ fun ProfileViewedScreen(
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
 
-                    when(userResponse.usuario.localizacao){
-                        is LocationGetResponse -> {
-                            cidade = (userResponse.usuario.localizacao as LocationGetResponse).cidade
-                            estado = (userResponse.usuario.localizacao as LocationGetResponse).estado
-                            bairro = (userResponse.usuario.localizacao as LocationGetResponse).bairro
-                        }
-//                        is List<> -> {
-//
-//                        }
+                    id_localizacao = userResponse.usuario.id_localizacao
+                    cidade = userResponse.usuario.localizacao.cidade
+                    estado = userResponse.usuario.localizacao.estado
+                    bairro = userResponse.usuario.localizacao.bairro
 
-                    }
-                    when (userResponse.usuario.id_localizacao) {
-
-                        is Int -> {
-                            id_localizacao = userResponse.usuario.id_localizacao as Int
-                        }
-
-                        else -> {
-
-                        }
-                    }
 
                     publicationList = userResponse.usuario.publicacoes
 
@@ -452,12 +436,7 @@ fun ProfileViewedScreen(
 
                     Spacer(modifier = Modifier.height(25.dp))
 
-                    if (viewModel.tags == null) {
-                        Row(modifier = Modifier.fillMaxWidth()) {
-
-                        }
-
-                    } else {
+                    if (viewModel.tags != null){
                         Row(
                             modifier = Modifier
                                 .padding(start = 12.dp, end = 12.dp)

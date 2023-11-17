@@ -101,7 +101,6 @@ fun LocationScreen(navController: NavController, lifecycleScope: LifecycleCorout
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(15.dp),
-                //horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(
@@ -129,8 +128,17 @@ fun LocationScreen(navController: NavController, lifecycleScope: LifecycleCorout
                         onClick = {
                             if (cidadeStateUser.isNotEmpty() || estadoStateUser.isNotEmpty() || bairroStateUser.isNotEmpty()) {
                                 lifecycleScope.launch {
-                                    Log.i("location", "${userRepository.getUser(user.id.toInt(), user.token).body()}")
-                                    Log.i("location", "${userRepository.getUser(user.id.toInt(), user.token)}")
+                                    Log.i(
+                                        "location",
+                                        "${
+                                            userRepository.getUser(user.id.toInt(), user.token)
+                                                .body()
+                                        }"
+                                    )
+                                    Log.i(
+                                        "location",
+                                        "${userRepository.getUser(user.id.toInt(), user.token)}"
+                                    )
 
                                     userRepository.updateLocation(
                                         id = user.id.toInt(),
@@ -266,19 +274,44 @@ fun LocationScreen(navController: NavController, lifecycleScope: LifecycleCorout
                     bairroStateUser = selectedBairro
                 }
 
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(0.dp, 25.dp, 0.dp, 0.dp),
-//                    horizontalAlignment = Alignment.End
-//                ) {
-//                    WhiteButton(
-//                        onClick = {
-//                                  navController.navigate("profileType")
-//                                  },
-//                        text = "Pular".uppercase()
-//                    )
-//                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(0.dp, 25.dp, 0.dp, 0.dp),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    WhiteButton(
+                        onClick = {
+                            cidadeStateUser = "indefinido"
+                            estadoStateUser = "indefinido"
+                            bairroStateUser = "indefinido"
+                            lifecycleScope.launch {
+                                Log.i(
+                                    "location",
+                                    "${
+                                        userRepository.getUser(user.id.toInt(), user.token)
+                                            .body()
+                                    }"
+                                )
+                                Log.i(
+                                    "location",
+                                    "${userRepository.getUser(user.id.toInt(), user.token)}"
+                                )
+
+                                userRepository.updateLocation(
+                                    id = user.id.toInt(),
+                                    token = user.token,
+                                    cidade = cidadeStateUser,
+                                    estado = estadoStateUser,
+                                    bairro = bairroStateUser
+                                )
+
+                            }
+                            navController.navigate("profileType")
+                        },
+                        text = "Pular".uppercase()
+                    )
+                }
 
             }
 

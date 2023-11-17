@@ -177,11 +177,12 @@ fun ProfileViewedScreen(
                     val fotoUrl = userResponse.usuario.foto
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
-                    when(userResponse.localizacao){
+
+                    when(userResponse.usuario.localizacao){
                         is LocationGetResponse -> {
-                            cidade = userResponse.localizacao.toString()
-                            estado = userResponse.usuario.estado
-                            bairro = userResponse.usuario.bairro
+                            cidade = (userResponse.usuario.localizacao as LocationGetResponse).cidade
+                            estado = (userResponse.usuario.localizacao as LocationGetResponse).estado
+                            bairro = (userResponse.usuario.localizacao as LocationGetResponse).bairro
                         }
 //                        is List<> -> {
 //
@@ -199,7 +200,7 @@ fun ProfileViewedScreen(
                         }
                     }
 
-                    publicationList = userResponse.publicacoes
+                    publicationList = userResponse.usuario.publicacoes
 
                     Log.d("dado", "vendo se tem dado rs: $publicationList")
                     localStorage.salvarValor(context, cidade, "cidade")

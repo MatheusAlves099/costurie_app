@@ -98,14 +98,14 @@ fun YourAccountScreen(
                 }
 
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(400.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    Spacer(modifier = Modifier.height(35.dp))
-
-                    Spacer(modifier = Modifier.height(50.dp))
+                    Spacer(modifier = Modifier.height(250.dp))
 
                     ButtonSettings(
                         onClick = { navController.navigate("changeEmail") }, text = stringResource(id = R.string.text_change_email).uppercase(), icon = painterResource(
@@ -113,15 +113,11 @@ fun YourAccountScreen(
                         )
                     )
 
-                    Spacer(modifier = Modifier.height(50.dp))
-
                     ButtonSettings(
                         onClick = { navController.navigate("changePassword") }, text = "Alterar senha".uppercase(), icon = painterResource(
                             id = R.drawable.icone_voltar_button
                         )
                     )
-
-                    Spacer(modifier = Modifier.height(50.dp))
                 }
             }
         }

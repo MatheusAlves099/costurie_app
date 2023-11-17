@@ -71,12 +71,12 @@ fun CustomOutlinedTextField2(
             placeholder = {
                 Text(
                     text = label,
-                    fontSize = 18.sp,
+                    fontSize = 16.sp,
                     color = Contraste2,
                     maxLines = 1
                 )
             },
-            textStyle = TextStyle.Default.copy(fontSize = 20.sp, color = Color.Black),
+            textStyle = TextStyle.Default.copy(fontSize = 16.sp, color = Color.Black),
             trailingIcon = {
                 if (searchIcon) {
                     Icon(

@@ -78,7 +78,5 @@ fun ButtonSettings(
             )
 
         }
-
-
     }
 }

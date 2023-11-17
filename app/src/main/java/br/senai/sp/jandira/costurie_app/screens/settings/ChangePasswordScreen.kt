@@ -99,6 +99,14 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
         mutableStateOf(false)
     }
 
+    var isNewPasswordVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    var isPasswordRepeatVisible by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     val context = LocalContext.current
 
     Costurie_appTheme {
@@ -197,8 +205,8 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                     showError = !validatePassword,
                     errorMessage = validatePasswordError,
                     isPasswordField = true,
-                    isPasswordVisible = isPasswordVisible,
-                    onVisibilityChange = { isPasswordVisible = it },
+                    isPasswordVisible = isNewPasswordVisible,
+                    onVisibilityChange = { isNewPasswordVisible = it },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done
@@ -218,8 +226,8 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
                     showError = !validatePassword,
                     errorMessage = validatePasswordError,
                     isPasswordField = true,
-                    isPasswordVisible = isPasswordVisible,
-                    onVisibilityChange = { isPasswordVisible = it },
+                    isPasswordVisible = isPasswordRepeatVisible,
+                    onVisibilityChange = { isPasswordRepeatVisible = it },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Done

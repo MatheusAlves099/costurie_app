@@ -404,19 +404,6 @@ fun EditPublicationScreen(
                             if (selectedMediaUrl.size == selectedMediaUri.size) {
 
                             }
-//                            lifecycleScope.launch {
-//                                urlDownload()
-//                                if (selectedMediaUrl.size == selectedMediaUri.size) {
-//                                    createPublication(
-//                                        id_usuario = user.id.toInt(),
-//                                        token = user.token,
-//                                        titulo = titleState,
-//                                        descricao = descriptionState,
-//                                        anexos = selectedMediaUrl,
-//                                        tags = tagsArray
-//                                    )
-//                                }
-//                            }
                             Log.i("testeUri", "PublishScreen: ${selectedMediaUrl}")
                             Log.w("UHU", "EditPublicationScreen: ${updatePublication(titleState, descriptionState, tagsArray, selectedMediaUrl)} " )
 

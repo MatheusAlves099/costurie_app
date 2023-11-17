@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.costurie_app.screens.personalization
+package br.senai.sp.jandira.costurie_app.screens.settings
 
 import android.util.Log
 import android.widget.Toast
@@ -66,13 +66,13 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
+fun HelpAndSupportScreen(navController: NavController, localStorage: Storage) {
 
     var emailState by remember {
         mutableStateOf("")
     }
 
-    var repeatEmailState by remember {
+    var descriptionState by remember {
         mutableStateOf("")
     }
 
@@ -111,20 +111,20 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
                             modifier = Modifier
                                 .size(45.dp)
                                 .clickable {
-                                    navController.navigate("yourAccount")
+                                    navController.navigate("settings")
                                 }
                         )
                     }
                 }
                 Column(
                     modifier = Modifier
-                        .height(180.dp)
+                        .height(300.dp)
                         .fillMaxWidth()
                         .padding(horizontal = 35.dp, vertical = 56.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(id = R.string.text_change_email).uppercase(),
+                        text = stringResource(id = R.string.title_help_and_support).uppercase(),
                         modifier = Modifier.height(30.dp),
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 2.sp,
@@ -137,12 +137,12 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
                     Text(
                         text =
                         buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Black)) {
-                            append(stringResource(id = R.string.description_change_email))
-                        }
-                    },
+                            withStyle(style = SpanStyle(color = Color.Black)) {
+                                append(stringResource(id = R.string.description_help_and_support))
+                            }
+                        },
                         fontSize = 14.sp,
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Justify
                     )
                 }
 
@@ -151,7 +151,7 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
                     onValueChange = {
                         emailState = it
                     },
-                    label = stringResource(id = R.string.text_change_email),
+                    label = stringResource(id = R.string.email_help_and_support),
                     borderColor = Color.Transparent,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -163,24 +163,24 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
                 Spacer(modifier = Modifier.height(20.dp))
 
                 CustomOutlinedTextField2(
-                    value = repeatEmailState,
+                    value = descriptionState,
                     onValueChange = {
-                        repeatEmailState = it
+                        descriptionState = it
                     },
-                    label = stringResource(id = R.string.text_change_email_repeat),
+                    label = stringResource(id = R.string.description_label_help_and_support),
                     borderColor = Color.Transparent,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(62.dp)
+                        .height(100.dp)
                         .padding(horizontal = 35.dp)
                         .shadow(10.dp, shape = RoundedCornerShape(20.dp))
                 )
 
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.height(100.dp))
 
                 GradientButton(
                     onClick = { },
-                    text = stringResource(id = R.string.text_button_save).uppercase() ,
+                    text = stringResource(id = R.string.text_button_save).uppercase(),
                     color1 = Destaque1,
                     color2 = Destaque2
                 )

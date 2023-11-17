@@ -213,7 +213,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
-                            ChatListScreen(navController = navController, lifecycleScope = lifecycleScope)
+                            ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                             currentScreen = selectedIndexItem
                         } else {
                             ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUserViewModel,  localStorage = localStorage)

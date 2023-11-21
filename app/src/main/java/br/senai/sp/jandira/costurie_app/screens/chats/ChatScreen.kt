@@ -38,15 +38,19 @@ import br.senai.sp.jandira.costurie_app.components.MessageBar
 import br.senai.sp.jandira.costurie_app.components.ReceivedMesssage
 import br.senai.sp.jandira.costurie_app.components.SendMesssage
 import br.senai.sp.jandira.costurie_app.model.MessageResponse
+import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
+import io.socket.client.Socket
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
 fun ChatScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
+    client: ChatClient,
+    socket: Socket
 ) {
     var messageState by remember {
         mutableStateOf("")

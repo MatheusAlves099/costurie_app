@@ -10,7 +10,6 @@ object RetrofitFactory {
     //IP DO MURYLLO, NÃO TIRA SÓ COMENTAAA
     //private const val BASE_URL = "http://10.107.144.5:3000"
 
-
     private const val BASE_URL = "http://10.107.144.8:3000"
 
     object HttpClientProvider {

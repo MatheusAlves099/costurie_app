@@ -52,6 +52,7 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
@@ -65,6 +66,12 @@ fun NameScreen(navController: NavController, localStorage: Storage) {
         mutableStateOf("")
     }
     val context = LocalContext.current
+
+    val array = UserRepositorySqlite(context).findUsers()
+
+    val user = array[0]
+
+    Log.i("novoUser", "${user}")
 
     Costurie_appTheme {
         Surface(

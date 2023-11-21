@@ -177,7 +177,9 @@ fun ProfileScreen(
                     fotoUri = Uri.parse(fotoUrl)
                     email = userResponse.usuario.email
                     id_localizacao = userResponse.usuario.id_localizacao
-                    cidade = userResponse.usuario.localizacao.cidade
+                    if (userResponse.usuario.localizacao.cidade != null) {
+                        cidade = userResponse.usuario.localizacao.cidade
+                    }
                     estado = userResponse.usuario.localizacao.estado
                     bairro = userResponse.usuario.localizacao.bairro
 

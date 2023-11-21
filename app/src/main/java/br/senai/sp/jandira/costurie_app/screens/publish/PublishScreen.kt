@@ -63,6 +63,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
+import br.senai.sp.jandira.costurie_app.components.ModalPostPublish
 import br.senai.sp.jandira.costurie_app.components.TagColorViewModel
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.TagEditResponse
@@ -126,9 +127,9 @@ fun PublishScreen(
     var anexo by remember {
         mutableStateOf(AnexoResponse(""))
     }
+
     var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoResponse>()) }
     var selectedMediaUrl by remember { mutableStateOf(arrayListOf<AnexoResponse>()) }
-
 
     val array = UserRepositorySqlite(context).findUsers()
 
@@ -215,7 +216,6 @@ fun PublishScreen(
                 }
             }
         }
-
     }
 
     fun urlDownload(it: String) {
@@ -330,25 +330,10 @@ fun PublishScreen(
                 )
                 Log.i("selected", "PublishScreen: ${selectedMediaUri}")
 
-                Image(
-                    painter = painterResource(id = R.drawable.send_icon),
-                    contentDescription = "",
-                    Modifier
-                        .size(35.dp)
-                        .clickable {
-
-
-                            if (selectedMediaUrl.size == selectedMediaUri.size) {
-                                createPublication(
-                                    id_usuario = user.id.toInt(),
-                                    token = user.token,
-                                    titulo = titleState,
-                                    descricao = descriptionState,
-                                    anexos = selectedMediaUrl,
-                                    tags = tagsArray
-                                )
-                            }
-                        }
+            ModalPostPublish(
+                lifecycleScope,
+                localStorage,
+                navController
                 )
             }
 

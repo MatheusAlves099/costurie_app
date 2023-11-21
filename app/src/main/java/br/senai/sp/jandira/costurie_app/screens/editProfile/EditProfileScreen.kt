@@ -267,9 +267,6 @@ fun EditProfileScreen(
                                                                     val map = HashMap<String, Any>()
                                                                     map["pic"] = uri.toString()
 
-
-
-
                                                                     firebaseFirestore
                                                                         .collection("images")
                                                                         .add(map)

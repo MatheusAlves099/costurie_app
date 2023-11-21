@@ -129,19 +129,7 @@ fun DescriptionScreen(
                                         foto = localStorage.lerValor(context, "foto")
                                     )
                                 }
-//                                updateUser(
-//                                    nome = localStorage.lerValor(context, "nome") ?: "",
-//                                    descricao = localStorage.lerValor(context, "descricao") ?: "",
-//                                    foto = Uri.parse(localStorage.lerValor(context, "foto"))
-//                                )
 
-                                Log.i("teste", "${
-                                    lifecycleScope.launch {
-                                        UserRepository().getUser(
-                                            user.id.toInt(), user.token
-                                        )
-                                    }
-                                }")
                                 navController.navigate("location")
                             } else {
                                 Toast.makeText(
@@ -149,12 +137,6 @@ fun DescriptionScreen(
                                     "Erro: preencha o campo",
                                     Toast.LENGTH_SHORT
                                 ).show()
-                            }
-                            lifecycleScope.launch {
-                                var costureira = userRepository.getUser(
-                                    user.id.toInt(), user.token
-                                )
-                                Log.i("usuario", "${costureira.body()}")
                             }
                         },
                         modifier = Modifier

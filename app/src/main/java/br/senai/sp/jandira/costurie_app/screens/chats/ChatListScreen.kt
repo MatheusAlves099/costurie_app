@@ -69,6 +69,9 @@ import br.senai.sp.jandira.costurie_app.components.ModalLocation
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.TagsRepository
+import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
+import br.senai.sp.jandira.costurie_app.service.chat.SocketResponse
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
@@ -81,6 +84,7 @@ import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.socket.client.Socket
 import kotlinx.coroutines.launch
 import java.lang.reflect.Type
 
@@ -88,31 +92,37 @@ import java.lang.reflect.Type
 fun ChatListScreen(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
-    localStorage: Storage
-
-//    socket: Socket
+    localStorage: Storage,
+    client: ChatClient,
+    socket: Socket,
+    idUsuario: Int,
+    chatViewModel: ChatViewModel,
 ) {
 
-//    var listaContatos by remember {
-//        mutableStateOf(
-//            SocketRes
-//        )
-//    }
-//
-//    // Ouça o evento do socket
-//    socket.on("receive_contacts") { args ->
-//        args.let { d ->
-//            if (d.isNotEmpty()) {
-//                val data = d[0]
-//                if (data.toString().isNotEmpty()) {
-//                    val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
-//
-//                    listaContatos = chat
-//                }
-//            }
-//        }
-//    }
+    var listaContatos by remember {
+        mutableStateOf(
+            SocketResponse(
+                users = listOf()
+            )
+        )
+    }
+    Log.d("LISTA1", "ChatListScreen: $listaContatos")
+    Log.d("ID", "ChatListScreen: $idUsuario")
+    // Ouça o evento do socket
+    socket.on("receive_contacts") { args ->
+        args.let { d ->
+            if (d.isNotEmpty()) {
+                val data = d[0]
+                if (data.toString().isNotEmpty()) {
+                    val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
+                    listaContatos = chat
+                }
+            }
+        }
+    }
+
+    Log.d("LISTA2", "ChatListScreen: $listaContatos")
     var context = LocalContext.current
 
     var pesquisaState by remember {
@@ -203,120 +213,134 @@ fun ChatListScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    Card(
-                        modifier = Modifier
-                            .size(380.dp, 85.dp)
-                            .padding(start = 32.dp, top = 4.dp, bottom = 4.dp)
-                            .pointerInput(Unit) {
-                                detectTransformGestures { _, pan, _, _ ->
-                                    if (pan != Offset(0f, 0f)) {
-                                        isLongPressActive = true
-                                    }
-                                }
-                            }
-                            .clickable {
-                                navController.navigate("chat")
-                            },
-                        backgroundColor = (if (isLongPressActive) Principal2 else Color.White),
-                        shape = RoundedCornerShape(15.dp),
-                        elevation = AppBarDefaults.TopAppBarElevation,
+                    LazyColumn(modifier = Modifier.padding(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
+                    ){
+                        items(listaContatos.users) {
 
-                        ) {
-                        Row(
-                            modifier = Modifier
-                                .width(300.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
+                            Log.d("LISTA3", "ChatListScreen: $listaContatos")
+                            Log.d("LISTA4", "ChatListScreen: ${listaContatos.users}")
+                            var contato = it.users.filter { user -> user.id != idUsuario }
+
+                            Log.e("oii", "aquiiii: ${contato[0].id}")
+
+                            Card(
                                 modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(shape = RoundedCornerShape(10.dp))
-                                    .background(Color(168, 155, 255, 102))
-                            ) {
-                                Image(
-                                    painterResource(id = R.drawable.mulher_publicacao),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(bottom = 5.dp, end = 2.dp)
-                                        .clip(shape = RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-
-                                if (isLongPressActive) Image(
-                                    painterResource(id = R.drawable.check_icon),
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .size(20.dp)
-                                        .offset(x = 40.dp, y = 40.dp)
-                                        .clip(shape = RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                ) else {
-
-                                }
-                            }
-
-                            Column(
-
-                            ) {
-                                Text(
-                                    text = "Cyclanilda da Silva Soares",
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(230.dp)
-                                        .height(22.dp),
-                                    fontSize = 15.sp,
-                                    color = Contraste
-                                )
-
-                                Text(
-                                    text = "Boa noite!",
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(230.dp)
-                                        .height(22.dp),
-                                    fontSize = 15.sp,
-                                    color = Contraste2
-                                )
-                            }
-
-                            Column(
-                                modifier = Modifier
-                                    .height(80.dp)
-                                    .padding(top = 24.dp),
-                                Arrangement.SpaceBetween,
-                                Alignment.CenterHorizontally
-                            ) {
-                                Canvas(
-                                    modifier = Modifier
-                                        .size(12.dp)
-                                        .pointerInput(Unit) {
-                                            detectTransformGestures { _, pan, _, _ ->
-                                                if (pan != Offset(0f, 0f)) {
-                                                    isLongPressActive = true
-                                                }
+                                    .size(380.dp, 85.dp)
+                                    .padding(start = 32.dp, top = 4.dp, bottom = 4.dp)
+                                    .pointerInput(Unit) {
+                                        detectTransformGestures { _, pan, _, _ ->
+                                            if (pan != Offset(0f, 0f)) {
+                                                isLongPressActive = true
                                             }
-                                        },
-                                    onDraw = {
-                                        drawCircle(
-                                            color = if (isLongPressActive) Color.Transparent else Destaque1
+                                        }
+                                    }
+                                    .clickable {
+                                        navController.navigate("chat")
+                                    },
+                                backgroundColor = (if (isLongPressActive) Principal2 else Color.White),
+                                shape = RoundedCornerShape(15.dp),
+                                elevation = AppBarDefaults.TopAppBarElevation,
+
+                                ) {
+                                Row(
+                                    modifier = Modifier
+                                        .width(300.dp),
+                                    horizontalArrangement = Arrangement.SpaceEvenly,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(60.dp)
+                                            .clip(shape = RoundedCornerShape(10.dp))
+                                            .background(Color(168, 155, 255, 102))
+                                    ) {
+                                        AsyncImage(
+                                            model = contato[0].foto,
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .padding(bottom = 5.dp, end = 2.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        )
+
+                                        if (isLongPressActive) Image(
+                                            painterResource(id = R.drawable.check_icon),
+                                            contentDescription = "",
+                                            modifier = Modifier
+                                                .size(20.dp)
+                                                .offset(x = 40.dp, y = 40.dp)
+                                                .clip(shape = RoundedCornerShape(10.dp)),
+                                            contentScale = ContentScale.Crop
+                                        ) else {
+
+                                        }
+                                    }
+
+                                    Column(
+
+                                    ) {
+                                        Text(
+                                            text = contato[0].nome,
+                                            textAlign = TextAlign.Start,
+                                            modifier = Modifier
+                                                .width(230.dp)
+                                                .height(22.dp),
+                                            fontSize = 15.sp,
+                                            color = Contraste
+                                        )
+
+                                        Text(
+                                            text = "Boa noite!",
+                                            textAlign = TextAlign.Start,
+                                            modifier = Modifier
+                                                .width(230.dp)
+                                                .height(22.dp),
+                                            fontSize = 15.sp,
+                                            color = Contraste2
                                         )
                                     }
-                                )
 
-                                Text(
-                                    text = "14:40",
-                                    textAlign = TextAlign.Start,
-                                    modifier = Modifier
-                                        .width(30.dp)
-                                        .height(20.dp),
-                                    fontSize = 10.sp,
-                                    color = Contraste2
-                                )
+                                    Column(
+                                        modifier = Modifier
+                                            .height(80.dp)
+                                            .padding(top = 24.dp),
+                                        Arrangement.SpaceBetween,
+                                        Alignment.CenterHorizontally
+                                    ) {
+                                        Canvas(
+                                            modifier = Modifier
+                                                .size(12.dp)
+                                                .pointerInput(Unit) {
+                                                    detectTransformGestures { _, pan, _, _ ->
+                                                        if (pan != Offset(0f, 0f)) {
+                                                            isLongPressActive = true
+                                                        }
+                                                    }
+                                                },
+                                            onDraw = {
+                                                drawCircle(
+                                                    color = if (isLongPressActive) Color.Transparent else Destaque1
+                                                )
+                                            }
+                                        )
+
+                                        Text(
+                                            text = it.hora_criacao,
+                                            textAlign = TextAlign.Start,
+                                            modifier = Modifier
+                                                .width(30.dp)
+                                                .height(20.dp),
+                                            fontSize = 10.sp,
+                                            color = Contraste2
+                                        )
+                                    }
+                                }
                             }
-                        }
-                    }
+
+                        }}
+                    
                 }
             }
         }

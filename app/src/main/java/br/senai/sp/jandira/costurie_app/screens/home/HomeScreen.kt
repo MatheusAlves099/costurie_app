@@ -41,17 +41,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.TextMenuBar
+import br.senai.sp.jandira.costurie_app.models_private.User
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatListScreen
 import br.senai.sp.jandira.costurie_app.screens.explore.ExploreScreen
 import br.senai.sp.jandira.costurie_app.screens.publish.PublishScreen
 import br.senai.sp.jandira.costurie_app.screens.services.ServicesScreen
+import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
@@ -63,8 +69,29 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2) {
 
+    val chatViewModel = viewModel<ChatViewModel>()
 
     val localStorage: Storage = Storage()
+
+    val client = ChatClient()
+
+    val socket = client.getSocket()
+
+    val context = LocalContext.current
+
+    //val dadaUser = UserRepository(context).findUsers()
+    val dadaUser = UserRepositorySqlite(context).findUsers()
+
+    var array = User()
+
+    var data = ""
+
+    if(dadaUser.isNotEmpty()){
+        array = dadaUser[0]
+
+        data = array.id.toString()
+    }
+    client.connect(data.toInt())
 
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
@@ -213,7 +240,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
-                            ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
+                            ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage, client = client, socket = socket,  chatViewModel = chatViewModel,  idUsuario = data.toInt())
                             currentScreen = selectedIndexItem
                         } else {
                             ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUserViewModel,  localStorage = localStorage)

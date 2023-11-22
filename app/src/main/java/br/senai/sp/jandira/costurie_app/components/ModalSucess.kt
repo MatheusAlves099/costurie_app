@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,7 +34,6 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
-import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
@@ -46,32 +43,31 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import kotlinx.coroutines.launch
 
 @Composable
-
-fun ModalPostPublish(
+fun ModalSucess(
+    navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
-    localStorage: Storage,
-    navController: NavController
+    localStorage: Storage
 ) {
-    var titleState by remember {
-        mutableStateOf("")
-    }
+    val context = LocalContext.current
+
+    var isDialogOpen by remember { mutableStateOf(false) }
+
+    val array = UserRepositorySqlite(context).findUsers()
+
+    val user = array[0]
 
     var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoResponse>()) }
     var selectedMediaUrl by remember { mutableStateOf(arrayListOf<AnexoResponse>()) }
+
+    var titleState by remember {
+        mutableStateOf("")
+    }
 
     var descriptionState by remember {
         mutableStateOf("")
     }
 
     val tagsArray = mutableListOf<TagResponseId>()
-
-    val context = LocalContext.current
-
-    val array = UserRepositorySqlite(context).findUsers()
-
-    val user = array[0]
-
-    var isDialogOpen by remember { mutableStateOf(false) }
 
     fun createPublication(
         id_usuario: Int,
@@ -139,6 +135,17 @@ fun ModalPostPublish(
             .size(35.dp)
             .clickable {
                 isDialogOpen = true
+
+                if (selectedMediaUrl.size == selectedMediaUri.size) {
+                    createPublication(
+                        id_usuario = user.id.toInt(),
+                        token = user.token,
+                        titulo = titleState,
+                        descricao = descriptionState,
+                        anexos = selectedMediaUrl,
+                        tags = tagsArray
+                    )
+                }
             }
     )
 
@@ -166,7 +173,7 @@ fun ModalPostPublish(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = stringResource(id = R.string.text_modal_publish),
+                        text = "TESTE",
                         textAlign = TextAlign.Center,
                         fontSize = 18.sp
                     )
@@ -176,29 +183,13 @@ fun ModalPostPublish(
                     Row (
                         modifier = Modifier
                             .width(220.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.Center
                     ) {
                         GradientButtonModal(
                             onClick = {
-                                if (selectedMediaUrl.size == selectedMediaUri.size) {
-                                    createPublication(
-                                        id_usuario = user.id.toInt(),
-                                        token = user.token,
-                                        titulo = titleState,
-                                        descricao = descriptionState,
-                                        anexos = selectedMediaUrl,
-                                        tags = tagsArray
-                                    )
-                                }
+
                             },
                             text = stringResource(id = R.string.text_yes).uppercase(),
-                            color1 = Destaque1,
-                            color2 = Destaque2
-                        )
-
-                        GradientButtonModal(
-                            onClick = { navController.navigate("publish") },
-                            text = stringResource(id = R.string.text_no).uppercase(),
                             color1 = Destaque1,
                             color2 = Destaque2
                         )

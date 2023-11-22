@@ -192,6 +192,7 @@ fun ChatScreen(
                     LazyColumn(
                         modifier = Modifier
                             .height(590.dp)
+                            .fillMaxWidth()
                             .padding(12.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally

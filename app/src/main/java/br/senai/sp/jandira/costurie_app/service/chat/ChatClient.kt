@@ -9,6 +9,7 @@ class ChatClient() {
     //private val socket: Socket = IO.socket("http://192.168.3.7:3001")
 
     fun connect(idUsuario: Int) {
+
         socket.connect()
 
         socket.on(Socket.EVENT_CONNECT) {

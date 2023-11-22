@@ -67,7 +67,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2) {
+fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2, chatViewModel: ChatViewModel) {
 
     val localStorage: Storage = Storage()
 
@@ -218,8 +218,6 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
-                          
-                            val chatViewModel = viewModel<ChatViewModel>()
 
                             val client = ChatClient()
 

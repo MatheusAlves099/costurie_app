@@ -3,21 +3,19 @@ package br.senai.sp.jandira.costurie_app
 import ProfileScreen
 import ProfileViewedScreen
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.models_private.User
-import br.senai.sp.jandira.costurie_app.repository.UserRepository
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatListScreen
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.EditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.TagsEditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editPublication.EditPublicationScreen
-import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
 import br.senai.sp.jandira.costurie_app.screens.expandedPublication.ExpandedPublicationScreen
 import br.senai.sp.jandira.costurie_app.screens.explore.ExploreScreen
 import br.senai.sp.jandira.costurie_app.screens.home.HomeScreen
@@ -36,7 +34,6 @@ import br.senai.sp.jandira.costurie_app.screens.personalization.TagSelectScreen
 import br.senai.sp.jandira.costurie_app.screens.settings.TermsAndConditionsScreen
 import br.senai.sp.jandira.costurie_app.screens.personalization.TypeProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.profile.ProfileListScreen
-import br.senai.sp.jandira.costurie_app.screens.publish.PublishScreen
 import br.senai.sp.jandira.costurie_app.screens.register.RegisterScreen
 import br.senai.sp.jandira.costurie_app.screens.services.ServicesScreen
 import br.senai.sp.jandira.costurie_app.screens.settings.HelpAndSupportScreen
@@ -77,7 +74,7 @@ class MainActivity : ComponentActivity() {
                 val socket = client.getSocket()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination =  "main")
+                    startDestination = "home")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }
@@ -87,7 +84,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = "validationCode") { ValidationCodeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelPassword) }
                     composable(route = "tradePassword") { TradePasswordScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelPassword) }
                     composable(route = "loading") { LoadingScreen(navController = navController, lifecycleScope = lifecycleScope) }
-                    composable(route = "home") { HomeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelUser2) }
+                    composable(route = "home") { HomeScreen(navController = navController, lifecycleScope = lifecycleScope, viewModelUser2, chatViewModel) }
                     composable(route = "explore") { ExploreScreen(navController = navController, localStorage = localStorage) }
 //                    composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
@@ -119,7 +116,27 @@ class MainActivity : ComponentActivity() {
                         client.connect(data.toInt())
 
                         ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage, client = client, socket = socket, chatViewModel = chatViewModel,  idUsuario = data.toInt()) }
-                    composable(route = "chat") { ChatScreen(lifecycleScope = lifecycleScope, navController = navController, client = client, socket = socket) }
+                    composable(route = "chat") {
+                        val context = LocalContext.current
+
+                        val dadaUser = UserRepositorySqlite(context).findUsers()
+
+                        var array = User()
+
+                        var data = ""
+                        if(dadaUser.isNotEmpty()){
+                            array = dadaUser[0]
+
+
+                            data = array.id.toString()
+
+                            Log.e("eu mandei", "id: ${data}", )
+
+
+                            val client = ChatClient()
+                            client.connect(data.toInt())
+                            val socket = client.getSocket()
+                        ChatScreen(lifecycleScope = lifecycleScope, navController = navController, client = client, socket = socket, chatViewModel = chatViewModel,  idUsuario = data.toInt()) }
 
                     //telas de configuracões
                     composable(route = "settings") { SettingsScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage) }
@@ -141,4 +158,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+    }
 }

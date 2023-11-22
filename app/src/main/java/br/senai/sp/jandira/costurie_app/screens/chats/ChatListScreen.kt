@@ -213,7 +213,7 @@ fun ChatListScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    LazyColumn(modifier = Modifier.padding(24.dp),
+                    LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(20.dp)
                     ){
                         items(listaContatos.users) {
@@ -236,6 +236,11 @@ fun ChatListScreen(
                                         }
                                     }
                                     .clickable {
+                                        chatViewModel.idChat = it.id_chat
+                                        chatViewModel.idUser2 = contato[0].id
+                                        chatViewModel.foto = contato[0].foto
+                                        chatViewModel.nome = contato[0].nome
+                                        socket.emit("listMessages", it.id_chat)
                                         navController.navigate("chat")
                                     },
                                 backgroundColor = (if (isLongPressActive) Principal2 else Color.White),

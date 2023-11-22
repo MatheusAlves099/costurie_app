@@ -69,8 +69,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2) {
 
-    val chatViewModel = viewModel<ChatViewModel>()
-
     val localStorage: Storage = Storage()
 
     val sheetState = rememberBottomSheetState(
@@ -220,6 +218,9 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
+                          
+                            val chatViewModel = viewModel<ChatViewModel>()
+
                             val client = ChatClient()
 
                             val socket = client.getSocket()

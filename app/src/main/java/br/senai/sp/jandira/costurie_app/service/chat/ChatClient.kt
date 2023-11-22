@@ -5,8 +5,8 @@ import io.socket.client.Socket
 import org.json.JSONObject
 
 class ChatClient() {
-    // private val socket: Socket = IO.socket("http://10.107.144.15:3001")
-    private val socket: Socket = IO.socket("http://192.168.3.7:3001")
+    private val socket: Socket = IO.socket("http://10.107.144.27:3001")
+    //private val socket: Socket = IO.socket("http://192.168.3.7:3001")
 
     fun connect(idUsuario: Int) {
         socket.connect()

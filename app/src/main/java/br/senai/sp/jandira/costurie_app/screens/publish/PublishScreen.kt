@@ -537,7 +537,6 @@ fun PublishScreen(
                 }
             }
         }
-    }
 }
 
 

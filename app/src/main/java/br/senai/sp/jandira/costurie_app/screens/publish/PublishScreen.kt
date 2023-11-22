@@ -64,6 +64,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
+import br.senai.sp.jandira.costurie_app.components.ModalSucess
 import br.senai.sp.jandira.costurie_app.components.TagColorViewModel
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.TagEditResponse
@@ -92,6 +93,8 @@ fun PublishScreen(
 ) {
 
     val context = LocalContext.current
+
+    var isDialogOpen by remember { mutableStateOf(false) }
 
     var anexoResponse by remember {
         mutableStateOf<AnexoResponse>(AnexoResponse(""))
@@ -168,7 +171,6 @@ fun PublishScreen(
         anexos: List<AnexoResponse>
     ) {
 
-
         val publicationRepository = PublicationRepository()
         lifecycleScope.launch {
             val array = UserRepositorySqlite(context).findUsers()
@@ -223,8 +225,7 @@ fun PublishScreen(
     fun urlDownload(it: String) {
         val storageRefs: StorageReference =
             FirebaseStorage.getInstance().reference.child("teste/${Uri.parse(it)}")
-
-
+        
         val uploadTask = storageRefs.putFile(Uri.parse(it))
 
         uploadTask
@@ -280,10 +281,8 @@ fun PublishScreen(
                             Toast.LENGTH_SHORT
                         )
                         .show()
-
                 }
             }
-
     }
 
     val launcher = rememberLauncherForActivityResult(
@@ -295,9 +294,9 @@ fun PublishScreen(
             urlDownload(uri.toString())
         }
     }
-    
+
     Costurie_appTheme {
-        
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -331,167 +330,25 @@ fun PublishScreen(
                 )
                 Log.i("selected", "PublishScreen: ${selectedMediaUri}")
 
-                Image(
-                    painter = painterResource(id = R.drawable.send_icon),
-                    contentDescription = "",
-                    Modifier
-                        .size(35.dp)
-                        .clickable {
-                            if (selectedMediaUrl.size == selectedMediaUri.size) {
-                                createPublication(
-                                    id_usuario = user.id.toInt(),
-                                    token = user.token,
-                                    titulo = titleState,
-                                    descricao = descriptionState,
-                                    anexos = selectedMediaUrl,
-                                    tags = tagsArray
-                                )
-                            }
-                        }
+                ModalSucess(
+                    navController,
+                    lifecycleScope,
+                    localStorage
                 )
+            }
 
-                Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
                 Box(
                     modifier = Modifier
                         .height(100.dp)
-                        .fillMaxWidth(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .height(100.dp)
-                            .width(110.dp)
-                            .background((Color.White), shape = RoundedCornerShape(20.dp))
-                            .border(
-                                width = 2.dp,
-                                color = Color(168, 155, 255, 255),
-                                shape = RoundedCornerShape(20.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-
-                        Image(
-                            painter = painterResource(id = R.drawable.icon_add_image),
-                            contentDescription = "",
-                            Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    launcher.launch("image/*")
-
-                                }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                Box(
-                    modifier = Modifier
-                        .height(70.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 35.dp)
-                        .background((Color.White), shape = RoundedCornerShape(60.dp))
-                        .border(
-                            width = 2.dp,
-                            color = Color(231, 188, 255, 255),
-                            shape = RoundedCornerShape(60.dp)
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-
-                    LazyRow(content = {
-                        items(selectedMediaUri) { anexoResponse ->
-                            val uri = Uri.parse(anexoResponse.conteudo)
-                            Box(
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(shape = RoundedCornerShape(10.dp))
-                                    .background(Color(168, 155, 255, 102))
-                                    .padding(2.dp),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                AsyncImage(
-                                    model = uri,
-                                    contentDescription = "",
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .clip(shape = RoundedCornerShape(10.dp)),
-                                    contentScale = ContentScale.Crop
-                                )
-                                Icon(
-                                    painter = painterResource(id = R.drawable.trash_icon),
-                                    contentDescription = "Delete",
-                                    modifier = Modifier
-                                        .size(25.dp)
-                                        .clickable {
-                                            Log.i(
-                                                "ListaArquivos",
-                                                "media: $selectedMediaUri"
-                                            )
-                                            Log.i(
-                                                "ListaArquivos",
-                                                "anexo: $anexoResponse"
-                                            )
-                                            selectedMediaUri = selectedMediaUri.minus(anexoResponse)
-                                        },
-                                    tint = Color.White
-                                )
-                            }
-                        }
-
-                    })
-                }
-
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                CustomOutlinedTextField2(
-                    value = titleState,
-                    onValueChange = {
-                        titleState = it
-                    },
-                    label = stringResource(id = R.string.titulo_label),
-                    borderColor = Color.Transparent,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(62.dp)
-                        .padding(horizontal = 35.dp)
-                        .shadow(10.dp, shape = RoundedCornerShape(20.dp))
-                )
-
-                Spacer(modifier = Modifier.height(15.dp))
-
-                CustomOutlinedTextField2(
-                    value = descriptionState,
-                    onValueChange = {
-                        descriptionState = it
-                    },
-                    label = stringResource(id = R.string.descricao_label),
-                    borderColor = Color.Transparent,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(90.dp)
-                        .padding(horizontal = 35.dp)
-                        .shadow(10.dp, shape = RoundedCornerShape(20.dp))
-                )
-
-                Spacer(modifier = Modifier.height(10.dp))
-
-                Text(
-                    text = stringResource(id = R.string.tags_title_label),
-                    modifier = Modifier
-                        .padding(horizontal = 35.dp),
-                    fontFamily = Kufam,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-
-                Box(
-                    modifier = Modifier
-                        .height(180.dp)
-                        .fillMaxWidth()
-                        .padding(horizontal = 25.dp)
+                        .width(110.dp)
                         .background((Color.White), shape = RoundedCornerShape(20.dp))
                         .border(
                             width = 2.dp,
@@ -500,62 +357,188 @@ fun PublishScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(2),
-                        state = rememberLazyGridState(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.padding(12.dp)
-                    ) {
-                        items(filtro(pesquisaState)) {
-                            GradientButtonTag(
-                                onClick = {
-                                    isClicked = !isClicked
-                                    if (isClicked) {
-                                        viewModel.setTagColor(it.id, Destaque1, Destaque2)
-                                        viewModel.setTagTextColor(
-                                            it.id,
-                                            Color.White,
-                                            Color.White
-                                        )
-                                        if (!tagsArray.contains(TagResponseId(it.id))) {
-                                            tagsArray.add(TagResponseId(it.id))
-                                        }
-                                    } else {
-                                        viewModel.setTagColor(
-                                            it.id,
-                                            Color.Transparent,
-                                            Color.Transparent
-                                        )
-                                        viewModel.setTagTextColor(
-                                            it.id,
-                                            Destaque1,
-                                            Destaque2
-                                        )
-                                        if (tagsArray.contains(TagResponseId(it.id))) {
-                                            tagsArray.remove(TagResponseId(it.id))
-                                        }
-                                    }
 
-                                    Log.e("it.nome", "nometag: ${it.nome_tag}")
-                                    Log.e("it.id", "id: ${it.id}")
-                                    Log.e("array", "array: $tagsArray")
-                                },
-                                tagId = it.id,
-                                color1 = Destaque1,
-                                color2 = Destaque2,
-                                text = it.nome_tag,
-                                textColor = Color(168, 155, 255, 255),
+                    Image(
+                        painter = painterResource(id = R.drawable.icon_add_image),
+                        contentDescription = "",
+                        Modifier
+                            .size(50.dp)
+                            .clickable {
+                                launcher.launch("image/*")
 
-                                )
+                            }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Box(
+                modifier = Modifier
+                    .height(70.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 35.dp)
+                    .background((Color.White), shape = RoundedCornerShape(60.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color(231, 188, 255, 255),
+                        shape = RoundedCornerShape(60.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+
+                LazyRow(content = {
+                    items(selectedMediaUri) { anexoResponse ->
+                        val uri = Uri.parse(anexoResponse.conteudo)
+                        Box(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(shape = RoundedCornerShape(10.dp))
+                                .background(Color(168, 155, 255, 102))
+                                .padding(2.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            AsyncImage(
+                                model = uri,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(shape = RoundedCornerShape(10.dp)),
+                                contentScale = ContentScale.Crop
+                            )
+                            Icon(
+                                painter = painterResource(id = R.drawable.trash_icon),
+                                contentDescription = "Delete",
+                                modifier = Modifier
+                                    .size(25.dp)
+                                    .clickable {
+                                        Log.i(
+                                            "ListaArquivos",
+                                            "media: $selectedMediaUri"
+                                        )
+                                        Log.i(
+                                            "ListaArquivos",
+                                            "anexo: $anexoResponse"
+                                        )
+                                        selectedMediaUri = selectedMediaUri.minus(anexoResponse)
+                                    },
+                                tint = Color.White
+                            )
                         }
+                    }
+                })
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            CustomOutlinedTextField2(
+                value = titleState,
+                onValueChange = {
+                    titleState = it
+                },
+                label = stringResource(id = R.string.titulo_label),
+                borderColor = Color.Transparent,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(62.dp)
+                    .padding(horizontal = 35.dp)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
+            )
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            CustomOutlinedTextField2(
+                value = descriptionState,
+                onValueChange = {
+                    descriptionState = it
+                },
+                label = stringResource(id = R.string.descricao_label),
+                borderColor = Color.Transparent,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(90.dp)
+                    .padding(horizontal = 35.dp)
+                    .shadow(10.dp, shape = RoundedCornerShape(20.dp))
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = stringResource(id = R.string.tags_title_label),
+                modifier = Modifier
+                    .padding(horizontal = 35.dp),
+                fontFamily = Kufam,
+                fontSize = 18.sp,
+                color = Color.Black
+            )
+
+            Box(
+                modifier = Modifier
+                    .height(180.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 25.dp)
+                    .background((Color.White), shape = RoundedCornerShape(20.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color(168, 155, 255, 255),
+                        shape = RoundedCornerShape(20.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    state = rememberLazyGridState(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    items(filtro(pesquisaState)) {
+                        GradientButtonTag(
+                            onClick = {
+                                isClicked = !isClicked
+                                if (isClicked) {
+                                    viewModel.setTagColor(it.id, Destaque1, Destaque2)
+                                    viewModel.setTagTextColor(
+                                        it.id,
+                                        Color.White,
+                                        Color.White
+                                    )
+                                    if (!tagsArray.contains(TagResponseId(it.id))) {
+                                        tagsArray.add(TagResponseId(it.id))
+                                    }
+                                } else {
+                                    viewModel.setTagColor(
+                                        it.id,
+                                        Color.Transparent,
+                                        Color.Transparent
+                                    )
+                                    viewModel.setTagTextColor(
+                                        it.id,
+                                        Destaque1,
+                                        Destaque2
+                                    )
+                                    if (tagsArray.contains(TagResponseId(it.id))) {
+                                        tagsArray.remove(TagResponseId(it.id))
+                                    }
+                                }
+
+                                Log.e("it.nome", "nometag: ${it.nome_tag}")
+                                Log.e("it.id", "id: ${it.id}")
+                                Log.e("array", "array: $tagsArray")
+                            },
+                            tagId = it.id,
+                            color1 = Destaque1,
+                            color2 = Destaque2,
+                            text = it.nome_tag,
+                            textColor = Color(168, 155, 255, 255),
+
+                            )
                     }
                 }
             }
         }
     }
 }
-
 
 
 

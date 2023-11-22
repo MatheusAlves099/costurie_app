@@ -39,7 +39,6 @@ import br.senai.sp.jandira.costurie_app.ui.theme.ShapeButton
 fun SendMesssage(
     message: String,
     time: String,
-    envio : Int
 ) {
     Row (
         modifier = Modifier.fillMaxWidth()

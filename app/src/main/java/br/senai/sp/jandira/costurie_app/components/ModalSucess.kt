@@ -46,11 +46,13 @@ import kotlinx.coroutines.launch
 fun ModalSucess(
     navController: NavController,
     lifecycleScope: LifecycleCoroutineScope,
-    localStorage: Storage
+    localStorage: Storage,
+
 ) {
     val context = LocalContext.current
 
     var isDialogOpen by remember { mutableStateOf(false) }
+    var isDialogError by remember { mutableStateOf(false) }
 
     val array = UserRepositorySqlite(context).findUsers()
 
@@ -97,22 +99,32 @@ fun ModalSucess(
 
             if (response.isSuccessful) {
 
+                isDialogOpen = true
+
                 Log.e(MainActivity::class.java.simpleName, "Publicação Feita com Sucesso!")
                 Log.e("publication", "publication: ${response.body()} ")
 
                 navController.navigate("home")
 
             } else {
+                isDialogError = false
+
                 val errorBody = response.errorBody()?.string()
 
                 val checagem = response.body()
                 if (checagem?.titulo == "" || checagem?.descricao == null || checagem?.titulo == null || checagem.descricao == "" || checagem.anexos == null || checagem.tags == null) {
+
+                    isDialogError = true
+
                     Toast.makeText(
                         context,
                         "Campos obrigatórios não foram preenchidos.",
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
+
+                    isDialogError = true
+
                     Log.e(
                         MainActivity::class.java.simpleName,
                         "Erro durante inserir uma publicação: $errorBody"
@@ -134,8 +146,6 @@ fun ModalSucess(
         Modifier
             .size(35.dp)
             .clickable {
-                isDialogOpen = true
-
                 if (selectedMediaUrl.size == selectedMediaUri.size) {
                     createPublication(
                         id_usuario = user.id.toInt(),
@@ -173,7 +183,7 @@ fun ModalSucess(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "TESTE",
+                        text = stringResource(id = R.string.text_modal_publish_sucess),
                         textAlign = TextAlign.Center,
                         fontSize = 18.sp
                     )
@@ -187,9 +197,9 @@ fun ModalSucess(
                     ) {
                         GradientButtonModal(
                             onClick = {
-
+                                navController.navigate("explore")
                             },
-                            text = stringResource(id = R.string.text_yes).uppercase(),
+                            text = stringResource(id = R.string.text_ok).uppercase(),
                             color1 = Destaque1,
                             color2 = Destaque2
                         )

@@ -113,5 +113,7 @@
     <string name="text_modal_exit">VOCÊ REALMENTE DESEJA SAIR?</string>
     <string name="text_yes">Sim</string>
     <string name="text_no">Não</string>
+    <string name="text_ok">OK</string>
     <string name="text_modal_publish">VOCÊ REALMENTE DESEJA PUBLICAR?</string>
+    <string name="text_modal_publish_sucess">PUBLICAÇÃO ENVIADA!</string>
 </resources>

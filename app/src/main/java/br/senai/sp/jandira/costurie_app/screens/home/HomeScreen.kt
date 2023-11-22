@@ -67,31 +67,9 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2) {
-
-    val chatViewModel = viewModel<ChatViewModel>()
+fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2, chatViewModel: ChatViewModel) {
 
     val localStorage: Storage = Storage()
-
-    val client = ChatClient()
-
-    val socket = client.getSocket()
-
-    val context = LocalContext.current
-
-    //val dadaUser = UserRepository(context).findUsers()
-    val dadaUser = UserRepositorySqlite(context).findUsers()
-
-    var array = User()
-
-    var data = ""
-
-    if(dadaUser.isNotEmpty()){
-        array = dadaUser[0]
-
-        data = array.id.toString()
-    }
-    client.connect(data.toInt())
 
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
@@ -240,6 +218,26 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
+
+                            val client = ChatClient()
+
+                            val socket = client.getSocket()
+
+                            val context = LocalContext.current
+
+                            //val dadaUser = UserRepository(context).findUsers()
+                            val dadaUser = UserRepositorySqlite(context).findUsers()
+
+                            var array = User()
+
+                            var data = ""
+
+                            if(dadaUser.isNotEmpty()){
+                                array = dadaUser[0]
+
+                                data = array.id.toString()
+                            }
+                            client.connect(data.toInt())
                             ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage, client = client, socket = socket,  chatViewModel = chatViewModel,  idUsuario = data.toInt())
                             currentScreen = selectedIndexItem
                         } else {

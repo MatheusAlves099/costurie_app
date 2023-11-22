@@ -38,7 +38,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.ShapeButton
 @Composable
 fun SendMesssage(
     message: String,
-    time: String
+    time: String,
 ) {
     Row (
         modifier = Modifier.fillMaxWidth()
@@ -52,7 +52,7 @@ fun SendMesssage(
         ) {
             Column {
                 Text(
-                    text = "Teste",
+                    text = message,
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .padding(start = 10.dp)
@@ -63,7 +63,7 @@ fun SendMesssage(
                 )
 
                 Text(
-                    text = "15:20",
+                    text = time,
                     textAlign = TextAlign.End,
                     modifier = Modifier
                         .padding(end = 3.dp)

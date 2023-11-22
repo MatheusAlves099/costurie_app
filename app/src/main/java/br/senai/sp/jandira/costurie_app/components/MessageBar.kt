@@ -12,6 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -31,14 +35,17 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 fun MessageBar(
     value: String,
     onValueChange: (String) -> Unit,
-    label: String = "",
 ) {
     var context = LocalContext.current
 
+    var mensagemState by remember {
+        mutableStateOf(value)
+    }
+
     TextField(
-        value = value,
+        value = mensagemState,
         onValueChange = {
-            onValueChange(it)
+            mensagemState = it
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -57,7 +64,8 @@ fun MessageBar(
                 modifier = Modifier
                     .size(30.dp)
                     .clickable {
-
+                        onValueChange(mensagemState)
+                        mensagemState = ""
                     },
                 tint = Destaque2
             )
@@ -71,7 +79,7 @@ fun MessageBar(
         shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp),
         placeholder = {
             Text(
-                text = label,
+                text = mensagemState,
                 fontSize = 18.sp,
                 color = Contraste2,
                 maxLines = 1

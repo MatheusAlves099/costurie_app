@@ -1,16 +1,11 @@
 package br.senai.sp.jandira.costurie_app.screens.chats
 
-import android.net.Uri
 import android.util.Log
-import android.widget.Button
-import android.widget.Toast
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,18 +20,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.ButtonElevation
 import androidx.compose.material.Card
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,7 +37,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -59,34 +48,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
-import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.ModalDeleteMessage
-import br.senai.sp.jandira.costurie_app.components.ModalFilter
-import br.senai.sp.jandira.costurie_app.components.ModalLocation
-import br.senai.sp.jandira.costurie_app.model.TagsResponse
-import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
-import br.senai.sp.jandira.costurie_app.repository.TagsRepository
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.SocketResponse
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
-import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
-import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
-import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
-import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import io.socket.client.Socket
-import kotlinx.coroutines.launch
-import java.lang.reflect.Type
 
 @Composable
 fun ChatListScreen(
@@ -96,7 +72,7 @@ fun ChatListScreen(
     client: ChatClient,
     socket: Socket,
     idUsuario: Int,
-    chatViewModel: ChatViewModel,
+    chatViewModel: ChatViewModel
 ) {
 
     var listaContatos by remember {
@@ -213,9 +189,9 @@ fun ChatListScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    LazyColumn(modifier = Modifier.padding(24.dp),
+                    LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(20.dp)
-                    ){
+                    ) {
                         items(listaContatos.users) {
 
                             Log.d("LISTA3", "ChatListScreen: $listaContatos")
@@ -236,7 +212,19 @@ fun ChatListScreen(
                                         }
                                     }
                                     .clickable {
+
+                                        Log.e("Luizão - ChatScreen", "$contato", )
+                                        Log.e("Luizão - ChatScreen", "id: ${it.id_chat}", )
+
+
                                         navController.navigate("chat")
+
+                                        chatViewModel.idChat = it.id_chat
+                                        chatViewModel.idUser2 = contato[0].id
+                                        chatViewModel.foto = contato[0].foto
+                                        chatViewModel.nome = contato[0].nome
+                                        socket.emit("listMessages", it.id_chat)
+                                        Log.e("luiz", "ChatScreen: ${contato[0].id}")
                                     },
                                 backgroundColor = (if (isLongPressActive) Principal2 else Color.White),
                                 shape = RoundedCornerShape(15.dp),
@@ -339,8 +327,9 @@ fun ChatListScreen(
                                 }
                             }
 
-                        }}
-                    
+                        }
+                    }
+
                 }
             }
         }

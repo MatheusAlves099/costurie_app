@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 val socket = client.getSocket()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "register")
+                    startDestination = "home")
 
    {
                     composable(route = "main") { MainScreen(navController = navController) }

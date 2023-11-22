@@ -124,77 +124,81 @@ fun EditPublicationScreen(
 
     var selectedMediaUrl by remember { mutableStateOf(arrayListOf<AnexoResponse>()) }
     var selectedMediaUri by remember { mutableStateOf(emptyList<AnexoGetResponse>()) }
+    var urlsExistente by remember { mutableStateOf(emptyList<AnexoGetResponse>()) }
 
-//    fun urlDownload(it: String) {
-//        storageRef.child("${it}")
-//            .putFile(Uri.parse(it))
-//            .addOnCompleteListener { task ->
-//
-//                if (task.isSuccessful) {
-//                    Log.i(
-//                        "urlDown",
-//                        "it: ${it}"
-//                    )
-//                    storageRef.downloadUrl.addOnSuccessListener { uri ->
-//                        val map = HashMap<String, Any>()
-//                        map["pic"] = uri.toString()
-//                        Log.i(
-//                            "urlDown",
-//                            "uri: ${uri}"
-//                        )
-//                        Log.i(
-//                            "urlDown",
-//                            "it: ${it}"
-//                        )
-//
-//                        firebaseFirestore
-//                            .collection("marcelo")
-//                            .add(map)
-//                            .addOnCompleteListener { firestoreTask ->
-//                                if (firestoreTask.isSuccessful) {
-//
-//                                    val anexo = AnexoResponse(uri.toString())
-//                                    selectedMediaUrl.add(anexo)
-//                                    Log.i(
-//                                        "urlDown",
-//                                        "selectedMediaUrl: $selectedMediaUrl"
-//                                    )
-//
-//                                } else {
-//                                    Toast
-//                                        .makeText(
-//                                            context,
-//                                            "ERRO AO TENTAR REALIZAR O UPLOAD",
-//                                            Toast.LENGTH_SHORT
-//                                        )
-//                                        .show()
-//                                }
-//                            }
-//                    }
-//
-//                } else {
-//                    Toast
-//                        .makeText(
-//                            context,
-//                            "ERRO AO TENTAR REALIZAR O UPLOAD",
-//                            Toast.LENGTH_SHORT
-//                        )
-//                        .show()
-//
-//                }
-//            }
-//
-//    }
+    fun urlDownload(it: String) {
+        val storageRefs: StorageReference =
+            FirebaseStorage.getInstance().reference.child("teste/${Uri.parse(it)}")
 
+
+        val uploadTask = storageRefs.putFile(Uri.parse(it))
+
+        uploadTask
+            .addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    Log.i(
+                        "urlDown",
+                        "it: ${it}"
+                    )
+                    storageRefs.downloadUrl.addOnSuccessListener { uri ->
+                        val map = HashMap<String, Any>()
+                        map["pic"] = uri.toString()
+                        Log.i(
+                            "urlDown",
+                            "uri: ${uri}"
+                        )
+                        Log.i(
+                            "urlDown",
+                            "it: ${it}"
+                        )
+
+                        firebaseFirestore
+                            .collection("images")
+                            .add(map)
+                            .addOnCompleteListener { firestoreTask ->
+                                if (firestoreTask.isSuccessful) {
+
+                                    val anexo = AnexoResponse(uri.toString())
+                                    selectedMediaUrl.add(anexo)
+                                    Log.i(
+                                        "urlDown",
+                                        "selectedMediaUrl: ${selectedMediaUrl}"
+                                    )
+
+                                } else {
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        .show()
+                                }
+                            }
+                    }
+
+                } else {
+                    Toast
+                        .makeText(
+                            context,
+                            "ERRO AO TENTAR REALIZAR O UPLOAD",
+                            Toast.LENGTH_SHORT
+                        )
+                        .show()
+
+                }
+            }
+
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
-            val anexoResponse = AnexoGetResponse(anexo = uri.toString())
-//            selectedMedia = selectedMedia + anexoResponse
-            selectedMediaUri += anexoResponse
-            //urlDownload(uri.toString())
+//            val anexoResponse = AnexoGetResponse(anexo = uri.toString())
+//            selectedMediaUri += anexoResponse
+            urlDownload(uri.toString())
         }
     }
 
@@ -239,21 +243,6 @@ fun EditPublicationScreen(
         return newList
     }
 
-//    // Função que associa as tags da publicação às tags disponíveis e atualiza o estado das tags selecionadas
-//    fun updateSelectedTags(dadosPublicacao: BaseResponseIdPublication?, tagsList: List<TagEditResponse>): List<TagEditResponse> {
-//        val selectedTags = mutableListOf<TagEditResponse>()
-//
-//        dadosPublicacao?.publicacao?.tags?.forEach { tagInPublication ->
-//            tagsList.find { it.id == tagInPublication.id }?.let { matchedTag ->
-//                selectedTags.add(
-//                    matchedTag.copy(isClicked = true)
-//                )
-//            }
-//        }
-//
-//        return selectedTags
-//    }
-
     val publicationState = remember { mutableStateOf<BaseResponseIdPublication?>(null) }
 
     var titleState by remember {
@@ -280,7 +269,8 @@ fun EditPublicationScreen(
 
             titleState = response.body()?.publicacao?.titulo.toString()
             descriptionState = response.body()?.publicacao?.descricao.toString()
-            selectedMediaUri = response.body()?.publicacao?.anexos!!
+            urlsExistente = response.body()?.publicacao?.anexos!!
+            Log.i("lista", "getPublicationById: ${urlsExistente}")
 
         } else {
             val errorBody = response.errorBody()?.string()
@@ -383,7 +373,7 @@ fun EditPublicationScreen(
                             navController.popBackStack()
                         }
                 )
-                Log.i("selected", "PublishScreen: ${selectedMediaUri}")
+                Log.i("selected", "PublishScreen: ${selectedMediaUrl}")
 
                 Image(
                     painter = painterResource(id = R.drawable.send_icon),
@@ -391,21 +381,13 @@ fun EditPublicationScreen(
                     Modifier
                         .size(35.dp)
                         .clickable {
-                            val selectedMediaUrl = selectedMediaUri.map { anexoGetResponse ->
-                                AnexoResponse(conteudo = anexoGetResponse.anexo)
-                            }
-
                             updatePublication(
                                 titleState,
                                 descriptionState,
                                 tagsArray,
                                 selectedMediaUrl
                             )
-                            if (selectedMediaUrl.size == selectedMediaUri.size) {
-
-                            }
                             Log.i("testeUri", "PublishScreen: ${selectedMediaUrl}")
-                            Log.w("UHU", "EditPublicationScreen: ${updatePublication(titleState, descriptionState, tagsArray, selectedMediaUrl)} " )
 
                         }
                 )
@@ -461,7 +443,7 @@ fun EditPublicationScreen(
             ) {
 
                 LazyRow(content = {
-                    items(selectedMediaUri) { anexoResponse ->
+                    items(urlsExistente) { anexoResponse ->
                         val uri = Uri.parse(anexoResponse.anexo)
                         Box(
                             modifier = Modifier
@@ -487,13 +469,18 @@ fun EditPublicationScreen(
                                     .clickable {
                                         Log.i(
                                             "ListaArquivos",
-                                            "media: $selectedMediaUri"
+                                            "media: $urlsExistente"
                                         )
                                         Log.i(
                                             "ListaArquivos",
                                             "anexo: $anexoResponse"
                                         )
-                                        selectedMediaUri = selectedMediaUri.minus(anexoResponse)
+                                        urlsExistente = urlsExistente.minus(anexoResponse)
+                                        for (selectedUrl in selectedMediaUrl) {
+                                            if (selectedUrl.conteudo == anexoResponse.anexo) {
+                                                selectedMediaUrl.remove(AnexoResponse(anexoResponse.anexo))
+                                            }
+                                        }
                                     },
                                 tint = Color.White
                             )

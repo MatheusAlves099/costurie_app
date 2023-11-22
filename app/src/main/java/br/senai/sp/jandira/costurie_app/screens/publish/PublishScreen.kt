@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.costurie_app.screens.publish
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
@@ -63,7 +64,6 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
-import br.senai.sp.jandira.costurie_app.components.ModalSucess
 import br.senai.sp.jandira.costurie_app.components.TagColorViewModel
 import br.senai.sp.jandira.costurie_app.model.AnexoResponse
 import br.senai.sp.jandira.costurie_app.model.TagEditResponse
@@ -167,6 +167,8 @@ fun PublishScreen(
         tags: MutableList<TagResponseId>,
         anexos: List<AnexoResponse>
     ) {
+
+
         val publicationRepository = PublicationRepository()
         lifecycleScope.launch {
             val array = UserRepositorySqlite(context).findUsers()

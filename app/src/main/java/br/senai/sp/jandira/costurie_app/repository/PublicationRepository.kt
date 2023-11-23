@@ -92,6 +92,19 @@ class PublicationRepository {
         return apiService.givePoint(token, requestBody)
     }
 
+    suspend fun removePoint(
+        token: String,
+        id_usuario: Int,
+        id_publicacao: Int
+    ): Response<GivePointResponse> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_usuario", id_usuario)
+            addProperty("id_publicacao", id_publicacao)
+        }
+
+        return apiService.givePoint(token, requestBody)
+    }
+
     suspend fun updatePublication(
         id_publicacao: Int,
         id_usuario: Int,

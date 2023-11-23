@@ -116,6 +116,7 @@
     <string name="text_ok">OK</string>
     <string name="text_modal_publish">VOCÊ REALMENTE DESEJA PUBLICAR?</string>
     <string name="text_modal_publish_sucess">PUBLICAÇÃO ENVIADA!</string>
+    <string name="text_give_point">Dar Ponto</string>
     <string name="text_modal_password_sucess">SENHA ALTERADA COM SUCESSO!</string>
     <string name="text_modal_email_sucess">E-MAIL ALTERADO COM SUCESSO!</string>
     <string name="text_modal_help_and_support_sucess">E-MAIL ENVIADO COM SUCESSO!</string>

@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 val socket = client.getSocket()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main"
+                    startDestination = "home"
                 )
 
                 {
@@ -137,6 +137,7 @@ class MainActivity : ComponentActivity() {
                     }
 //                    composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
+
                     composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage, viewModelId = IdViewModel, chatViewModel = chatViewModel, socket = socket) }
                     composable(route = "services") { ServicesScreen(navController = navController, lifecycleScope = lifecycleScope, categories = emptyList(), filterings = emptyList(), viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2,  localStorage = localStorage) }

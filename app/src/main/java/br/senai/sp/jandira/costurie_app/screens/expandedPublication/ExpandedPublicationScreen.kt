@@ -58,6 +58,7 @@ import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.ButtonGivePoint
+import br.senai.sp.jandira.costurie_app.components.ButtonPointColorViewModel
 import br.senai.sp.jandira.costurie_app.components.ButtonSettings
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GoogleButton
@@ -73,6 +74,7 @@ import br.senai.sp.jandira.costurie_app.components.ProgressBar
 import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
 import br.senai.sp.jandira.costurie_app.model.BaseResponseIdPublication
 import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
+import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
@@ -187,13 +189,37 @@ fun ExpandedPublicationScreen(
         }
     }
 
-    suspend fun postGivePoint() {
-        val publicationRepository = PublicationRepository()
-        val array = UserRepositorySqlite(context).findUsers()
-        val user = array[0]
+    val publicationRepository = PublicationRepository()
+    val array = UserRepositorySqlite(context).findUsers()
+    val user = array[0]
 
+    suspend fun postGivePoint() {
         Log.d("postGivePoint", "Chamando postGivePoint")
         val response = publicationRepository.givePoint(user.token, user.id.toInt(), id!!.toInt())
+        Log.d("postGivePoint", "Resposta: $response")
+        if (response.isSuccessful) {
+            Log.d("give point", "postGivePoint: $response")
+            val publications = response.body()
+            Toast.makeText(
+                context,
+                publications!!.message,
+                Toast.LENGTH_SHORT
+            ).show()
+            Log.i("dar ponto", "dei o ponto: ${publications}")
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("CURTIR UMA PUBLICAÇÃO", "Erro: $errorBody")
+            Toast.makeText(
+                context,
+                "Erro ao dar ponto em na publicação: $errorBody",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    suspend fun postRemovePoint() {
+        Log.d("postGivePoint", "Chamando postGivePoint")
+        val response = publicationRepository.removePoint(user.token, user.id.toInt(), id!!.toInt())
         Log.d("postGivePoint", "Resposta: $response")
         if (response.isSuccessful) {
             Log.d("give point", "postGivePoint: $response")
@@ -220,6 +246,12 @@ fun ExpandedPublicationScreen(
         getPublicationById()
 
         Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
+    }
+
+    val viewModelButtonPoint: ButtonPointColorViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+
+    var isClicked by remember {
+        mutableStateOf(false)
     }
 
     Costurie_appTheme {
@@ -355,7 +387,7 @@ fun ExpandedPublicationScreen(
 
                                         var id = publicationState.value?.publicacao?.usuario?.id
 
-                                        Log.e("id_usuario", "id_usuario pra tela: $id", )
+                                        Log.e("id_usuario", "id_usuario pra tela: $id",)
 
                                         if (user.id.toInt() == id) {
                                             navController.navigate("profile")
@@ -543,14 +575,25 @@ fun ExpandedPublicationScreen(
                             ButtonGivePoint(
                                 onClick = {
                                     lifecycleScope.launch {
-                                        postGivePoint()
+
+                                        isClicked = !isClicked
+                                        if (isClicked) {
+                                            viewModelButtonPoint.setPointButtonColor(id!!.toInt(), Destaque1, Destaque2)
+                                            viewModelButtonPoint.setPointTextColor(id!!.toInt(), Color.White, Color.White)
+                                            postGivePoint()
+                                        } else {
+                                            viewModelButtonPoint.setPointButtonColor(id!!.toInt(), Color.Transparent, Color.Transparent)
+                                            viewModelButtonPoint.setPointTextColor(id!!.toInt(), Destaque1, Destaque2)
+                                            postRemovePoint()
+                                        }
                                         Log.d(
                                             "MURYLLOOO",
                                             "ExpandedPublicationScreen: ${postGivePoint()}"
                                         )
                                     }
                                 },
-                                text = "DAR PONTO"
+                                text = stringResource(id = R.string.text_give_point),
+                                pointId = id!!.toInt()
                             )
 
                             GradientButtonSmall(

@@ -63,6 +63,13 @@ interface PublicationService {
     ): Response<GivePointResponse>
 
     @Headers("Content-Type: application/json")
+    @POST("/publicacao/retirar_curtida")
+    suspend fun removePoint(
+        @Header("x-access-token") token: String,
+        @Body body: JsonObject
+    ): Response<GivePointResponse>
+
+    @Headers("Content-Type: application/json")
     @PUT("/publicacao/editar_publicacao")
     suspend fun updatePublication(
         @Header("x-access-token") token: String,

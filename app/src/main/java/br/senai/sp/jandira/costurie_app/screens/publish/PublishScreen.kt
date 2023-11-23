@@ -43,6 +43,7 @@ import androidx.compose.material.rememberBottomSheetState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -57,6 +58,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
@@ -84,6 +86,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun PublishScreen(
@@ -225,7 +228,7 @@ fun PublishScreen(
     fun urlDownload(it: String) {
         val storageRefs: StorageReference =
             FirebaseStorage.getInstance().reference.child("teste/${Uri.parse(it)}")
-        
+
         val uploadTask = storageRefs.putFile(Uri.parse(it))
 
         uploadTask
@@ -239,14 +242,6 @@ fun PublishScreen(
                     storageRefs.downloadUrl.addOnSuccessListener { uri ->
                         val map = HashMap<String, Any>()
                         map["pic"] = uri.toString()
-                        Log.i(
-                            "urlDown",
-                            "uri: ${uri}"
-                        )
-                        Log.i(
-                            "urlDown",
-                            "it: ${it}"
-                        )
 
                         firebaseFirestore
                             .collection("images")
@@ -256,10 +251,6 @@ fun PublishScreen(
 
                                     val anexo = AnexoResponse(uri.toString())
                                     selectedMediaUrl.add(anexo)
-                                    Log.i(
-                                        "urlDown",
-                                        "selectedMediaUrl: ${selectedMediaUrl}"
-                                    )
 
                                 } else {
                                     Toast
@@ -291,7 +282,6 @@ fun PublishScreen(
         if (uri != null) {
             val anexoResponse = AnexoResponse(conteudo = uri.toString())
             selectedMediaUri += anexoResponse
-            urlDownload(uri.toString())
         }
     }
 
@@ -328,12 +318,35 @@ fun PublishScreen(
 
                         }
                 )
-                Log.i("selected", "PublishScreen: ${selectedMediaUri}")
 
-                ModalSucess(
-                    navController,
-                    lifecycleScope,
-                    localStorage
+//                ModalSucess(
+//                    navController,
+//                    lifecycleScope,
+//                    localStorage
+//                )
+                Image(
+                    painter = painterResource(id = R.drawable.send_icon),
+                    contentDescription = "",
+                    Modifier
+                        .size(35.dp)
+                        .clickable {
+
+                            selectedMediaUri.forEach {
+                                lifecycleScope.launch {
+                                    urlDownload(it.conteudo)
+                                }
+                            }
+                            if (selectedMediaUrl.size == selectedMediaUri.size) {
+                                createPublication(
+                                    id_usuario = user.id.toInt(),
+                                    token = user.token,
+                                    titulo = titleState,
+                                    descricao = descriptionState,
+                                    anexos = selectedMediaUrl,
+                                    tags = tagsArray
+                                )
+                            }
+                        }
                 )
             }
 
@@ -389,7 +402,7 @@ fun PublishScreen(
 
                 LazyRow(content = {
                     items(selectedMediaUri) { anexoResponse ->
-                        val uri = Uri.parse(anexoResponse.conteudo)
+                        val uri = anexoResponse.conteudo
                         Box(
                             modifier = Modifier
                                 .size(60.dp)
@@ -412,14 +425,6 @@ fun PublishScreen(
                                 modifier = Modifier
                                     .size(25.dp)
                                     .clickable {
-                                        Log.i(
-                                            "ListaArquivos",
-                                            "media: $selectedMediaUri"
-                                        )
-                                        Log.i(
-                                            "ListaArquivos",
-                                            "anexo: $anexoResponse"
-                                        )
                                         selectedMediaUri = selectedMediaUri.minus(anexoResponse)
                                     },
                                 tint = Color.White
@@ -537,6 +542,7 @@ fun PublishScreen(
                 }
             }
         }
+    }
 }
 
 

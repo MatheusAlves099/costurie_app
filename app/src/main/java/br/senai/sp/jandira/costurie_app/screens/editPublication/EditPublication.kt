@@ -159,11 +159,11 @@ fun EditPublicationScreen(
                             .addOnCompleteListener { firestoreTask ->
                                 if (firestoreTask.isSuccessful) {
 
-                                    val anexo = AnexoResponse(uri.toString())
-                                    selectedMediaUrl.add(anexo)
+                                    val anexo = AnexoGetResponse(anexo = uri.toString())
+                                    selectedMediaUri += anexo
                                     Log.i(
                                         "urlDown",
-                                        "selectedMediaUrl: ${selectedMediaUrl}"
+                                        "selectedMediaUrl: ${selectedMediaUri}"
                                     )
 
                                 } else {
@@ -196,8 +196,6 @@ fun EditPublicationScreen(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
-//            val anexoResponse = AnexoGetResponse(anexo = uri.toString())
-//            selectedMediaUri += anexoResponse
             urlDownload(uri.toString())
         }
     }
@@ -270,7 +268,9 @@ fun EditPublicationScreen(
             titleState = response.body()?.publicacao?.titulo.toString()
             descriptionState = response.body()?.publicacao?.descricao.toString()
             urlsExistente = response.body()?.publicacao?.anexos!!
-            Log.i("lista", "getPublicationById: ${urlsExistente}")
+            for (urls in urlsExistente) {
+                selectedMediaUri += urls
+            }
 
         } else {
             val errorBody = response.errorBody()?.string()
@@ -373,7 +373,7 @@ fun EditPublicationScreen(
                             navController.popBackStack()
                         }
                 )
-                Log.i("selected", "PublishScreen: ${selectedMediaUrl}")
+                Log.i("selected", "PublishScreen: ${selectedMediaUri}")
 
                 Image(
                     painter = painterResource(id = R.drawable.send_icon),
@@ -381,13 +381,20 @@ fun EditPublicationScreen(
                     Modifier
                         .size(35.dp)
                         .clickable {
-                            updatePublication(
-                                titleState,
-                                descriptionState,
-                                tagsArray,
-                                selectedMediaUrl
-                            )
-                            Log.i("testeUri", "PublishScreen: ${selectedMediaUrl}")
+
+                            selectedMediaUri.forEach {
+                                selectedMediaUrl.add(AnexoResponse(it.anexo))
+                            }
+                            if (selectedMediaUrl.size == selectedMediaUri.size) {
+                                updatePublication(
+                                    titleState,
+                                    descriptionState,
+                                    tagsArray,
+                                    selectedMediaUrl
+                                )
+                            }
+
+                            Log.i("testeUri", "PublishScreen: ${selectedMediaUri}")
 
                         }
                 )
@@ -443,7 +450,7 @@ fun EditPublicationScreen(
             ) {
 
                 LazyRow(content = {
-                    items(urlsExistente) { anexoResponse ->
+                    items(selectedMediaUri) { anexoResponse ->
                         val uri = Uri.parse(anexoResponse.anexo)
                         Box(
                             modifier = Modifier
@@ -475,12 +482,7 @@ fun EditPublicationScreen(
                                             "ListaArquivos",
                                             "anexo: $anexoResponse"
                                         )
-                                        urlsExistente = urlsExistente.minus(anexoResponse)
-                                        for (selectedUrl in selectedMediaUrl) {
-                                            if (selectedUrl.conteudo == anexoResponse.anexo) {
-                                                selectedMediaUrl.remove(AnexoResponse(anexoResponse.anexo))
-                                            }
-                                        }
+                                        selectedMediaUri = selectedMediaUri.minus(anexoResponse)
                                     },
                                 tint = Color.White
                             )

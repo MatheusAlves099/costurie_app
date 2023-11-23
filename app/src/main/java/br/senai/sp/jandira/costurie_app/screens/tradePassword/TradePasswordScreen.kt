@@ -201,7 +201,12 @@ fun TradePasswordScreen(
                                 containerColor = Color.Transparent
                             )
                         ) {
-                            Column(Modifier.padding(end = 300.dp)) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 5.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.arrow_back),
                                     contentDescription = "",
@@ -210,9 +215,9 @@ fun TradePasswordScreen(
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.height(10.dp))
+
                         Column(
-                            modifier = Modifier.height(480.dp),
+                            modifier = Modifier.height(420.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -224,7 +229,9 @@ fun TradePasswordScreen(
                                 fontSize = 20.sp
                             )
                             Column (
-                                modifier = Modifier.height(300.dp).width(320.dp),
+                                modifier = Modifier
+                                    .height(300.dp)
+                                    .width(320.dp),
                                 verticalArrangement = Arrangement.SpaceBetween,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ){

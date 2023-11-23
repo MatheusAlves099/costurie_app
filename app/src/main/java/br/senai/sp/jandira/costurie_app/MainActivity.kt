@@ -43,6 +43,7 @@ import br.senai.sp.jandira.costurie_app.screens.tradePassword.TradePasswordScree
 import br.senai.sp.jandira.costurie_app.screens.validationCode.ValidationCodeScreen
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ViewModelID
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.viewModel.PasswordResetViewModel
@@ -70,6 +71,7 @@ class MainActivity : ComponentActivity() {
                 val viewModelTagsPublication = viewModel<TagPublicationViewModel>()
                 val localStorage: Storage = Storage()
                 val chatViewModel = viewModel<ChatViewModel>()
+                val IdViewModel = viewModel<ViewModelID>()
                 val client = ChatClient()
                 val socket = client.getSocket()
                 AnimatedNavHost(
@@ -88,7 +90,7 @@ class MainActivity : ComponentActivity() {
                     composable(route = "explore") { ExploreScreen(navController = navController, localStorage = localStorage) }
 //                    composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
-                    composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage) }
+                    composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage, viewModelId = IdViewModel, chatViewModel = chatViewModel, socket = socket) }
                     composable(route = "services") { ServicesScreen(navController = navController, lifecycleScope = lifecycleScope, categories = emptyList(), filterings = emptyList(), viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
                     composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2,  localStorage = localStorage) }
                     composable(route = "profileViewed") { ProfileViewedScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2, localStorage = localStorage) }

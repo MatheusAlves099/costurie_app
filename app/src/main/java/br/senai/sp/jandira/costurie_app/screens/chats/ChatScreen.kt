@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -98,16 +99,20 @@ fun ChatScreen(
             }
 
             // Ouça o evento do socket
-            socket.on("receive_message") { args ->
-                args.let { d ->
-                    if (d.isNotEmpty()) {
-                        val data = d[0]
-                        if (data.toString().isNotEmpty()) {
-                            val mensagens =
-                                Gson().fromJson(data.toString(), MensagensResponse::class.java)
+            socket.emit("listMessages", idChat)
+            LaunchedEffect(listaMensagens) {
+                // Ouça o evento do socket
+                socket.on("receive_message") { args ->
+                    args.let { d ->
+                        if (d.isNotEmpty()) {
+                            val data = d[0]
+                            if (data.toString().isNotEmpty()) {
+                                val mensagens =
+                                    Gson().fromJson(data.toString(), MensagensResponse::class.java)
 
-                            listaMensagens = mensagens
-                            Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                                listaMensagens = mensagens
+                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                            }
                         }
                     }
                 }
@@ -115,6 +120,7 @@ fun ChatScreen(
 
 
             Log.e("jojo", "Lista de Mensagens: ${listaMensagens.mensagens}")
+            Log.e("jojo", "Lista de Mensagens: ${listaMensagens}")
 
             Column(
                 modifier = Modifier

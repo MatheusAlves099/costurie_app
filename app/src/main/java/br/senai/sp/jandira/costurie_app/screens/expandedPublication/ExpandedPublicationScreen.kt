@@ -33,6 +33,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -77,6 +78,10 @@ import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
+import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
+import br.senai.sp.jandira.costurie_app.service.chat.UserChat
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ViewModelID
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -86,6 +91,10 @@ import br.senai.sp.jandira.costurie_app.viewModel.TagPublicationViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import coil.compose.AsyncImage
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import io.socket.client.Socket
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -96,7 +105,38 @@ fun ExpandedPublicationScreen(
     navController: NavController,
     viewModel: TagPublicationViewModel,
     localStorage: Storage,
+    viewModelId: ViewModelID,
+    socket: Socket,
+    chatViewModel: ChatViewModel
 ) {
+
+    var context = LocalContext.current
+
+    val dadaUser = UserRepositorySqlite(context).findUsers()
+
+
+    var listUsuario by remember {
+        mutableStateOf(
+            listOf<UserChat>()
+        )
+    }
+
+    Log.e("estamos aquiiiii", "${listUsuario}")
+
+    var newChat by remember {
+        mutableStateOf(
+            MensagensResponse(
+                status = 0,
+                message = "",
+                id_chat = "",
+                usuarios = listOf(),
+                data_criacao = "",
+                hora_criacao = "",
+                mensagens = mutableStateListOf()
+            )
+        )
+    }
+
     var commentState by remember {
         mutableStateOf("")
     }
@@ -112,7 +152,7 @@ fun ExpandedPublicationScreen(
 
     val scope = rememberCoroutineScope()
 
-    var context = LocalContext.current
+
 
     var id = localStorage.lerValor(context, "id_publicacao")
 
@@ -138,6 +178,11 @@ fun ExpandedPublicationScreen(
 
             publicationState.value = response.body()
             viewModel.tags = response.body()?.publicacao?.tags
+
+            viewModelId.id_perfil = response.body()?.publicacao?.usuario?.id!!.toLong()
+            viewModelId.nome_perfil = response.body()?.publicacao?.usuario?.nome_de_usuario!!
+            viewModelId.foto_perfil = response.body()?.publicacao?.usuario?.foto!!
+
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("EDICAO DE PERFIL", "updateUser: $errorBody")
@@ -452,7 +497,75 @@ fun ExpandedPublicationScreen(
                         ) {
                             GradientButtonSmall(
                                 onClick = {
+                                    val fotoAnunciante = viewModelId.foto_perfil
+                                    val nomeAnunciante = viewModelId.nome_perfil
+                                    val idAnunciante = viewModelId.id_perfil
+                                    val jsonUser1 = UserChat(
+                                        id = dadaUser[0].id.toInt(),
+                                        foto = dadaUser[0].foto,
+                                        nome = dadaUser[0].nome
+                                    )
 
+                                    Log.w("idmeu", "id meu: ${dadaUser[0].id}", )
+
+                                    val jsonUserAnunciante = UserChat(
+                                        id = idAnunciante.toInt(),
+                                        foto = fotoAnunciante,
+                                        nome = nomeAnunciante
+                                    )
+
+                                    listUsuario = listUsuario + jsonUser1
+
+                                    listUsuario = listUsuario + jsonUserAnunciante
+
+
+                                    val jsonBody = JsonObject().apply {
+                                        val usersArray = JsonArray()
+
+                                        for (user in listUsuario) {
+                                            val userObject = JsonObject().apply {
+                                                addProperty("id", user.id)
+                                                addProperty("nome", user.nome)
+                                                addProperty("foto", user.foto)
+                                            }
+                                            usersArray.add(userObject)
+                                        }
+
+                                        add("users", usersArray)
+                                        //addProperty("status", true)
+                                    }
+
+
+                                    socket.emit("createRooom", jsonBody)
+
+
+                                    // Ouça o evento do socket
+                                    socket.on("newChat") { args ->
+                                        args.let { d ->
+                                            if (d.isNotEmpty()) {
+                                                val data = d[0]
+
+                                                Log.e("Data", "$data")
+                                                if (data.toString().isNotEmpty()) {
+                                                    val chat =
+                                                        Gson().fromJson(data.toString(), MensagensResponse::class.java)
+
+                                                    newChat = chat
+                                                    Log.e("luiz aquiiii", "AnnouceDetail: ${chat}")
+                                                    Log.e("luiz testando dentro", "${ newChat.id_chat}", )
+                                                    chatViewModel.idChat = newChat.id_chat
+                                                }
+                                            }
+                                        }
+                                    }
+
+
+                                    Log.e("luiz testando fora", "${ newChat.id_chat}", )
+                                    chatViewModel.idUser2 = idAnunciante.toInt()
+                                    chatViewModel.foto = fotoAnunciante
+                                    chatViewModel.nome = nomeAnunciante
+
+                                    navController.navigate("chat")
                                 },
                                 text = stringResource(id = R.string.botao_responder),
                                 color1 = Destaque1,

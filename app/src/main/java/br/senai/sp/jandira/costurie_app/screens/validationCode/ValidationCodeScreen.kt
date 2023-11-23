@@ -120,7 +120,7 @@ fun ValidationCodeScreen(
                     contentDescription = "",
                     modifier = Modifier
                         .width(177.dp)
-                        .height(272.dp),
+                        .height(250.dp),
                     alignment = Alignment.TopStart
 
                 )
@@ -131,7 +131,7 @@ fun ValidationCodeScreen(
                     alignment = Alignment.BottomEnd
                 )
                 Box(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.modal_validar_codigo2),
@@ -155,7 +155,12 @@ fun ValidationCodeScreen(
                                 containerColor = Color.Transparent
                             )
                         ) {
-                            Column(Modifier.padding(end = 300.dp)) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 5.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.arrow_back),
                                     contentDescription = "",
@@ -174,8 +179,7 @@ fun ValidationCodeScreen(
                                 text = stringResource(R.string.validacao_de_codigo).uppercase(),
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
-                                fontSize = 20.sp,
-                                modifier = Modifier.padding(top = 10.dp)
+                                fontSize = 20.sp
                             )
                         }
                         Spacer(modifier = Modifier.height(125.dp))

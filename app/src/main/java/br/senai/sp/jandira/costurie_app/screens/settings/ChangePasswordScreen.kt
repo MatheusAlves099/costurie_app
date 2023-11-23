@@ -1,4 +1,4 @@
-package br.senai.sp.jandira.costurie_app.screens.personalization
+package br.senai.sp.jandira.costurie_app.screens.settings
 
 import android.util.Log
 import android.widget.Toast
@@ -60,6 +60,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
@@ -67,13 +68,14 @@ import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldPassword
 import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.components.ModalSettingsSucess
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
+fun ChangePasswordScreen(navController: NavController, lifecycleScope: LifecycleCoroutineScope, localStorage: Storage) {
 
     val focusManager = LocalFocusManager.current
 
@@ -240,11 +242,9 @@ fun ChangePasswordScreen(navController: NavController, localStorage: Storage) {
 
                 Spacer(modifier = Modifier.height(100.dp))
 
-                GradientButton(
-                    onClick = { },
-                    text = stringResource(id = R.string.text_button_save).uppercase() ,
-                    color1 = Destaque1,
-                    color2 = Destaque2
+                ModalSettingsSucess(
+                    navController,
+                    text = stringResource(id = R.string.text_modal_password_sucess)
                 )
             }
         }

@@ -47,6 +47,7 @@ import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.viewModel.PasswordResetViewModel
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.components.ModalPasswordSucess
 import br.senai.sp.jandira.costurie_app.repository.PasswordResetRepository
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
@@ -168,7 +169,12 @@ fun PasswordScreen(
                                 containerColor = Color.Transparent
                             )
                         ) {
-                            Column(Modifier.padding(end = 300.dp)) {
+                            Column(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 5.dp),
+                                horizontalAlignment = Alignment.Start
+                            ) {
                                 Image(
                                     painter = painterResource(id = R.drawable.arrow_back),
                                     contentDescription = "",
@@ -177,7 +183,7 @@ fun PasswordScreen(
                                 )
                             }
                         }
-                        Spacer(modifier = Modifier.height(15.dp))
+
                         Column(
                             modifier = Modifier.height(500.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
@@ -231,13 +237,10 @@ fun PasswordScreen(
                                     .height(60.dp),
                                 textStyle = TextStyle.Default.copy(fontSize = 15.sp)
                             )
-                            GradientButton(
-                                onClick = {
-                                    resetPassword(email, viewModel)
-                                },
-                                text = stringResource(id = R.string.texto_botao_enviar).uppercase(),
-                                color1 = Destaque1,
-                                color2 = Destaque2
+
+                            ModalPasswordSucess(
+                                navController = navController,
+                                text = stringResource(id = R.string.text_modal_send_code_sucess)
                             )
                         }
                     }

@@ -60,6 +60,7 @@ import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButton
+import br.senai.sp.jandira.costurie_app.components.ModalSettingsSucess
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
@@ -178,11 +179,9 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
 
                 Spacer(modifier = Modifier.height(200.dp))
 
-                GradientButton(
-                    onClick = { },
-                    text = stringResource(id = R.string.text_button_save).uppercase() ,
-                    color1 = Destaque1,
-                    color2 = Destaque2
+                ModalSettingsSucess(
+                    navController,
+                    text = stringResource(id = R.string.text_modal_email_sucess)
                 )
             }
         }

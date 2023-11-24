@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitFactory {
 
     //IP DO MURYLLO, NÃO TIRA SÓ COMENTAAA
+<<<<<<< refs/remotes/origin/muryllo
     //private const val BASE_URL = "http://10.107.144.5:3003"
 
     //private const val BASE_URL = "http://192.168.3.7:3000"
@@ -17,6 +18,12 @@ object RetrofitFactory {
 //    private const val BASE_URL = "http://192.168.3.7:3000"
 
     private const val BASE_URL = "http://10.107.144.8:3000"
+=======
+    private const val BASE_URL = "http://192.168.3.7:3000"
+    //private const val BASE_URL = "http://10.107.144.27:3000"
+
+//    private const val BASE_URL = "http://10.107.144.5:3002"
+>>>>>>> local
 
     object HttpClientProvider {
         val client: OkHttpClient = OkHttpClient.Builder()

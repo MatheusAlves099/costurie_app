@@ -78,6 +78,7 @@ import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
+import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
 import br.senai.sp.jandira.costurie_app.service.chat.UserChat
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
@@ -107,9 +108,9 @@ fun ExpandedPublicationScreen(
     localStorage: Storage,
     viewModelId: ViewModelID,
     socket: Socket,
+    client: ChatClient,
     chatViewModel: ChatViewModel
 ) {
-
     var context = LocalContext.current
 
     val dadaUser = UserRepositorySqlite(context).findUsers()
@@ -502,7 +503,7 @@ fun ExpandedPublicationScreen(
                                     val idAnunciante = viewModelId.id_perfil
                                     val jsonUser1 = UserChat(
                                         id = dadaUser[0].id.toInt(),
-                                        foto = dadaUser[0].foto,
+                                        foto = "dadaUser[0].foto",
                                         nome = dadaUser[0].nome
                                     )
 
@@ -535,12 +536,20 @@ fun ExpandedPublicationScreen(
                                         //addProperty("status", true)
                                     }
 
+                                    Log.w("corpo", "corpo: $jsonBody", )
+
+//                                    socket.connect()
+//                                    if (socket.connected()) {
+//                                        Log.d("SocketIO", "Conexão estabelecida com sucesso")
+//                                    } else {
+//                                        Log.e("SocketIO", "Falha ao estabelecer a conexão")
+//                                    }
 
                                     socket.emit("createRooom", jsonBody)
 
-
                                     // Ouça o evento do socket
                                     socket.on("newChat") { args ->
+                                        Log.e("entrou", "foi")
                                         args.let { d ->
                                             if (d.isNotEmpty()) {
                                                 val data = d[0]
@@ -549,11 +558,13 @@ fun ExpandedPublicationScreen(
                                                 if (data.toString().isNotEmpty()) {
                                                     val chat =
                                                         Gson().fromJson(data.toString(), MensagensResponse::class.java)
-
+                                                    Log.e("Chat - Luizão", "$chat", )
                                                     newChat = chat
-                                                    Log.e("luiz aquiiii", "AnnouceDetail: ${chat}")
-                                                    Log.e("luiz testando dentro", "${ newChat.id_chat}", )
+                                                    Log.e("mumu aquiiii", "AnnouceDetail: ${chat}")
+                                                    Log.e("mumu testando dentro", "${ newChat.id_chat}", )
                                                     chatViewModel.idChat = newChat.id_chat
+                                                }else{
+                                                    Log.e("Morreu", "Bateu aqui: ${data.toString().isNotEmpty()}", )
                                                 }
                                             }
                                         }
@@ -562,8 +573,11 @@ fun ExpandedPublicationScreen(
 
                                     Log.e("luiz testando fora", "${ newChat.id_chat}", )
                                     chatViewModel.idUser2 = idAnunciante.toInt()
+                                    Log.w("idUser2", "aloka: ${chatViewModel.idUser2}", )
                                     chatViewModel.foto = fotoAnunciante
+                                    Log.w("foto", "aloka: ${chatViewModel.foto}", )
                                     chatViewModel.nome = nomeAnunciante
+                                    Log.w("nome", "aloka: ${chatViewModel.nome}", )
 
                                     navController.navigate("chat")
                                 },

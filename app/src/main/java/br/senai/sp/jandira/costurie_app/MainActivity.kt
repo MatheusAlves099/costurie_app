@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
                 val socket = client.getSocket()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main"
+                    startDestination = "home"
                 )
 
                 {
@@ -137,16 +137,7 @@ class MainActivity : ComponentActivity() {
                     }
 //                    composable(route = "publish") { PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)}
 //                    composable(route = "expandedComment") { ExpandedCommentScreen(nav) }
-<<<<<<< refs/remotes/origin/muryllo
-                    composable(route = "expandedPublication") { ExpandedPublicationScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelTagsPublication,  localStorage = localStorage, viewModelId = IdViewModel, chatViewModel = chatViewModel, socket = socket) }
-                    composable(route = "services") { ServicesScreen(navController = navController, lifecycleScope = lifecycleScope, categories = emptyList(), filterings = emptyList(), viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
-                    composable(route = "profile") { ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2,  localStorage = localStorage) }
-                    composable(route = "profileViewed") { ProfileViewedScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUser2, localStorage = localStorage) }
-                    composable(route = "profileList") { ProfileListScreen(navController = navController, lifecycleScope = lifecycleScope, profiles = emptyList(), viewModel = viewModelUser, viewModelUserTags = viewModelUserTags, localStorage = localStorage) }
-                    composable(route = "editProfile") { EditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModel = viewModelUser2, localStorage = localStorage) }
-                    composable(route = "tagsEditProfile") { TagsEditProfileScreen(lifecycleScope = lifecycleScope, navController = navController, viewModelUser = viewModelUser, viewModelTags = viewModelTags, localStorage = localStorage) }
-                    composable(route = "editPublication") { EditPublicationScreen(lifecycleScope = lifecycleScope, navController = navController, localStorage = localStorage, viewModelTag = viewModelTagsPublication) }
-=======
+
 
                     composable(route = "expandedPublication") {
                         val context = LocalContext.current
@@ -241,7 +232,6 @@ class MainActivity : ComponentActivity() {
                             viewModelTag = viewModelTagsPublication
                         )
                     }
->>>>>>> local
 
                     //telas de chat
                     composable(route = "chatList") {

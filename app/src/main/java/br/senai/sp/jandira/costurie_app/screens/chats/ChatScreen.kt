@@ -83,65 +83,61 @@ fun ChatScreen(
                 .fillMaxSize(),
             color = Principal2
         ) {
-
-            var listaMensagens by remember {
-                mutableStateOf(
-                    MensagensResponse(
-                        status = 0,
-                        message = "",
-                        id_chat = "",
-                        usuarios = listOf(),
-                        data_criacao = "",
-                        hora_criacao = "",
-                        mensagens = mutableStateListOf()
-                    )
-                )
-            }
-
-            // Ouça o evento do socket
-           // socket.emit("listMessages", idChat)
-//            LaunchedEffect(listaMensagens) {
-//                // Ouça o evento do socket
-//                socket.on("receive_message") { args ->
-//                    args.let { d ->
-//                        if (d.isNotEmpty()) {
-//                            val data = d[0]
-//                            if (data.toString().isNotEmpty()) {
-//                                val mensagens =
-//                                    Gson().fromJson(data.toString(), MensagensResponse::class.java)
-//
-//                                listaMensagens = mensagens
-////                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-           // socket.emit("listMessages", idChat)
-
-        socket.on("receive_message") { args ->
-            args.let { d ->
-                if (d.isNotEmpty()) {
-                    val data = d[0]
-                    if (data.toString().isNotEmpty()) {
-                        val mensagens =
-                            Gson().fromJson(data.toString(), MensagensResponse::class.java)
-
-                        listaMensagens = mensagens
-                        //Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
-                    }
-                }
-            }
-        }
-
-            Log.e("jojo", "Lista de Mensagens: ${listaMensagens.mensagens}")
-            Log.e("jojo", "Lista de Mensagens: ${listaMensagens}")
-
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                var listaMensagens by remember {
+                    mutableStateOf(
+                        MensagensResponse(
+                            status = 0,
+                            message = "",
+                            id_chat = "",
+                            usuarios = listOf(),
+                            data_criacao = "",
+                            hora_criacao = "",
+                            mensagens = mutableStateListOf()
+                        )
+                    )
+                }
+
+                // Ouça o evento do socket
+                socket.emit("listMessages", idChat)
+                LaunchedEffect(listaMensagens) {
+                    // Ouça o evento do socket
+                    socket.on("receive_message") { args ->
+                        args.let { d ->
+                            if (d.isNotEmpty()) {
+                                val data = d[0]
+                                if (data.toString().isNotEmpty()) {
+                                    val mensagens =
+                                        Gson().fromJson(data.toString(), MensagensResponse::class.java)
+
+                                    listaMensagens = mensagens
+//                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                                }
+                            }
+                        }
+                    }
+                }
+                // socket.emit("listMessages", idChat)
+
+//        socket.on("receive_message") { args ->
+//            args.let { d ->
+//                if (d.isNotEmpty()) {
+//                    val data = d[0]
+//                    if (data.toString().isNotEmpty()) {
+//                        val mensagens =
+//                            Gson().fromJson(data.toString(), MensagensResponse::class.java)
+//
+//                        listaMensagens = mensagens
+//                        //Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+//                    }
+//                }
+//            }
+//        }
+
                 Box() {
                     Image(
                         painter = painterResource(id = R.drawable.retangulo_topo),

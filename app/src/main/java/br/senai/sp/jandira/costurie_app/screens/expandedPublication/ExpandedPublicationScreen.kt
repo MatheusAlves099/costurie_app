@@ -503,7 +503,7 @@ fun ExpandedPublicationScreen(
                                     val idAnunciante = viewModelId.id_perfil
                                     val jsonUser1 = UserChat(
                                         id = dadaUser[0].id.toInt(),
-                                        foto = "dadaUser[0].foto",
+                                        foto = dadaUser[0].foto,
                                         nome = dadaUser[0].nome
                                     )
 
@@ -545,7 +545,7 @@ fun ExpandedPublicationScreen(
 //                                        Log.e("SocketIO", "Falha ao estabelecer a conexão")
 //                                    }
 
-                                    socket.emit("createRooom", jsonBody)
+                                    socket.emit("createRoom", jsonBody)
 
                                     // Ouça o evento do socket
                                     socket.on("newChat") { args ->

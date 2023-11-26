@@ -218,12 +218,12 @@ fun ChatScreen(
                             if (it.messageTo == idUsuario) {
                                 ReceivedMesssage(
                                     message = it.message,
-                                    time = it.hora_criacao!!
+                                    time = it.hora_criacao!!.substring(0,5)
                                 )
                             } else {
                                 SendMesssage(
                                     message = it.message,
-                                    time = it.hora_criacao!!
+                                    time = it.hora_criacao!!.substring(0,5)
                                 )
 
                             }

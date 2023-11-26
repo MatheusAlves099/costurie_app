@@ -63,6 +63,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
 import coil.compose.AsyncImage
 import com.google.gson.Gson
 import io.socket.client.Socket
+import java.text.SimpleDateFormat
 
 @Composable
 fun ChatListScreen(
@@ -273,7 +274,7 @@ fun ChatListScreen(
                                             text = contato[0].nome,
                                             textAlign = TextAlign.Start,
                                             modifier = Modifier
-                                                .width(230.dp)
+                                                .width(220.dp)
                                                 .height(22.dp),
                                             fontSize = 15.sp,
                                             color = Contraste
@@ -283,7 +284,7 @@ fun ChatListScreen(
                                             text = "Boa noite!",
                                             textAlign = TextAlign.Start,
                                             modifier = Modifier
-                                                .width(230.dp)
+                                                .width(220.dp)
                                                 .height(22.dp),
                                             fontSize = 15.sp,
                                             color = Contraste2
@@ -315,10 +316,10 @@ fun ChatListScreen(
                                         )
 
                                         Text(
-                                            text = it.hora_criacao,
+                                            text = formatarData(it.data_criacao),
                                             textAlign = TextAlign.Start,
                                             modifier = Modifier
-                                                .width(30.dp)
+                                                .width(70.dp)
                                                 .height(20.dp),
                                             fontSize = 10.sp,
                                             color = Contraste2
@@ -336,3 +337,13 @@ fun ChatListScreen(
     }
 }
 
+private fun formatarData(data: String): String {
+    val formatoOriginal = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val formatoBrasileiro = SimpleDateFormat("dd/MM/yyyy")
+    return try {
+        val date = formatoOriginal.parse(data)
+        formatoBrasileiro.format(date)
+    } catch (e: Exception) {
+        data
+    }
+}

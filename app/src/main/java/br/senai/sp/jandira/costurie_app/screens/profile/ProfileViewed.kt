@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
@@ -67,12 +68,21 @@ import br.senai.sp.jandira.costurie_app.model.TagResponse
 import br.senai.sp.jandira.costurie_app.model.TagsResponse
 import br.senai.sp.jandira.costurie_app.model.UserGetIDResponse
 import br.senai.sp.jandira.costurie_app.repository.UserRepository
+import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
+import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
+import br.senai.sp.jandira.costurie_app.service.chat.UserChat
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.service.chat.view_model.ViewModelID
 import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import io.socket.client.Socket
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -82,16 +92,40 @@ fun ProfileViewedScreen(
     lifecycleScope: LifecycleCoroutineScope,
     navController: NavController,
     viewModel: UserViewModel2,
-    localStorage: Storage
+    localStorage: Storage,
+    socket: Socket,
+    client: ChatClient,
+    viewModelId: ViewModelID,
+    chatViewModel: ChatViewModel
 ) {
 
     var isModalOpen by remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
-//    val focusManager = LocalFocusManager.current
-//    val scrollState = rememberScrollState()
-//
-//    var modalTag = ModalTags2()
+    var context = LocalContext.current
+
+    val dadaUser = UserRepositorySqlite(context).findUsers()
+
+    var listUsuario by remember {
+        mutableStateOf(
+            listOf<UserChat>()
+        )
+    }
+
+    Log.e("estamos aquiiiii", "${listUsuario}")
+
+    var newChat by remember {
+        mutableStateOf(
+            MensagensResponse(
+                status = 0,
+                message = "",
+                id_chat = "",
+                usuarios = listOf(),
+                data_criacao = "",
+                hora_criacao = "",
+                mensagens = mutableStateListOf()
+            )
+        )
+    }
 
     var id_usuario by remember {
         mutableStateOf(0)
@@ -183,6 +217,9 @@ fun ProfileViewedScreen(
                     estado = userResponse.usuario.localizacao.estado
                     bairro = userResponse.usuario.localizacao.bairro
 
+                    viewModelId.id_perfil = userResponse.usuario.id!!.toLong()
+                    viewModelId.nome_perfil = userResponse.usuario.nome_de_usuario
+                    viewModelId.foto_perfil = userResponse.usuario.foto
 
                     publicationList = userResponse.usuario.publicacoes
 
@@ -306,6 +343,87 @@ fun ProfileViewedScreen(
                         modifier = Modifier
                             .size(35.dp)
                             .clickable {
+                                val fotoAnunciante = viewModelId.foto_perfil
+                                val nomeAnunciante = viewModelId.nome_perfil
+                                val idAnunciante = viewModelId.id_perfil
+                                val jsonUser1 = UserChat(
+                                    id = dadaUser[0].id.toInt(),
+                                    foto = dadaUser[0].foto,
+                                    nome = dadaUser[0].nome
+                                )
+
+                                Log.w("idmeu", "id meu: ${dadaUser[0].id}", )
+
+                                val jsonUserAnunciante = UserChat(
+                                    id = idAnunciante.toInt(),
+                                    foto = fotoAnunciante,
+                                    nome = nomeAnunciante
+                                )
+
+                                listUsuario = listUsuario + jsonUser1
+
+                                listUsuario = listUsuario + jsonUserAnunciante
+
+
+                                val jsonBody = JsonObject().apply {
+                                    val usersArray = JsonArray()
+
+                                    for (user in listUsuario) {
+                                        val userObject = JsonObject().apply {
+                                            addProperty("id", user.id)
+                                            addProperty("nome", user.nome)
+                                            addProperty("foto", user.foto)
+                                        }
+                                        usersArray.add(userObject)
+                                    }
+
+                                    add("users", usersArray)
+                                    //addProperty("status", true)
+                                }
+
+                                Log.w("corpo", "corpo: $jsonBody", )
+
+//                                    socket.connect()
+//                                    if (socket.connected()) {
+//                                        Log.d("SocketIO", "Conexão estabelecida com sucesso")
+//                                    } else {
+//                                        Log.e("SocketIO", "Falha ao estabelecer a conexão")
+//                                    }
+
+                                socket.emit("createRoom", jsonBody)
+
+                                // Ouça o evento do socket
+                                socket.on("newChat") { args ->
+                                    Log.e("entrou", "foi")
+                                    args.let { d ->
+                                        if (d.isNotEmpty()) {
+                                            val data = d[0]
+
+                                            Log.e("Data", "$data")
+                                            if (data.toString().isNotEmpty()) {
+                                                val chat =
+                                                    Gson().fromJson(data.toString(), MensagensResponse::class.java)
+                                                Log.e("Chat - Luizão", "$chat", )
+                                                newChat = chat
+                                                Log.e("mumu aquiiii", "AnnouceDetail: ${chat}")
+                                                Log.e("mumu testando dentro", "${ newChat.id_chat}", )
+                                                chatViewModel.idChat = newChat.id_chat
+                                            }else{
+                                                Log.e("Morreu", "Bateu aqui: ${data.toString().isNotEmpty()}", )
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                Log.e("luiz testando fora", "${ newChat.id_chat}", )
+                                chatViewModel.idUser2 = idAnunciante.toInt()
+                                Log.w("idUser2", "aloka: ${chatViewModel.idUser2}", )
+                                chatViewModel.foto = fotoAnunciante
+                                Log.w("foto", "aloka: ${chatViewModel.foto}", )
+                                chatViewModel.nome = nomeAnunciante
+                                Log.w("nome", "aloka: ${chatViewModel.nome}", )
+
                                 navController.navigate("chat")
                             },
                         alignment = Alignment.TopEnd

@@ -190,11 +190,37 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(route = "profileViewed") {
+
+                        val context = LocalContext.current
+
+                        val dadaUser = UserRepositorySqlite(context).findUsers()
+
+                        var array = User()
+
+                        var data = ""
+
+                        if (dadaUser.isNotEmpty()) {
+                            array = dadaUser[0]
+
+
+                            data = array.id.toString()
+                        }
+
+                        Log.e("eu mandei", "id: ${data}")
+
+                        val client1 = ChatClient()
+                        client1.connect(data.toInt())
+                        val socket1 = client1.getSocket()
+
                         ProfileViewedScreen(
                             navController = navController,
                             lifecycleScope = lifecycleScope,
                             viewModel = viewModelUser2,
-                            localStorage = localStorage
+                            localStorage = localStorage,
+                            chatViewModel = chatViewModel,
+                            client = client,
+                            socket = socket1,
+                            viewModelId = IdViewModel
                         )
                     }
                     composable(route = "profileList") {

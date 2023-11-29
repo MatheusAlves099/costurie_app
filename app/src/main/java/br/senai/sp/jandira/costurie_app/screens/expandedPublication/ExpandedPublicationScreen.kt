@@ -530,8 +530,8 @@ fun ExpandedPublicationScreen(
                                     val idAnunciante = viewModelId.id_perfil
                                     val jsonUser1 = UserChat(
                                         id = dadaUser[0].id.toInt(),
-                                        foto = fotoDoCara,
-                                        nome = dadaUser[0].nome
+                                        nome = dadaUser[0].nome,
+                                        foto = fotoDoCara
                                     )
 
                                     Log.w("idmeu", "id meu: ${dadaUser[0].id}", )

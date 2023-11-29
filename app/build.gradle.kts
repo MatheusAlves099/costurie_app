@@ -83,9 +83,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-
     implementation("io.coil-kt:coil-compose:2.3.0")
-
 
     //Mais icones
     implementation("androidx.compose.material:material-icons-extended")
@@ -93,14 +91,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("io.coil-kt:coil:2.3.0")
 
-
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.6.0")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.30.1")
 
     //ViewModel
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.6.2")
-
 
     implementation("androidx.compose.ui:ui:1.0.0")
     implementation("androidx.compose.ui:ui-tooling:1.0.0")

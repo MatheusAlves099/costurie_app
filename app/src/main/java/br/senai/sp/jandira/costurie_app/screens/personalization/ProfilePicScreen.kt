@@ -175,9 +175,6 @@ fun ProfilePicScreen(navController: NavController, localStorage: Storage, lifecy
                                         Toast.makeText(context,  "ERRO AO TENTAR REALIZAR O UPLOAD", Toast.LENGTH_SHORT).show()
 
                                     }
-
-                                    //BARRA DE PROGRESSO DO UPLOAD
-
                                 }
                             }
 

@@ -16,7 +16,6 @@ object RetrofitFactory {
 
     //private const val BASE_URL = "http://192.168.3.7:3000"
 
-
     object HttpClientProvider {
         val client: OkHttpClient = OkHttpClient.Builder()
             .connectTimeout(60, TimeUnit.SECONDS) // Tempo limite de conexão

@@ -47,6 +47,8 @@ import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import io.socket.client.Socket
 import org.json.JSONObject
 
@@ -76,23 +78,57 @@ fun PictureScreen(
         mutableStateOf("https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-gris.png")
     }
 
+    val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("chat")
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let {
             fotoUri = it
 
-            val json = JSONObject().apply {
-                put("messageBy", idUsuario)
-                put("messageTo", idUser2)
-                put("message", "")
-                put("image", fotoUri.toString())
-                put("chatId", idChat)
-            }
+            val storageRefChild = storageRef.child("${System.currentTimeMillis()}_${fotoUri!!.lastPathSegment}")
+            val uploadTask = storageRefChild.putFile(fotoUri!!)
 
-            client.sendMessage(json)
+            uploadTask.addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    storageRefChild.downloadUrl.addOnSuccessListener { downloadUri ->
+                        // Agora você pode usar downloadUri para obter a URL da imagem no Firebase Storage
+                        val imageUrl = downloadUri.toString()
+
+                        val json = JSONObject().apply {
+                            put("messageBy", idUsuario)
+                            put("messageTo", idUser2)
+                            put("message", "")
+                            put("image", imageUrl)
+                            put("chatId", idChat)
+                        }
+
+                        client.sendMessage(json)
+                    }
+                } else {
+                    Log.e("PictureScreen", "Error uploading image to Firebase Storage: ${task.exception}")
+                }
+            }
         }
     }
+
+//    val launcher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.GetContent()
+//    ) { uri ->
+//        uri?.let {
+//            fotoUri = it
+//
+//            val json = JSONObject().apply {
+//                put("messageBy", idUsuario)
+//                put("messageTo", idUser2)
+//                put("message", "")
+//                put("image", fotoUri.toString())
+//                put("chatId", idChat)
+//            }
+//
+//            client.sendMessage(json)
+//        }
+//    }
 
     Surface(
         modifier = Modifier

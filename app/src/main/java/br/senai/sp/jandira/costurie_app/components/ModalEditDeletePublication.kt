@@ -68,7 +68,7 @@ fun ModalEditDeletePublication(
                 Toast.LENGTH_SHORT
             ).show()
 
-            navController.navigate("explore")
+            navController.navigate("home")
 
         } else {
             val errorBody = response.errorBody()?.string()

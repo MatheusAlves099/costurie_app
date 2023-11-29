@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.senai.sp.jandira.costurie_app.models_private.User
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatListScreen
 import br.senai.sp.jandira.costurie_app.screens.chats.ChatScreen
+import br.senai.sp.jandira.costurie_app.screens.chats.PictureScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.EditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editProfile.TagsEditProfileScreen
 import br.senai.sp.jandira.costurie_app.screens.editPublication.EditPublicationScreen
@@ -317,88 +318,119 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                     }
-                    //telas de configuracões
-                    composable(route = "settings") {
-                        SettingsScreen(
-                            lifecycleScope = lifecycleScope,
-                            navController = navController,
-                            localStorage = localStorage
-                        )
-                    }
-                    composable(route = "yourAccount") {
-                        YourAccountScreen(
-                            lifecycleScope = lifecycleScope,
-                            navController = navController
-                        )
-                    }
-                    composable(route = "changeEmail") {
-                        ChangeEmailScreen(
-                            navController = navController,
-                            localStorage = localStorage
-                        )
-                    }
-                    composable(route = "changePassword") {
-                        ChangePasswordScreen(
-                            navController = navController,
-                            lifecycleScope = lifecycleScope,
-                            localStorage = localStorage
-                        )
-                    }
-                    composable(route = "about") { AboutScreen(navController = navController) }
-                    composable(route = "termsAndConditions") {
-                        TermsAndConditionsScreen(
-                            navController = navController
-                        )
-                    }
-                    composable(route = "helpAndSupport") {
-                        HelpAndSupportScreen(
-                            navController = navController,
-                            localStorage = localStorage
-                        )
-                    }
 
-                    //telas de personalização
-                    composable(route = "name") {
-                        NameScreen(
-                            navController = navController,
-                            localStorage
-                        )
-                    }
-                    composable(route = "foto") {
-                        ProfilePicScreen(
-                            navController = navController,
-                            localStorage,
-                            lifecycleScope = lifecycleScope
-                        )
-                    }
-                    composable(route = "description") {
-                        DescriptionScreen(
-                            navController = navController,
-                            localStorage,
-                            lifecycleScope = lifecycleScope
-                        )
-                    }
-                    composable(route = "location") {
-                        LocationScreen(
-                            navController = navController,
-                            lifecycleScope = lifecycleScope
-                        )
-                    }
-                    composable(route = "profileType") {
-                        TypeProfileScreen(
-                            navController = navController,
-                            lifecycleScope = lifecycleScope
-                        )
-                    }
-                    composable(route = "tagSelection") {
-                        TagSelectScreen(
-                            lifecycleScope = lifecycleScope,
-                            navController = navController
-                        )
+                    composable(route = "pictureScreen") {
+                        val context = LocalContext.current
+
+                        val dadaUser = UserRepositorySqlite(context).findUsers()
+
+                        var array = User()
+
+                        var data = ""
+                        if (dadaUser.isNotEmpty()) {
+                            array = dadaUser[0]
+
+
+                            data = array.id.toString()
+
+                            Log.e("eu mandei", "id: ${data}")
+
+
+                            val client = ChatClient()
+                            client.connect(data.toInt())
+                            val socket = client.getSocket()
+                            PictureScreen(
+                                navController = navController,
+                                chatViewModel = chatViewModel,
+                                client = client,
+                                idUsuario = data.toInt(),
+                                socket = socket
+                            )
+                        }
+
+                        //telas de configuracões
+                        composable(route = "settings") {
+                            SettingsScreen(
+                                lifecycleScope = lifecycleScope,
+                                navController = navController,
+                                localStorage = localStorage
+                            )
+                        }
+                        composable(route = "yourAccount") {
+                            YourAccountScreen(
+                                lifecycleScope = lifecycleScope,
+                                navController = navController
+                            )
+                        }
+                        composable(route = "changeEmail") {
+                            ChangeEmailScreen(
+                                navController = navController,
+                                localStorage = localStorage
+                            )
+                        }
+                        composable(route = "changePassword") {
+                            ChangePasswordScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope,
+                                localStorage = localStorage
+                            )
+                        }
+                        composable(route = "about") { AboutScreen(navController = navController) }
+                        composable(route = "termsAndConditions") {
+                            TermsAndConditionsScreen(
+                                navController = navController
+                            )
+                        }
+                        composable(route = "helpAndSupport") {
+                            HelpAndSupportScreen(
+                                navController = navController,
+                                localStorage = localStorage
+                            )
+                        }
+
+                        //telas de personalização
+                        composable(route = "name") {
+                            NameScreen(
+                                navController = navController,
+                                localStorage
+                            )
+                        }
+                        composable(route = "foto") {
+                            ProfilePicScreen(
+                                navController = navController,
+                                localStorage,
+                                lifecycleScope = lifecycleScope
+                            )
+                        }
+                        composable(route = "description") {
+                            DescriptionScreen(
+                                navController = navController,
+                                localStorage,
+                                lifecycleScope = lifecycleScope
+                            )
+                        }
+                        composable(route = "location") {
+                            LocationScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope
+                            )
+                        }
+                        composable(route = "profileType") {
+                            TypeProfileScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope
+                            )
+                        }
+                        composable(route = "tagSelection") {
+                            TagSelectScreen(
+                                lifecycleScope = lifecycleScope,
+                                navController = navController
+                            )
+                        }
                     }
                 }
             }
-        }
 
+        }
     }
 }

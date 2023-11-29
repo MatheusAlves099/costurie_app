@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
@@ -44,8 +45,8 @@ fun ReceivedMesssage(
 ) {
 
     Row (
-        modifier = Modifier.fillMaxWidth()
-            .padding(top = 20.dp, start = 16.dp)
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start
     ) {
         Card(
             modifier = Modifier
@@ -54,24 +55,16 @@ fun ReceivedMesssage(
             backgroundColor = Contraste,
             shape = RoundedCornerShape(8.dp)
         ) {
-            Column {
+            Row (horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.padding(12.dp)){
                 Text(
                     text = message,
-                    textAlign = TextAlign.Start,
-                    modifier = Modifier
-                        .padding(start = 10.dp)
-                        .width(250.dp)
-                        .height(20.dp),
                     fontSize = 14.sp,
+                    modifier = Modifier.width(220.dp),
                     color = Principal1
                 )
 
                 Text(
                     text = time,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier
-                        .padding(end = 3.dp)
-                        .width(250.dp),
                     fontSize = 8.sp,
                     color = Principal1
                 )

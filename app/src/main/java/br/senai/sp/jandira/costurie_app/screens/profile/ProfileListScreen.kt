@@ -210,9 +210,13 @@ fun ProfileListScreen(
                         )
 
                         newList = ModalLocation(lifecycleScope, localStorage, listUsersTag)
+                        Log.i("newList", "ProfileListScreen: ${newList}")
                     }
                 }
-
+                Log.i("newListAfter", "ProfileListScreen: ${newList}")
+                if (newList.isNotEmpty()) {
+                    listUsersTag = newList
+                }
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()

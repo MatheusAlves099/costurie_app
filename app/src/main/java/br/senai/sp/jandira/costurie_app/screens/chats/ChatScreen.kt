@@ -86,7 +86,8 @@ fun ChatScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
                 var listaMensagens by remember {
                     mutableStateOf(
@@ -206,9 +207,7 @@ fun ChatScreen(
                         }
                     }
                 }
-                Column(
-                    modifier = Modifier.height(644.dp)
-                ) {
+                Column {
                     LazyColumn(
                         modifier = Modifier
                             .height(590.dp)

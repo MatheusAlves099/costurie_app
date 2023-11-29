@@ -1,13 +1,17 @@
 package br.senai.sp.jandira.costurie_app.components
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -25,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
@@ -35,6 +40,7 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 fun MessageBar(
     value: String,
     onValueChange: (String) -> Unit,
+    navController: NavController,
 ) {
     var context = LocalContext.current
 
@@ -58,17 +64,29 @@ fun MessageBar(
                 shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
             ),
         trailingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.send_icon), // Altere para o ícone desejado para a resposta,
-                contentDescription = "",
-                modifier = Modifier
-                    .size(30.dp)
-                    .clickable {
-                        onValueChange(mensagemState)
-                        mensagemState = ""
-                    },
-                tint = Destaque2
-            )
+            Row {
+                Image(
+                    painter = painterResource(id = R.drawable.icon_add_image),
+                    contentDescription = "",
+                    Modifier
+                        .size(30.dp)
+                        .clickable {
+                            navController.navigate("PictureScreen")
+                        }
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.send_icon), // Altere para o ícone desejado para a resposta,
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(30.dp)
+                        .clickable {
+                            onValueChange(mensagemState)
+                            mensagemState = ""
+                        },
+                    tint = Destaque2
+                )
+            }
+
         },
         colors = TextFieldDefaults.textFieldColors(
             containerColor = Color(252, 246, 255, 255),

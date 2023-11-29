@@ -42,6 +42,7 @@ fun ReceivedMesssage(
     message: String,
     time: String
 ) {
+
     Row (
         modifier = Modifier.fillMaxWidth()
             .padding(top = 20.dp, start = 16.dp)

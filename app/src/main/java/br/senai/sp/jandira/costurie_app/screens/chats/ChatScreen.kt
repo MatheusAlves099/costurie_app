@@ -40,7 +40,9 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.components.MessageBar
+import br.senai.sp.jandira.costurie_app.components.ReceivedMessagePicture
 import br.senai.sp.jandira.costurie_app.components.ReceivedMesssage
+import br.senai.sp.jandira.costurie_app.components.SendMessagePicture
 import br.senai.sp.jandira.costurie_app.components.SendMesssage
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
@@ -69,9 +71,7 @@ fun ChatScreen(
     var foto = chatViewModel.foto
     var nome = chatViewModel.nome
 
-
     Log.d("Luizão", "idChat: $idChat, idUser: $idUser2")
-
 
     var message by remember {
         mutableStateOf("")
@@ -112,10 +112,13 @@ fun ChatScreen(
                                 val data = d[0]
                                 if (data.toString().isNotEmpty()) {
                                     val mensagens =
-                                        Gson().fromJson(data.toString(), MensagensResponse::class.java)
+                                        Gson().fromJson(
+                                            data.toString(),
+                                            MensagensResponse::class.java
+                                        )
 
                                     listaMensagens = mensagens
-//                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
                                 }
                             }
                         }
@@ -215,40 +218,90 @@ fun ChatScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(listaMensagens.mensagens) {
-                            if (it.messageTo == idUsuario) {
-                                ReceivedMesssage(
-                                    message = it.message,
-                                    time = it.hora_criacao!!.substring(0,5)
-                                )
-                            } else {
-                                SendMesssage(
-                                    message = it.message,
-                                    time = it.hora_criacao!!.substring(0,5)
-                                )
 
+                            if (it.message == "" && it.image != ""){
+                                if (it.messageTo == idUsuario) {
+                                    SendMessagePicture(
+                                        mensagem = "",
+                                        time = it.hora_criacao!!.substring(0,5),
+                                        foto = it.image,
+                                        onDelete = {
+                                            socket.on("deleteMessage") { args ->
+                                                args.let { d ->
+                                                    if (d.isNotEmpty()) {
+                                                        val idMessageDeleted = d[0] as String
+                                                        listaMensagens = listaMensagens.copy(
+                                                            mensagens = listaMensagens.mensagens
+                                                                .filterNot { it.message == idMessageDeleted }
+                                                                .toMutableList()
+                                                        )
+                                                        Log.e("IDMANO", "${idMessageDeleted}")
+                                                    }
+                                                }
+                                            }
+                                            client.deleteMessage(it._id.toString())
+                                        }
+                                    )
+                                } else {
+                                    ReceivedMessagePicture(
+                                        mensagem = "",
+                                        time = it.hora_criacao!!.substring(0,5),
+                                        foto = it.image
+                                    )
+
+                                }
+                            }else{
+                                if (it.messageTo == idUsuario) {
+                                    ReceivedMesssage(
+                                        message = it.message,
+                                        time = it.hora_criacao!!.substring(0, 5)
+                                    )
+                                } else {
+                                    SendMesssage(
+                                        message = it.message,
+                                        time = it.hora_criacao!!.substring(0, 5),
+                                        onDelete = {
+                                            socket.on("deleteMessage") { args ->
+                                                args.let { d ->
+                                                    if (d.isNotEmpty()) {
+                                                        val idMessageDeleted = d[0] as String
+                                                        listaMensagens = listaMensagens.copy(
+                                                            mensagens = listaMensagens.mensagens
+                                                                .filterNot { it.message == idMessageDeleted }
+                                                                .toMutableList()
+                                                        )
+                                                        Log.e("IDMANO", "${idMessageDeleted}")
+                                                    }
+                                                }
+                                            }
+                                            client.deleteMessage(it._id.toString())
+                                        }
+                                    )
+                                }
                             }
-
 
                         }
                     }
                     MessageBar(
-                        value = message
-                    ) {
-                        message = it
+                        value = message,
+                        onValueChange = {
+                            message = it
+                            val json = JSONObject().apply {
+                                put("messageBy", idUsuario)
+                                put("messageTo", idUser2)
+                                put("message", message)
+                                put("image", "")
+                                put("chatId", idChat)
+                            }
 
-                        val json = JSONObject().apply {
-                            put("messageBy", idUsuario)
-                            put("messageTo", idUser2)
-                            put("message", message)
-                            put("image", "")
-                            put("chatId", idChat)
-                        }
+                            Log.e("JSON", "$json")
+                            // val jsonString = Json.encodeToString(json)
 
-                        Log.e("JSON", "$json")
-                        // val jsonString = Json.encodeToString(json)
+                            client.sendMessage(json)
+                        },
+                        navController = navController
+                    )
 
-                        client.sendMessage(json)
-                    }
                 }
             }
         }

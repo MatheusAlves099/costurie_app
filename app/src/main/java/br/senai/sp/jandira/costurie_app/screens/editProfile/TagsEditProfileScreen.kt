@@ -142,7 +142,7 @@ fun TagsEditProfileScreen(
 
                 viewModel.setProfileEditSuccess(true)
 
-                navController.navigate("profile")
+                navController.navigate("home")
             } else {
                 val errorBody = response.errorBody()?.string()
                 Log.e("EDICAO DE PERFIL", "updateUser: $errorBody")

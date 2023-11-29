@@ -79,7 +79,8 @@ fun ChatListScreen(
     var listaContatos by remember {
         mutableStateOf(
             SocketResponse(
-                users = listOf()
+                users = listOf(),
+                id_user = 0
             )
         )
     }
@@ -93,7 +94,9 @@ fun ChatListScreen(
                 if (data.toString().isNotEmpty()) {
                     val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
-                    listaContatos = chat
+                    if(chat.id_user == idUsuario){
+                        listaContatos = chat
+                    }
                 }
             }
         }

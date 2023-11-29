@@ -232,7 +232,7 @@ fun ProfileViewedScreen(
                     viewModel.nome = nome
                     viewModel.descricao = descricao
                     viewModel.nome_de_usuario = nome_de_usuario
-                    viewModel.foto = fotoUri
+                    viewModel.foto = fotoUrl
                     viewModel.email = email
                     viewModel.estados.value = listOf(estado)
                     viewModel.cidades.value = listOf(cidade)

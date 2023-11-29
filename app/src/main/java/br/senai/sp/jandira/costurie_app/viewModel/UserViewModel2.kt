@@ -13,7 +13,7 @@ class UserViewModel2: ViewModel() {
     var descricao: String = ""
     var nome_de_usuario: String = ""
     var email: String = ""
-    var foto: Uri? = null
+    var foto: String = ""
     var id_localizacao: Int? = 0
     val estados: MutableLiveData<List<String>> = MutableLiveData()
     val cidades: MutableLiveData<List<String>> = MutableLiveData()

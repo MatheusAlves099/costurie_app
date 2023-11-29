@@ -93,9 +93,6 @@ fun EditProfileScreen(
 
     val viewModelTagUsuario = viewModel.nome_de_usuario
 
-    //REFERENCIA PARA ACESSO E MANiPULACAO DO CLOUD STORAGE
-    var storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("images")
-
     //REFERENCIA PARA ACESSO E MANIPULACAO DO CLOUD FIRESTORE
     var firebaseFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
@@ -114,16 +111,114 @@ fun EditProfileScreen(
     var alterouFoto = false
 
     var fotoUri by remember {
-        mutableStateOf<Uri?>(viewModel.foto)
+        mutableStateOf<Uri?>(Uri.parse(viewModel.foto))
     }
 
-    localStorage.salvarValor(context, fotoUri.toString(), "foto")
+    localStorage.salvarValor(context, viewModel.foto, "foto")
+    Log.i(
+        "inicio",
+        "ProfileScreen: ${
+            localStorage.lerValor(
+                context,
+                "foto"
+            )
+        }"
+    )
+
+    fun urlDownload(it: String) {
+        if (alterouFoto) {
+            alterouFoto = false
+            lifecycleScope.launch {
+                it?.let {
+                    val storageRefs: StorageReference =
+                        FirebaseStorage.getInstance().reference.child("teste/${Uri.parse(it)}")
+
+                    val uploadTask = storageRefs.putFile(Uri.parse(it))
+
+                    uploadTask
+                        .addOnCompleteListener { task ->
+
+                            if (task.isSuccessful) {
+
+                                storageRefs.downloadUrl.addOnSuccessListener { uri ->
+
+                                    val map = HashMap<String, Any>()
+                                    map["pic"] = uri.toString()
+
+                                    firebaseFirestore
+                                        .collection("images")
+                                        .add(map)
+                                        .addOnCompleteListener { firestoreTask ->
+
+                                            if (firestoreTask.isSuccessful) {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "UPLOAD REALIZADO COM SUCESSO",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+
+
+                                            } else {
+                                                Toast
+                                                    .makeText(
+                                                        context,
+                                                        "ERRO AO TENTAR REALIZAR O UPLOAD",
+                                                        Toast.LENGTH_SHORT
+                                                    )
+                                                    .show()
+                                            }
+
+                                            localStorage.salvarValor(
+                                                context,
+                                                uri.toString(),
+                                                "foto"
+                                            )
+                                            Log.i(
+                                                "casc",
+                                                "ProfileScreen: ${
+                                                    localStorage.lerValor(
+                                                        context,
+                                                        "foto"
+                                                    )
+                                                }"
+                                            )
+//                                                                    localStorage.salvarValor(
+//                                                                        context,
+//                                                                        foto.toString(),
+//                                                                        "foto"
+//                                                                    )
+                                            //BARRA DE PROGRESSO DO UPLOAD
+                                        }
+                                }
+
+                            } else {
+
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "ERRO AO TENTAR REALIZAR O UPLOAD",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                    .show()
+
+                            }
+
+                            //BARRA DE PROGRESSO DO UPLOAD
+
+                        }
+                }
+            }
+        }
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) {
         fotoUri = it
         alterouFoto = true
+        urlDownload(fotoUri.toString())
     }
 
     var painter = rememberAsyncImagePainter(
@@ -252,86 +347,6 @@ fun EditProfileScreen(
                                     .clickable {
                                         Log.e("user-teste", "EditProfileScreen: $user")
 
-                                        if (alterouFoto) {
-                                            alterouFoto = false
-                                            lifecycleScope.launch {
-                                                fotoUri?.let {
-                                                    storageRef
-                                                        .putFile(it)
-                                                        .addOnCompleteListener { task ->
-
-                                                            if (task.isSuccessful) {
-
-                                                                storageRef.downloadUrl.addOnSuccessListener { uri ->
-
-                                                                    val map = HashMap<String, Any>()
-                                                                    map["pic"] = uri.toString()
-
-                                                                    firebaseFirestore
-                                                                        .collection("images")
-                                                                        .add(map)
-                                                                        .addOnCompleteListener { firestoreTask ->
-
-                                                                            if (firestoreTask.isSuccessful) {
-                                                                                Toast
-                                                                                    .makeText(
-                                                                                        context,
-                                                                                        "UPLOAD REALIZADO COM SUCESSO",
-                                                                                        Toast.LENGTH_SHORT
-                                                                                    )
-                                                                                    .show()
-                                                                            } else {
-                                                                                Toast
-                                                                                    .makeText(
-                                                                                        context,
-                                                                                        "ERRO AO TENTAR REALIZAR O UPLOAD",
-                                                                                        Toast.LENGTH_SHORT
-                                                                                    )
-                                                                                    .show()
-                                                                            }
-
-                                                                            localStorage.salvarValor(
-                                                                                context,
-                                                                                uri.toString(),
-                                                                                "foto"
-                                                                            )
-                                                                            Log.i(
-                                                                                "casc",
-                                                                                "ProfileScreen: ${
-                                                                                    localStorage.lerValor(
-                                                                                        context,
-                                                                                        "foto"
-                                                                                    )
-                                                                                }"
-                                                                            )
-//                                                                    localStorage.salvarValor(
-//                                                                        context,
-//                                                                        foto.toString(),
-//                                                                        "foto"
-//                                                                    )
-                                                                            //BARRA DE PROGRESSO DO UPLOAD
-                                                                        }
-                                                                }
-
-                                                            } else {
-
-                                                                Toast
-                                                                    .makeText(
-                                                                        context,
-                                                                        "ERRO AO TENTAR REALIZAR O UPLOAD",
-                                                                        Toast.LENGTH_SHORT
-                                                                    )
-                                                                    .show()
-
-                                                            }
-
-                                                            //BARRA DE PROGRESSO DO UPLOAD
-
-                                                        }
-                                                }
-                                            }
-                                        }
-
                                         if (viewModelIdLocalizacao != null) {
                                             Log.i("verifica", "${estadoStateUser!!}")
                                             localStorage.salvarValor(
@@ -366,6 +381,16 @@ fun EditProfileScreen(
                                                 "nome_de_usuario"
                                             )
                                             localStorage.salvarValor(context, nomeState, "nome")
+
+                                            Log.i(
+                                                "casc",
+                                                "ProfileScreen: ${
+                                                    localStorage.lerValor(
+                                                        context,
+                                                        "foto"
+                                                    )
+                                                }"
+                                            )
 
                                             lifecycleScope.launch {
                                                 var response = UserRepository().updateUser(
@@ -406,7 +431,7 @@ fun EditProfileScreen(
 
                                                     viewModel.setProfileEditSuccess(true)
 
-                                                    navController.popBackStack()
+                                                    navController.navigate("home")
                                                 } else {
                                                     val errorBody = response
                                                         .errorBody()

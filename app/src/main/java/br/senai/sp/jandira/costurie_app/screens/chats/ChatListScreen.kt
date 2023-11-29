@@ -241,6 +241,7 @@ fun ChatListScreen(
                                     Box(
                                         modifier = Modifier
                                             .size(60.dp)
+                                            .padding(start = 4.dp)
                                             .clip(shape = RoundedCornerShape(10.dp))
                                             .background(Color(168, 155, 255, 102))
                                     ) {
@@ -274,21 +275,22 @@ fun ChatListScreen(
                                             text = contato[0].nome,
                                             textAlign = TextAlign.Start,
                                             modifier = Modifier
+                                                .padding(start = 4.dp)
                                                 .width(220.dp)
                                                 .height(22.dp),
                                             fontSize = 15.sp,
                                             color = Contraste
                                         )
 
-                                        Text(
-                                            text = "Boa noite!",
-                                            textAlign = TextAlign.Start,
-                                            modifier = Modifier
-                                                .width(220.dp)
-                                                .height(22.dp),
-                                            fontSize = 15.sp,
-                                            color = Contraste2
-                                        )
+//                                        Text(
+//                                            text = "Boa noite!",
+//                                            textAlign = TextAlign.Start,
+//                                            modifier = Modifier
+//                                                .width(220.dp)
+//                                                .height(22.dp),
+//                                            fontSize = 15.sp,
+//                                            color = Contraste2
+//                                        )
                                     }
 
                                     Column(
@@ -298,29 +300,29 @@ fun ChatListScreen(
                                         Arrangement.SpaceBetween,
                                         Alignment.CenterHorizontally
                                     ) {
-                                        Canvas(
-                                            modifier = Modifier
-                                                .size(12.dp)
-                                                .pointerInput(Unit) {
-                                                    detectTransformGestures { _, pan, _, _ ->
-                                                        if (pan != Offset(0f, 0f)) {
-                                                            isLongPressActive = true
-                                                        }
-                                                    }
-                                                },
-                                            onDraw = {
-                                                drawCircle(
-                                                    color = if (isLongPressActive) Color.Transparent else Destaque1
-                                                )
-                                            }
-                                        )
+//                                        Canvas(
+//                                            modifier = Modifier
+//                                                .size(12.dp)
+//                                                .pointerInput(Unit) {
+//                                                    detectTransformGestures { _, pan, _, _ ->
+//                                                        if (pan != Offset(0f, 0f)) {
+//                                                            isLongPressActive = true
+//                                                        }
+//                                                    }
+//                                                },
+//                                            onDraw = {
+//                                                drawCircle(
+//                                                    color = if (isLongPressActive) Color.Transparent else Destaque1
+//                                                )
+//                                            }
+//                                        )
 
                                         Text(
                                             text = formatarData(it.data_criacao),
                                             textAlign = TextAlign.Start,
                                             modifier = Modifier
                                                 .width(70.dp)
-                                                .height(20.dp),
+                                                .height(22.dp),
                                             fontSize = 10.sp,
                                             color = Contraste2
                                         )

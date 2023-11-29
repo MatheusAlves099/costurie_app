@@ -60,7 +60,7 @@ fun SendMesssage(
         Card(
             modifier = Modifier
                 .height(35.dp)
-                .width(IntrinsicSize.Min)
+                .fillMaxWidth()
                 .pointerInput(Unit) {
                     detectTransformGestures { _, pan, _, _ ->
                         if (pan != Offset(0f, 0f)) {

@@ -50,7 +50,7 @@ fun ReceivedMesssage(
         Card(
             modifier = Modifier
                 .height(35.dp)
-                .width(IntrinsicSize.Min),
+                .fillMaxWidth(),
             backgroundColor = Contraste,
             shape = RoundedCornerShape(8.dp)
         ) {

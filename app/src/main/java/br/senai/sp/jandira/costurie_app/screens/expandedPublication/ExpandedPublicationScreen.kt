@@ -77,6 +77,7 @@ import br.senai.sp.jandira.costurie_app.model.PublicationGetResponse
 import br.senai.sp.jandira.costurie_app.model.TagResponseId
 import br.senai.sp.jandira.costurie_app.model.UsersTagResponse
 import br.senai.sp.jandira.costurie_app.repository.PublicationRepository
+import br.senai.sp.jandira.costurie_app.repository.UserRepository
 import br.senai.sp.jandira.costurie_app.screens.expandedComment.ExpandedCommentScreen
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
@@ -166,6 +167,30 @@ fun ExpandedPublicationScreen(
         isOpen.value = true
     }
 
+    var fotoDoCara by remember {
+        mutableStateOf("")
+    }
+
+    suspend fun getUser() {
+        val userRepository = UserRepository()
+        val array = UserRepositorySqlite(context).findUsers()
+        val user = array[0]
+
+        val response = userRepository.getUser(user.id.toInt(), user.token)
+
+        if (response.isSuccessful) {
+            Log.e(MainActivity::class.java.simpleName, "Requisição bem sucedida, Publicação")
+            Log.e("usuario", "usuario: ${response.body()} ")
+
+            fotoDoCara = response.body()?.usuario?.foto!!
+            Log.e("foto1", "foto: $fotoDoCara", )
+
+        } else {
+            val errorBody = response.errorBody()?.string()
+            Log.e("FOTO", "FOTO: $errorBody")
+        }
+    }
+
     suspend fun getPublicationById() {
         val publicationRepository = PublicationRepository()
         val array = UserRepositorySqlite(context).findUsers()
@@ -245,8 +270,10 @@ fun ExpandedPublicationScreen(
     LaunchedEffect(key1 = true) {
 
         getPublicationById()
+        getUser()
 
         Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
+        Log.e("foto2", "foto: $fotoDoCara", )
     }
 
     val viewModelButtonPoint: ButtonPointColorViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
@@ -503,7 +530,7 @@ fun ExpandedPublicationScreen(
                                     val idAnunciante = viewModelId.id_perfil
                                     val jsonUser1 = UserChat(
                                         id = dadaUser[0].id.toInt(),
-                                        foto = dadaUser[0].foto,
+                                        foto = fotoDoCara,
                                         nome = dadaUser[0].nome
                                     )
 

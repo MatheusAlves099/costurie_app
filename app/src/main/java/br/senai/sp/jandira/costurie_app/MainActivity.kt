@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
                 val socket = client.getSocket()
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "main"
+                    startDestination = "home"
                 )
 
                 {

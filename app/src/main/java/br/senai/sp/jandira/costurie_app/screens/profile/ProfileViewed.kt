@@ -179,6 +179,10 @@ fun ProfileViewedScreen(
     val userState = remember { mutableStateOf<UserGetIDResponse?>(null) }
     var publicationList by remember { mutableStateOf<List<PublicationGetResponse>>(emptyList()) }
 
+    var fotoDoCara by remember {
+        mutableStateOf("")
+    }
+
     fun user(
         id: Int,
         token: String,
@@ -199,6 +203,7 @@ fun ProfileViewedScreen(
                 Log.e(MainActivity::class.java.simpleName, "Usuario sucedido")
                 Log.e("user", "user: ${response.body()?.usuario}")
 
+                fotoDoCara = response.body()?.usuario?.foto!!
                 userState.value = response.body()
 
                 val userResponse = response.body()
@@ -348,7 +353,7 @@ fun ProfileViewedScreen(
                                 val idAnunciante = viewModelId.id_perfil
                                 val jsonUser1 = UserChat(
                                     id = dadaUser[0].id.toInt(),
-                                    foto = dadaUser[0].foto,
+                                    foto = fotoDoCara,
                                     nome = dadaUser[0].nome
                                 )
 

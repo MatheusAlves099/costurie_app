@@ -16,6 +16,5 @@ class LoginRepository {
         }
 
         return apiService.postUser(requestBody)
-
     }
 }

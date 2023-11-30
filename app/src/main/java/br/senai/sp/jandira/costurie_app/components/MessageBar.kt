@@ -60,6 +60,7 @@ fun MessageBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
+            .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(
                 BorderStroke(
                     width = 2.dp,
@@ -68,12 +69,15 @@ fun MessageBar(
                 shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
             ),
         trailingIcon = {
-            Row {
+            Row (
+                modifier = Modifier
+                    .padding(end = 10.dp)
+            ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_add_image),
                     contentDescription = "",
                     Modifier
-                        .size(30.dp)
+                        .size(24.dp)
                         .clickable {
                             navController.navigate("PictureScreen")
                         }
@@ -85,7 +89,7 @@ fun MessageBar(
                     painter = painterResource(id = R.drawable.send_icon), // Altere para o ícone desejado para a resposta,
                     contentDescription = "",
                     modifier = Modifier
-                        .size(30.dp)
+                        .size(24.dp)
                         .clickable {
                             onValueChange(mensagemState)
                             mensagemState = ""

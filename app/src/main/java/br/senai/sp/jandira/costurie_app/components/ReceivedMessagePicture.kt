@@ -31,7 +31,6 @@ fun ReceivedMessagePicture(
             shape = RoundedCornerShape(
                 topStart = 16.dp, topEnd = 0.dp, bottomStart = 16.dp, bottomEnd = 16.dp
             ),
-            modifier = Modifier.width(280.dp),
             backgroundColor = Destaque2
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
@@ -43,8 +42,7 @@ fun ReceivedMessagePicture(
                     text = time,
                     textAlign = TextAlign.End,
                     modifier = Modifier
-                        .padding(end = 3.dp)
-                        .width(250.dp),
+                        .padding(end = 3.dp),
                     fontSize = 8.sp,
                     color = Principal1
                 )

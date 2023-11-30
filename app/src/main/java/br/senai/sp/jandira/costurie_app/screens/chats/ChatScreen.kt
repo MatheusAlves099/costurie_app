@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,7 +32,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -77,6 +81,8 @@ fun ChatScreen(
         mutableStateOf("")
     }
 
+    var isLongPressActive by remember { mutableStateOf(false) }
+
     Costurie_appTheme {
         Surface(
             modifier = Modifier
@@ -119,7 +125,17 @@ fun ChatScreen(
                                         )
 
                                     listaMensagens = mensagens
-                                Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                                //Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+                                } else {
+                                    listaMensagens = MensagensResponse(
+                                        status = 0,
+                                        message = "",
+                                        id_chat = "",
+                                        usuarios = listOf(),
+                                        data_criacao = "",
+                                        hora_criacao = "",
+                                        mensagens = mutableStateListOf()
+                                    )
                                 }
                             }
                         }
@@ -208,15 +224,25 @@ fun ChatScreen(
                     }
                 }
                 Column {
+                    Log.i("listaMensagens", "ChatScreen: ${listaMensagens.mensagens}")
                     LazyColumn(
                         modifier = Modifier
-                            .height(590.dp)
+                            .weight(1f)
                             .fillMaxWidth()
-                            .padding(12.dp),
+                            .padding(12.dp)
+                            .pointerInput(Unit) {
+
+                                detectTransformGestures { _, pan, _, _ ->
+                                    if (pan != Offset(0f, 0f)) {
+                                        isLongPressActive = false
+                                    }
+                                }
+                            },
                         verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        reverseLayout = true
                     ) {
-                        items(listaMensagens.mensagens) {
+                        items(listaMensagens.mensagens.asReversed()) {
 
                             if (it.message == "" && it.image != ""){
                                 if (it.messageTo == idUsuario) {
@@ -274,13 +300,15 @@ fun ChatScreen(
                                                 }
                                             }
                                             client.deleteMessage(it._id.toString())
-                                        }
+                                        },
+                                        isLongPressActive = isLongPressActive
                                     )
                                 }
                             }
 
                         }
                     }
+
                     MessageBar(
                         value = message,
                         onValueChange = {

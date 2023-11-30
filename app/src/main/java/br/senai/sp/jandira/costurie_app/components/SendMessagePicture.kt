@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -50,7 +51,6 @@ fun SendMessagePicture(
                 topStart = 0.dp, topEnd = 16.dp, bottomStart = 16.dp, bottomEnd = 16.dp
             ),
             modifier = Modifier
-                .width(280.dp)
                 .pointerInput(Unit) {
                     detectTransformGestures { _, pan, _, _ ->
                         if (pan != Offset(0f, 0f)) {
@@ -69,8 +69,7 @@ fun SendMessagePicture(
                     text = time,
                     textAlign = TextAlign.End,
                     modifier = Modifier
-                        .padding(end = 3.dp)
-                        .width(250.dp),
+                        .padding(end = 3.dp),
                     fontSize = 8.sp,
                     color = Principal1
                 )

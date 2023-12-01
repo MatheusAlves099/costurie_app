@@ -178,7 +178,6 @@ fun ProfilePicScreen(navController: NavController, localStorage: Storage, lifecy
                                 }
                             }
 
-
                             Log.i("localstorage", "${localStorage.lerValor(context, "foto")}")
                             Log.i("localstorage", "${localStorage.lerValor(context, "nome")}")
                             navController.navigate("description")

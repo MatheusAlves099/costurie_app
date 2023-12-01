@@ -328,9 +328,11 @@ fun ChatScreen(
 
                             client.sendMessage(json)
                         },
-                        navController = navController
+                        chatViewModel = chatViewModel,
+                        navController = navController,
+                        client = client,
+                        idUsuario = 0
                     )
-
                 }
             }
         }

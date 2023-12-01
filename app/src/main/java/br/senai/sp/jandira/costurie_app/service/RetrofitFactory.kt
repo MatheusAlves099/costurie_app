@@ -13,7 +13,6 @@ object RetrofitFactory {
   
      //private const val BASE_URL = "http://10.107.144.8:3000"
 
-
     //private const val BASE_URL = "http://192.168.3.7:3000"
 
     object HttpClientProvider {

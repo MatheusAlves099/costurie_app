@@ -4,13 +4,16 @@ import android.graphics.fonts.Font
 import android.graphics.fonts.FontFamily
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -32,11 +36,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
@@ -44,6 +51,10 @@ import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
+import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
+import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
+import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
@@ -62,6 +73,8 @@ fun PictureScreen(
 ){
     val context = LocalContext.current
 
+    val brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
+
     var nome = chatViewModel.nome
     val idChat = chatViewModel.idChat
     val idUser2 = chatViewModel.idUser2
@@ -73,10 +86,6 @@ fun PictureScreen(
     val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(context).data(fotoUri).build()
     )
-
-    var imagem by remember {
-        mutableStateOf("https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-gris.png")
-    }
 
     val storageRef: StorageReference = FirebaseStorage.getInstance().reference.child("chat")
 
@@ -112,149 +121,139 @@ fun PictureScreen(
         }
     }
 
-//    val launcher = rememberLauncherForActivityResult(
-//        contract = ActivityResultContracts.GetContent()
-//    ) { uri ->
-//        uri?.let {
-//            fotoUri = it
-//
-//            val json = JSONObject().apply {
-//                put("messageBy", idUsuario)
-//                put("messageTo", idUser2)
-//                put("message", "")
-//                put("image", fotoUri.toString())
-//                put("chatId", idChat)
-//            }
-//
-//            client.sendMessage(json)
-//        }
-//    }
-
     Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(235, 23, 23, 255))
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
+            Box() {
+                Image(
+                    painter = painterResource(id = R.drawable.retangulo_topo),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    alignment = Alignment.TopEnd
+                )
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(R.color.destaque_1))
-                        .padding(24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .width(370.dp)
+                        .padding(top = 15.dp, start = 15.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(painter = painterResource(id = R.drawable.arrow_back),
+                    Image(
+                        painter = painterResource(id = R.drawable.arrow_back),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(32.dp)
+                            .size(45.dp)
                             .clickable {
+                                navController.navigate("settings")
+                            }
+                    )
 
-                            })
+                    Spacer(modifier = Modifier.width(70.dp))
 
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Text(
-                            text = "Enviar foto",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight(600),
-                            color = Color(0xFF000000)
-                        )
-                    }
-
-//                    Image(painter = painterResource(id = R.drawable.close),
-//                        contentDescription = "",
-//                        modifier = Modifier
-//                            .size(32.dp)
-//                            .clickable {
-////                    onclick()
-//                            })
+                    Text(
+                        text = "Enviar foto".uppercase(),
+                        modifier = Modifier.height(30.dp),
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 2.sp,
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
                 }
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(Color(206, 206, 206))
-                ) {}
             }
+
             Spacer(modifier = Modifier.height(13.dp))
+
             Column(
                 modifier = Modifier
                     .width(329.dp)
-                    .background(Color(190, 183, 183, 255))
+                    .background(Principal2)
                     .clickable {
                         launcher.launch("image/*")
                         Log.e("foto", "$fotoUri",)
                         fotoUri?.let {
 //                           imagem = FirebaseMessage(imagem = fotoUri!!, context = context)
                         }
-                    }
+                    },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 AsyncImage(
-                    model = if(fotoUri == null){
-                        imagem
-                    }else{
+                    model = if (fotoUri == null) {
+                        Image(
+                            painter = painterResource(id = R.drawable.chat_image),
+                            contentDescription = "",
+                            modifier = Modifier
+                        )
+                    } else {
                         fotoUri
                     },
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .width(329.dp)
-                        .height(510.dp)
+                        .fillMaxWidth()
+                        .height(280.dp)
                 )
             }
+
             Spacer(modifier = Modifier.height(18.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 20.dp),
+                    .padding(start = 30.dp),
             ) {
                 Text(
                     text = "Enviar para $nome",
                     fontSize = 16.sp,
                     fontWeight = FontWeight(600),
-                    color = Color(0xFF000000),
+                    color = Destaque2,
                 )
 
             }
+
             Spacer(modifier = Modifier.height(30.dp))
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 12.dp),
-                horizontalAlignment =  Alignment.End,
+                    .padding(end = 28.dp),
+                horizontalAlignment = Alignment.End,
 
                 ) {
                 Button(
                     onClick = {
                         navController.navigate("chat")
                     },
-                    modifier = Modifier.size(60.dp),
-                    shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(Color(R.color.destaque_2))
+                    modifier = Modifier
+                        .size(45.dp)
+                        .background(
+                            brush = brush,
+                            shape = RoundedCornerShape(10.dp)
+                        ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(
+                        defaultElevation = 0.dp,
+                        pressedElevation = 0.dp,
+                        hoveredElevation = 0.dp
+                    ),
+                    contentPadding = PaddingValues(0.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.send_icon),
-                        contentDescription = ""
+                        painter = painterResource(id = R.drawable.send_icon_white),
+                        contentDescription = "",
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.White
                     )
                 }
             }
         }
-
     }
 }

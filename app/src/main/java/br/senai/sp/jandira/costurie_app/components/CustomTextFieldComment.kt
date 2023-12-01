@@ -54,8 +54,6 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun CustomOutlinedTextFieldComment(
-    value: String,
-    onValueChange: (String) -> Unit,
     localStorage: Storage,
     lifecycleScope: LifecycleCoroutineScope,
     onCommentCreated: () -> Unit,
@@ -63,6 +61,10 @@ fun CustomOutlinedTextFieldComment(
     isReplyMode: Boolean,
     idComentario: String?
 ) {
+    var value by remember{
+        mutableStateOf("")
+    }
+
     var context = LocalContext.current
 
     var id = localStorage.lerValor(context, "id_publicacao")
@@ -180,7 +182,7 @@ fun CustomOutlinedTextFieldComment(
     TextField(
         value = value,
         onValueChange = {
-            onValueChange(it)
+            value = it
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -206,9 +208,11 @@ fun CustomOutlinedTextFieldComment(
                         if (isReplyMode) {
                             createReplyComment(value, idComentario)
                             keyboardController?.hide()
+                            value = ""
                         } else {
                             createComment(value)
                             keyboardController?.hide()
+                            value = ""
                         }
                     },
                 tint = Destaque2

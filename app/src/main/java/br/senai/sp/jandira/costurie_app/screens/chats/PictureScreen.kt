@@ -151,11 +151,16 @@ fun PictureScreen(
                         modifier = Modifier
                             .size(45.dp)
                             .clickable {
-                                navController.navigate("settings")
-                            }
-                    )
 
-                    Spacer(modifier = Modifier.width(70.dp))
+                                navController.popBackStack()
+                            })
+
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
 
                     Text(
                         text = "Enviar foto".uppercase(),

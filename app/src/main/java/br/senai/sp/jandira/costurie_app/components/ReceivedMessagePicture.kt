@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -31,12 +32,15 @@ fun ReceivedMessagePicture(
             shape = RoundedCornerShape(
                 topStart = 16.dp, topEnd = 0.dp, bottomStart = 16.dp, bottomEnd = 16.dp
             ),
-            backgroundColor = Destaque2
+            backgroundColor = Destaque2,
+
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 AsyncImage(
                     model = foto,
-                    contentDescription = ""
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(280.dp)
                 )
                 Text(
                     text = time,

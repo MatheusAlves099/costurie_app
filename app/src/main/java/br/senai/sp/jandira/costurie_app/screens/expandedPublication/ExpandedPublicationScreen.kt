@@ -58,7 +58,6 @@ import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.ButtonGivePoint
-import br.senai.sp.jandira.costurie_app.components.ButtonPointColorViewModel
 import br.senai.sp.jandira.costurie_app.components.ButtonSettings
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GoogleButton
@@ -171,6 +170,17 @@ fun ExpandedPublicationScreen(
         mutableStateOf("")
     }
 
+    var btnColor by remember {
+        mutableStateOf(listOf<Color>(Color.Transparent, Color.Transparent))
+    }
+
+    var textColor by remember {
+        mutableStateOf(listOf<Color>(Destaque1, Destaque2))
+    }
+
+    Log.i("color", "ExpandedPublicationScreen: ${btnColor}")
+    Log.i("color", "ExpandedPublicationScreen: ${textColor}")
+
     suspend fun getUser() {
         val userRepository = UserRepository()
         val array = UserRepositorySqlite(context).findUsers()
@@ -220,18 +230,19 @@ fun ExpandedPublicationScreen(
     val user = array[0]
 
     suspend fun postGivePoint() {
-        Log.d("postGivePoint", "Chamando postGivePoint")
         val response = publicationRepository.givePoint(user.token, user.id.toInt(), id!!.toInt())
         Log.d("postGivePoint", "Resposta: $response")
         if (response.isSuccessful) {
-            Log.d("give point", "postGivePoint: $response")
+            Log.d("point", "postGivePoint: $response")
             val publications = response.body()
             Toast.makeText(
                 context,
                 publications!!.message,
                 Toast.LENGTH_SHORT
             ).show()
-            Log.i("dar ponto", "dei o ponto: ${publications}")
+            btnColor = listOf(Destaque1, Destaque2)
+            textColor = listOf(Color.White, Color.White)
+            Log.i("ponto", "dei o ponto: ${publications}")
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("CURTIR UMA PUBLICAÇÃO", "Erro: $errorBody")
@@ -244,18 +255,19 @@ fun ExpandedPublicationScreen(
     }
 
     suspend fun postRemovePoint() {
-        Log.d("postGivePoint", "Chamando postGivePoint")
         val response = publicationRepository.removePoint(user.token, user.id.toInt(), id!!.toInt())
-        Log.d("postGivePoint", "Resposta: $response")
+        Log.d("postRemovePoint", "Resposta: $response")
         if (response.isSuccessful) {
-            Log.d("give point", "postGivePoint: $response")
+            Log.d("point", "postRemovePoint: $response")
             val publications = response.body()
             Toast.makeText(
                 context,
                 publications!!.message,
                 Toast.LENGTH_SHORT
             ).show()
-            Log.i("dar ponto", "dei o ponto: ${publications}")
+            btnColor = listOf(Color.Transparent, Color.Transparent)
+            textColor = listOf(Destaque1, Destaque2)
+            Log.i("ponto", "tirei o ponto: ${publications}")
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("CURTIR UMA PUBLICAÇÃO", "Erro: $errorBody")
@@ -267,20 +279,40 @@ fun ExpandedPublicationScreen(
         }
     }
 
+    var isClicked by remember {
+        mutableStateOf(false)
+    }
+
+    suspend fun getPoint() {
+        val response = publicationRepository.getPoint(user.token, user.id.toInt(), id!!.toInt())
+
+        if (response.isSuccessful) {
+            val body = response.body()
+            if (body!!.curtida) {
+                btnColor = listOf(Destaque1, Destaque2)
+                textColor = listOf(Color.White, Color.White)
+                isClicked = true
+            } else {
+                btnColor = listOf(Color.Transparent, Color.Transparent)
+                textColor = listOf(Destaque1, Destaque2)
+                isClicked = false
+            }
+        }
+    }
+
     LaunchedEffect(key1 = true) {
 
         getPublicationById()
         getUser()
+        getPoint()
 
         Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
         Log.e("foto2", "foto: $fotoDoCara", )
     }
 
-    val viewModelButtonPoint: ButtonPointColorViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 
-    var isClicked by remember {
-        mutableStateOf(false)
-    }
+
+
 
     Costurie_appTheme {
         Surface(
@@ -618,23 +650,18 @@ fun ExpandedPublicationScreen(
                                     lifecycleScope.launch {
 
                                         isClicked = !isClicked
+                                        Log.i("isclicked", "ExpandedPublicationScreen: ${isClicked}")
                                         if (isClicked) {
-                                            viewModelButtonPoint.setPointButtonColor(id!!.toInt(), Destaque1, Destaque2)
-                                            viewModelButtonPoint.setPointTextColor(id!!.toInt(), Color.White, Color.White)
                                             postGivePoint()
                                         } else {
-                                            viewModelButtonPoint.setPointButtonColor(id!!.toInt(), Color.Transparent, Color.Transparent)
-                                            viewModelButtonPoint.setPointTextColor(id!!.toInt(), Destaque1, Destaque2)
                                             postRemovePoint()
                                         }
-                                        Log.d(
-                                            "MURYLLOOO",
-                                            "ExpandedPublicationScreen: ${postGivePoint()}"
-                                        )
                                     }
                                 },
                                 text = stringResource(id = R.string.text_give_point),
-                                pointId = id!!.toInt()
+                                btnColor = btnColor,
+                                textColor = textColor
+
                             )
 
                             GradientButtonSmall(

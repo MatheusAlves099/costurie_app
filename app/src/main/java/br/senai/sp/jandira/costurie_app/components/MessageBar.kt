@@ -81,7 +81,7 @@ fun MessageBar(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(65.dp)
             .padding(start = 10.dp, end = 10.dp, bottom = 10.dp)
             .border(
                 BorderStroke(

@@ -225,87 +225,89 @@ fun ChatScreen(
                 }
                 Column {
                     Log.i("listaMensagens", "ChatScreen: ${listaMensagens.mensagens}")
-                    LazyColumn(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxWidth()
-                            .padding(12.dp)
-                            .pointerInput(Unit) {
+                    if (listaMensagens.mensagens != null) {
+                        LazyColumn(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                                .padding(12.dp)
+                                .pointerInput(Unit) {
 
-                                detectTransformGestures { _, pan, _, _ ->
-                                    if (pan != Offset(0f, 0f)) {
-                                        isLongPressActive = false
+                                    detectTransformGestures { _, pan, _, _ ->
+                                        if (pan != Offset(0f, 0f)) {
+                                            isLongPressActive = false
+                                        }
+                                    }
+                                },
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            reverseLayout = true
+                        ) {
+                            items(listaMensagens.mensagens.asReversed()) {
+
+                                if (it.message == "" && it.image != ""){
+                                    if (it.messageTo == idUsuario) {
+                                        SendMessagePicture(
+                                            mensagem = "",
+                                            time = it.hora_criacao!!.substring(0,5),
+                                            foto = it.image,
+                                            onDelete = {
+                                                socket.on("deleteMessage") { args ->
+                                                    args.let { d ->
+                                                        if (d.isNotEmpty()) {
+                                                            val idMessageDeleted = d[0] as String
+                                                            listaMensagens = listaMensagens.copy(
+                                                                mensagens = listaMensagens.mensagens
+                                                                    .filterNot { it.message == idMessageDeleted }
+                                                                    .toMutableList()
+                                                            )
+                                                            Log.e("IDMANO", "${idMessageDeleted}")
+                                                        }
+                                                    }
+                                                }
+                                                client.deleteMessage(it._id.toString())
+                                            }
+                                        )
+                                    } else {
+                                        ReceivedMessagePicture(
+                                            mensagem = "",
+                                            time = it.hora_criacao!!.substring(0,5),
+                                            foto = it.image
+                                        )
+
+                                    }
+                                }else{
+                                    if (it.messageTo == idUsuario) {
+                                        ReceivedMesssage(
+                                            message = it.message,
+                                            time = it.hora_criacao!!.substring(0, 5)
+                                        )
+                                    } else {
+                                        SendMesssage(
+                                            message = it.message,
+                                            time = it.hora_criacao!!.substring(0, 5),
+                                            onDelete = {
+                                                socket.on("deleteMessage") { args ->
+                                                    args.let { d ->
+                                                        if (d.isNotEmpty()) {
+                                                            val idMessageDeleted = d[0] as String
+                                                            listaMensagens = listaMensagens.copy(
+                                                                mensagens = listaMensagens.mensagens
+                                                                    .filterNot { it.message == idMessageDeleted }
+                                                                    .toMutableList()
+                                                            )
+                                                            Log.e("IDMANO", "${idMessageDeleted}")
+                                                        }
+                                                    }
+                                                }
+                                                client.deleteMessage(it._id.toString())
+                                            },
+                                            isLongPressActive = isLongPressActive
+                                        )
                                     }
                                 }
-                            },
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        reverseLayout = true
-                    ) {
-                        items(listaMensagens.mensagens.asReversed()) {
 
-                            if (it.message == "" && it.image != ""){
-                                if (it.messageTo == idUsuario) {
-                                    SendMessagePicture(
-                                        mensagem = "",
-                                        time = it.hora_criacao!!.substring(0,5),
-                                        foto = it.image,
-                                        onDelete = {
-                                            socket.on("deleteMessage") { args ->
-                                                args.let { d ->
-                                                    if (d.isNotEmpty()) {
-                                                        val idMessageDeleted = d[0] as String
-                                                        listaMensagens = listaMensagens.copy(
-                                                            mensagens = listaMensagens.mensagens
-                                                                .filterNot { it.message == idMessageDeleted }
-                                                                .toMutableList()
-                                                        )
-                                                        Log.e("IDMANO", "${idMessageDeleted}")
-                                                    }
-                                                }
-                                            }
-                                            client.deleteMessage(it._id.toString())
-                                        }
-                                    )
-                                } else {
-                                    ReceivedMessagePicture(
-                                        mensagem = "",
-                                        time = it.hora_criacao!!.substring(0,5),
-                                        foto = it.image
-                                    )
-
-                                }
-                            }else{
-                                if (it.messageTo == idUsuario) {
-                                    ReceivedMesssage(
-                                        message = it.message,
-                                        time = it.hora_criacao!!.substring(0, 5)
-                                    )
-                                } else {
-                                    SendMesssage(
-                                        message = it.message,
-                                        time = it.hora_criacao!!.substring(0, 5),
-                                        onDelete = {
-                                            socket.on("deleteMessage") { args ->
-                                                args.let { d ->
-                                                    if (d.isNotEmpty()) {
-                                                        val idMessageDeleted = d[0] as String
-                                                        listaMensagens = listaMensagens.copy(
-                                                            mensagens = listaMensagens.mensagens
-                                                                .filterNot { it.message == idMessageDeleted }
-                                                                .toMutableList()
-                                                        )
-                                                        Log.e("IDMANO", "${idMessageDeleted}")
-                                                    }
-                                                }
-                                            }
-                                            client.deleteMessage(it._id.toString())
-                                        },
-                                        isLongPressActive = isLongPressActive
-                                    )
-                                }
                             }
-
                         }
                     }
 

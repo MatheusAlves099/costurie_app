@@ -44,12 +44,14 @@ import br.senai.sp.jandira.costurie_app.ui.theme.ShapeButton
 fun ButtonGivePoint(
     onClick: () -> Unit,
     text: String,
-    pointId: Int
+    btnColor: List<Color>,
+    textColor: List<Color>
+
 ) {
 
-    val viewModel: ButtonPointColorViewModel = viewModel()
-    val pointColor = viewModel.getPointButtonColor(pointId)
-    val pointTextColor = viewModel.getPointTextColor(pointId)
+//    val viewModel: ButtonPointColorViewModel = viewModel()
+//    if (btnColor == null) { viewModel.getPointButtonColor(pointId) }
+//    if (textColor == null) { viewModel.getPointTextColor(pointId) }
     Row(
         horizontalArrangement = Arrangement.SpaceAround
     ) {
@@ -75,7 +77,7 @@ fun ButtonGivePoint(
                     .clickable { onClick() }
                     .background(
                         Brush.horizontalGradient(
-                            colors = pointColor
+                            colors = btnColor
                         ),
                         shape = RoundedCornerShape(15.dp),
                     ),
@@ -100,7 +102,7 @@ fun ButtonGivePoint(
                     modifier = Modifier.height(18.dp)
                         .graphicsLayer(alpha = 0.99f)
                         .drawWithCache {
-                            val brush = Brush.horizontalGradient(pointTextColor)
+                            val brush = Brush.horizontalGradient(textColor)
                             onDrawWithContent {
                                 drawContent()
                                 drawRect(brush, blendMode = BlendMode.SrcAtop)
@@ -115,29 +117,29 @@ fun ButtonGivePoint(
 
 }
 
-class ButtonPointColorViewModel : ViewModel() {
-    private val ButtonColor = mutableStateMapOf<Int, List<Color>>()
-    private var ButtonTextColor = mutableStateMapOf<Int, List<Color>>()
+//class ButtonPointColorViewModel : ViewModel() {
+//    private val ButtonColor = mutableStateMapOf<Int, List<Color>>()
+//    private var ButtonTextColor = mutableStateMapOf<Int, List<Color>>()
+//
+//    fun getPointButtonColor(pointId: Int): List<Color> {
+//        return ButtonColor[pointId] ?: listOf(Color.Transparent, Color.Transparent)
+//    }
+//
+//    fun getPointTextColor(pointTextColorId: Int): List<Color> {
+//        return ButtonTextColor[pointTextColorId] ?: listOf(Destaque1, Destaque2)
+//    }
+//
+//    fun setPointButtonColor(pointId: Int, color1: Color, color2: Color) {
+//        ButtonColor[pointId] = listOf(color1, color2)
+//    }
+//
+//    fun setPointTextColor(pointTextColorId: Int, color1: Color, color2: Color) {
+//        ButtonTextColor[pointTextColorId] = listOf(color1, color2)
+//    }
+//}
 
-    fun getPointButtonColor(pointId: Int): List<Color> {
-        return ButtonColor[pointId] ?: listOf(Color.Transparent, Color.Transparent)
-    }
-
-    fun getPointTextColor(pointTextColorId: Int): List<Color> {
-        return ButtonTextColor[pointTextColorId] ?: listOf(Destaque1, Destaque2)
-    }
-
-    fun setPointButtonColor(pointId: Int, color1: Color, color2: Color) {
-        ButtonColor[pointId] = listOf(color1, color2)
-    }
-
-    fun setPointTextColor(pointTextColorId: Int, color1: Color, color2: Color) {
-        ButtonTextColor[pointTextColorId] = listOf(color1, color2)
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ButtonGivePointPreview() {
-    ButtonGivePoint(onClick = { }, text = "Dar Ponto", 1)
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun ButtonGivePointPreview() {
+//    ButtonGivePoint(onClick = { }, text = "Dar Ponto", 1)
+//}

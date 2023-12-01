@@ -176,10 +176,6 @@ fun ExpandedCommentScreen(
 
     Costurie_appTheme {
 
-        var comentarioState by remember {
-            mutableStateOf("")
-        }
-
         val sheetState = rememberBottomSheetState(
             initialValue = BottomSheetValue.Collapsed
         )
@@ -217,10 +213,10 @@ fun ExpandedCommentScreen(
                     contentDescription = "",
                     Modifier
                         .size(35.dp)
-//                            .clickable { navController.popBackStack() }
                         .clickable {
                             lifecycleScope.launch {
                                 getCommentByPublication()
+
                             }
 
                         }
@@ -326,51 +322,6 @@ fun ExpandedCommentScreen(
                                         fontSize = 10.sp,
                                         color = Color.Gray
                                     )
-//                                    if (isReplyTextFieldVisible) {
-//                                        OutlinedTextField(
-//                                            value = replyComment,
-//                                            onValueChange = {
-//                                                replyComment = it
-//                                            },
-//                                            modifier = Modifier
-//                                                .fillMaxWidth()
-//                                                .height(60.dp)
-//                                                .border(
-//                                                    BorderStroke(
-//                                                        width = 2.dp,
-//                                                        brush = Brush.horizontalGradient(listOf(
-//                                                            Destaque1, Destaque2
-//                                                        ))
-//                                                    ),
-//                                                    shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
-//                                                ),
-//                                            trailingIcon = {
-//                                                Icon(
-//                                                    painter = painterResource(id = R.drawable.send_icon),
-//                                                    contentDescription = "",
-//                                                    modifier = Modifier
-//                                                        .size(30.dp),
-//                                                    tint = Destaque2
-//                                                )
-//                                            },
-//                                            colors = TextFieldDefaults.textFieldColors(
-//                                                containerColor = Color(252, 246, 255, 255),
-//                                                focusedIndicatorColor = Color.Transparent,
-//                                                unfocusedIndicatorColor = Color.Transparent,
-//                                                cursorColor = Color(65, 57, 70, 255)
-//                                            ),
-//                                            shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp, bottomEnd = 20.dp),
-//                                            placeholder = {
-//                                                Text(
-//                                                    text = stringResource(id = R.string.label_resposta_comentario),
-//                                                    fontSize = 18.sp,
-//                                                    color = Contraste2,
-//                                                    maxLines = 1
-//                                                )
-//                                            },
-//                                            textStyle = TextStyle.Default.copy(fontSize = 20.sp, color = Color.Black)
-//                                        )
-//                                    }
                                 }
 
                                 Spacer(modifier = Modifier.width(150.dp))
@@ -459,10 +410,6 @@ fun ExpandedCommentScreen(
         }
 
         CustomOutlinedTextFieldComment(
-            value = comentarioState,
-            onValueChange = {
-                comentarioState = it
-            },
             localStorage,
             lifecycleScope,
             onCommentCreated = {

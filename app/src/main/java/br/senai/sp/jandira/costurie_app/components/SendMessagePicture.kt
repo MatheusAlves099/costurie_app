@@ -63,7 +63,8 @@ fun SendMessagePicture(
             Column(modifier = Modifier.padding(12.dp)) {
                 AsyncImage(
                     model = foto,
-                    contentDescription = ""
+                    contentDescription = "",
+                    modifier = Modifier.size(280.dp)
                 )
                 Text(
                     text = time,

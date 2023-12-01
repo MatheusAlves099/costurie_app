@@ -160,7 +160,7 @@ fun PictureScreen(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-
+                                navController.popBackStack()
                             })
 
                     Row(

@@ -70,7 +70,7 @@ fun PictureScreen(
     client: ChatClient,
     socket: Socket,
     idUsuario: Int,
-){
+) {
     val context = LocalContext.current
 
     val brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
@@ -95,7 +95,8 @@ fun PictureScreen(
         uri?.let {
             fotoUri = it
 
-            val storageRefChild = storageRef.child("${System.currentTimeMillis()}_${fotoUri!!.lastPathSegment}")
+            val storageRefChild =
+                storageRef.child("${System.currentTimeMillis()}_${fotoUri!!.lastPathSegment}")
             val uploadTask = storageRefChild.putFile(fotoUri!!)
 
             uploadTask.addOnCompleteListener { task ->
@@ -115,7 +116,10 @@ fun PictureScreen(
                         client.sendMessage(json)
                     }
                 } else {
-                    Log.e("PictureScreen", "Error uploading image to Firebase Storage: ${task.exception}")
+                    Log.e(
+                        "PictureScreen",
+                        "Error uploading image to Firebase Storage: ${task.exception}"
+                    )
                 }
             }
         }
@@ -162,101 +166,102 @@ fun PictureScreen(
                     ) {
 
 
-                    Text(
-                        text = "Enviar foto".uppercase(),
-                        modifier = Modifier.height(30.dp),
-                        fontWeight = FontWeight.Bold,
-                        letterSpacing = 2.sp,
-                        fontSize = 18.sp,
-                        color = Color.White
+                        Text(
+                            text = "Enviar foto".uppercase(),
+                            modifier = Modifier.height(30.dp),
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.sp,
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(13.dp))
+
+                Column(
+                    modifier = Modifier
+                        .width(329.dp)
+                        .background(Principal2)
+                        .clickable {
+                            launcher.launch("image/*")
+                            Log.e("foto", "$fotoUri")
+                            fotoUri?.let {
+//                           imagem = FirebaseMessage(imagem = fotoUri!!, context = context)
+                            }
+                        },
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AsyncImage(
+                        model = if (fotoUri == null) {
+                            Image(
+                                painter = painterResource(id = R.drawable.chat_image),
+                                contentDescription = "",
+                                modifier = Modifier
+                            )
+                        } else {
+                            fotoUri
+                        },
+                        contentDescription = "",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(280.dp)
                     )
                 }
-            }
 
-            Spacer(modifier = Modifier.height(13.dp))
+                Spacer(modifier = Modifier.height(18.dp))
 
-            Column(
-                modifier = Modifier
-                    .width(329.dp)
-                    .background(Principal2)
-                    .clickable {
-                        launcher.launch("image/*")
-                        Log.e("foto", "$fotoUri",)
-                        fotoUri?.let {
-//                           imagem = FirebaseMessage(imagem = fotoUri!!, context = context)
-                        }
-                    },
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    model = if (fotoUri == null) {
-                        Image(
-                            painter = painterResource(id = R.drawable.chat_image),
-                            contentDescription = "",
-                            modifier = Modifier
-                        )
-                    } else {
-                        fotoUri
-                    },
-                    contentDescription = "",
-                    contentScale = ContentScale.Crop,
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(280.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(18.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
-            ) {
-                Text(
-                    text = "Enviar para $nome",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight(600),
-                    color = Destaque2,
-                )
-
-            }
-
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 28.dp),
-                horizontalAlignment = Alignment.End,
-
+                        .padding(start = 30.dp),
                 ) {
-                Button(
-                    onClick = {
-                        navController.navigate("chat")
-                    },
-                    modifier = Modifier
-                        .size(45.dp)
-                        .background(
-                            brush = brush,
-                            shape = RoundedCornerShape(10.dp)
-                        ),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(
-                        defaultElevation = 0.dp,
-                        pressedElevation = 0.dp,
-                        hoveredElevation = 0.dp
-                    ),
-                    contentPadding = PaddingValues(0.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.send_icon_white),
-                        contentDescription = "",
-                        modifier = Modifier.size(30.dp),
-                        tint = Color.White
+                    Text(
+                        text = "Enviar para $nome",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight(600),
+                        color = Destaque2,
                     )
+
+                }
+
+                Spacer(modifier = Modifier.height(30.dp))
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 28.dp),
+                    horizontalAlignment = Alignment.End,
+
+                    ) {
+                    Button(
+                        onClick = {
+                            navController.navigate("chat")
+                        },
+                        modifier = Modifier
+                            .size(45.dp)
+                            .background(
+                                brush = brush,
+                                shape = RoundedCornerShape(10.dp)
+                            ),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Transparent
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(
+                            defaultElevation = 0.dp,
+                            pressedElevation = 0.dp,
+                            hoveredElevation = 0.dp
+                        ),
+                        contentPadding = PaddingValues(0.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.send_icon_white),
+                            contentDescription = "",
+                            modifier = Modifier.size(30.dp),
+                            tint = Color.White
+                        )
+                    }
                 }
             }
         }

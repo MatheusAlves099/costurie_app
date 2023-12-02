@@ -113,7 +113,7 @@ fun DropdownBairro(
                 bairros.clear()
 
                 bairrosResponse?.forEach { bairro ->
-                    var jsonBairro = NeighborhoodResponse(bairro.id, bairro.nome)
+                    var jsonBairro = NeighborhoodResponse(bairro.Id, bairro.Nome)
                     bairros.add(jsonBairro)
                 }
             } else {
@@ -219,13 +219,13 @@ fun DropdownBairro(
                         if (bairro.isNotEmpty()) {
                             items(
                                 bairros.filter {
-                                    it.nome.lowercase()
-                                        .contains(bairro.lowercase()) || it.nome.lowercase()
+                                    it.Nome.lowercase()
+                                        .contains(bairro.lowercase()) || it.Nome.lowercase()
                                         .contains("others")
                                 }
                                     .sorted()
                             ) {
-                                CategoryItemsBairro(title = it.nome) { title ->
+                                CategoryItemsBairro(title = it.Nome) { title ->
                                     bairro = title
                                     onBairroSelected(title)
                                     isExpanded = false
@@ -235,7 +235,7 @@ fun DropdownBairro(
                             items(
                                 bairros.sorted()
                             ) {
-                                CategoryItemsBairro(title = it.nome) { title ->
+                                CategoryItemsBairro(title = it.Nome) { title ->
                                     bairro = title
                                     onBairroSelected(title)
                                     isExpanded = false

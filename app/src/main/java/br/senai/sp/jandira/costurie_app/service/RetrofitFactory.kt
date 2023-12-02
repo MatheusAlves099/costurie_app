@@ -30,7 +30,7 @@ object RetrofitFactory {
     }
 
 
-    private const val URL_IBGE = "https://servicodados.ibge.gov.br/api/v1/localidades/"
+    private const val URL_IBGE = "http://enderecos.metheora.com/api/"
 
     fun getInstance2(): Retrofit{
         return Retrofit.Builder()

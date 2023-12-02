@@ -111,7 +111,7 @@ fun DropdownCidade(
                 cidades.clear()
 
                 cidadesResponse?.forEach { cidade ->
-                    var jsonCidade = CityResponse(cidade.id, cidade.nome)
+                    var jsonCidade = CityResponse(cidade.Id, cidade.Nome)
                     cidades.add(jsonCidade)
                 }
             } else {
@@ -223,13 +223,13 @@ fun DropdownCidade(
                         if (cidade.isNotEmpty()) {
                             items(
                                 cidades.filter {
-                                    it.nome.lowercase()
-                                        .contains(cidade.lowercase()) || it.nome.lowercase()
+                                    it.Nome.lowercase()
+                                        .contains(cidade.lowercase()) || it.Nome.lowercase()
                                         .contains("others")
                                 }
                                     .sorted()
                             ) {
-                                CategoryItemsCidade(title = it.nome, id = it.id) { title, id ->
+                                CategoryItemsCidade(title = it.Nome, id = it.Id) { title, id ->
                                     cidade = title
                                     onCidadeSelected(title)
                                     viewModelCidade.bairroID = id
@@ -240,7 +240,7 @@ fun DropdownCidade(
                             items(
                                 cidades.sorted()
                             ) {
-                                CategoryItemsCidade(title = it.nome, id = it.id) { title, id ->
+                                CategoryItemsCidade(title = it.Nome, id = it.Id) { title, id ->
                                     cidade = title
                                     onCidadeSelected(title)
                                     viewModelCidade.bairroID = id

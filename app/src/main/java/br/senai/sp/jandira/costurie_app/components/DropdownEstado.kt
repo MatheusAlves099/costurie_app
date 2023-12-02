@@ -105,8 +105,8 @@ fun DropdownEstado(
             if (response.isSuccessful) {
                 val estadosResponse = response.body()
                 estadosResponse?.forEach { estado ->
-                    estados.add(estado.sigla)
-                    viewModel.estadoSelecionado = estado.sigla
+                    estados.add(estado.Nome)
+                    viewModel.estadoSelecionado = estado.Nome
                 }
             } else {
                 val errorBody = response.errorBody()?.string()

@@ -50,11 +50,11 @@ interface UserService {
     suspend fun getStates(): Response<List<StateResponse>>
 
     @Headers("Content-Type: application/json")
-    @GET("estados/{UF}/municipios")
+    @GET("estado/{UF}/cidades")
     suspend fun getCitys(@Path("UF") UF: String): Response<List<CityResponse>>
 
     @Headers("Content-Type: application/json")
-    @GET("municipios/{ID}/distritos")
+    @GET("cidade/{ID}/bairros/")
     suspend fun getNeighborhood(@Path("ID") ID: Int): Response<List<NeighborhoodResponse>>
 
     @Headers("Content-Type: application/json")

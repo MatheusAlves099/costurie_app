@@ -31,7 +31,8 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
 @Composable
 fun ModalSettingsSucess(
     navController: NavController,
-    text: String
+    text: String,
+    onClick: () -> Unit
 ) {
     val context = LocalContext.current
 
@@ -40,6 +41,7 @@ fun ModalSettingsSucess(
     GradientButton(
         onClick = {
                   isDialogOpen = true
+            onClick()
         },
         text = stringResource(id = R.string.text_button_save).uppercase() ,
         color1 = Destaque1,

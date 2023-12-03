@@ -365,7 +365,8 @@ class MainActivity : ComponentActivity() {
                     composable(route = "changeEmail") {
                         ChangeEmailScreen(
                             navController = navController,
-                            localStorage = localStorage
+                            localStorage = localStorage,
+                            lifecycleScope = lifecycleScope
                         )
                     }
                     composable(route = "changePassword") {

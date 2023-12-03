@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.costurie_app.screens.settings
 
 import android.util.Log
+import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -62,6 +63,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
@@ -69,9 +71,15 @@ import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextFieldPassword
 import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.components.ModalSettingsSucess
+import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
+import br.senai.sp.jandira.costurie_app.function.saveLogin
+import br.senai.sp.jandira.costurie_app.repository.CadastroRepository
+import br.senai.sp.jandira.costurie_app.repository.UserRepository
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -95,6 +103,14 @@ fun ChangePasswordScreen(navController: NavController, lifecycleScope: Lifecycle
         mutableStateOf(true)
     }
 
+    var validateConfirmPassword by rememberSaveable {
+        mutableStateOf(true)
+    }
+
+    var validateArePasswordEqual by rememberSaveable {
+        mutableStateOf(true)
+    }
+
     val validatePasswordError = "Deve misturar letras maiúsculas e minúsculas, pelo menos um número, caracter especial e mínimo de 8 caracteres"
 
     var isPasswordVisible by rememberSaveable {
@@ -110,6 +126,26 @@ fun ChangePasswordScreen(navController: NavController, lifecycleScope: Lifecycle
     }
 
     val context = LocalContext.current
+
+    fun updatePassword(
+        password: String,
+    ) {
+            val userRepository = UserRepository()
+            lifecycleScope.launch {
+                val array = UserRepositorySqlite(context).findUsers()
+                val user = array[0]
+                val response = userRepository.updatePassword(user.id.toInt(), user.token, password)
+
+                if (response.isSuccessful) {
+                    Log.d(MainActivity::class.java.simpleName, "Senha Alterada com Sucesso, $response")
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e(MainActivity::class.java.simpleName, "Erro durante alterar a senha: $errorBody")
+                    Toast.makeText(context, "Erro durante alterar a senha", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+    }
 
     Costurie_appTheme {
         Surface(
@@ -244,7 +280,10 @@ fun ChangePasswordScreen(navController: NavController, lifecycleScope: Lifecycle
 
                 ModalSettingsSucess(
                     navController,
-                    text = stringResource(id = R.string.text_modal_password_sucess)
+                    text = stringResource(id = R.string.text_modal_password_sucess),
+                    onClick = {
+                        updatePassword(newPasswordState)
+                    }
                 )
             }
         }

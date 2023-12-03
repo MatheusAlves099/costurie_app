@@ -55,19 +55,31 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
+import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
 import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButton
 import br.senai.sp.jandira.costurie_app.components.ModalSettingsSucess
+import br.senai.sp.jandira.costurie_app.function.deleteUserSQLite
+import br.senai.sp.jandira.costurie_app.function.saveLogin
+import br.senai.sp.jandira.costurie_app.repository.CadastroRepository
+import br.senai.sp.jandira.costurie_app.repository.UserRepository
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
+fun ChangeEmailScreen(
+    navController: NavController,
+    localStorage: Storage,
+    lifecycleScope: LifecycleCoroutineScope
+) {
 
     var emailState by remember {
         mutableStateOf("")
@@ -78,6 +90,28 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
     }
 
     val context = LocalContext.current
+
+    fun updateEmail(
+        email: String
+    ) {
+        val userRepository = UserRepository()
+
+        lifecycleScope.launch {
+
+            val array = UserRepositorySqlite(context).findUsers()
+            val user = array[0]
+
+            val response = userRepository.updateEmail(user.id.toInt(), user.token, email)
+
+            if (response.isSuccessful) {
+                Log.d(MainActivity::class.java.simpleName, "Email Alterado com Sucesso")
+            } else {
+                val errorBody = response.errorBody()?.string()
+                Log.e(MainActivity::class.java.simpleName, "Erro durante alterar o email: $errorBody")
+                Toast.makeText(context, "Erro durante alterar o email", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Costurie_appTheme {
         Surface(
@@ -138,10 +172,10 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
                     Text(
                         text =
                         buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Black)) {
-                            append(stringResource(id = R.string.description_change_email))
-                        }
-                    },
+                            withStyle(style = SpanStyle(color = Color.Black)) {
+                                append(stringResource(id = R.string.description_change_email))
+                            }
+                        },
                         fontSize = 14.sp,
                         textAlign = TextAlign.Center
                     )
@@ -181,7 +215,10 @@ fun ChangeEmailScreen(navController: NavController, localStorage: Storage) {
 
                 ModalSettingsSucess(
                     navController,
-                    text = stringResource(id = R.string.text_modal_email_sucess)
+                    text = stringResource(id = R.string.text_modal_email_sucess),
+                    onClick = {
+                        updateEmail(emailState)
+                    }
                 )
             }
         }

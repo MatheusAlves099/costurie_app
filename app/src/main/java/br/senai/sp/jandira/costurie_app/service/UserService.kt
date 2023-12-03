@@ -93,4 +93,19 @@ interface UserService {
         @Body body: JsonObject,
         @Header("x-access-token") token: String
     ): Response<UserTagsResponse>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/configuracao/alterar_email")
+    suspend fun updateEmail(
+        @Body body: JsonObject,
+        @Header("x-access-token") token: String
+    ): Response<JsonObject>
+
+    @Headers("Content-Type: application/json")
+    @PUT("/configuracao/alterar_senha")
+    suspend fun updatePassword(
+        @Body body: JsonObject,
+        @Header("x-access-token") token: String
+    ): Response<JsonObject>
+
 }

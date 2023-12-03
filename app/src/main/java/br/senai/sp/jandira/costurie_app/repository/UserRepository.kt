@@ -117,4 +117,28 @@ class UserRepository {
         return apiService.updateUserTags(requestBody, token)
     }
 
+    suspend fun updateEmail(
+        id_usuario: Int,
+        token: String,
+        email: String
+    ): Response<JsonObject> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_usuario", id_usuario)
+            addProperty("email", email)
+        }
+        return apiService.updateEmail(requestBody, token)
+    }
+
+    suspend fun updatePassword(
+        id_usuario: Int,
+        token: String,
+        senha: String
+    ): Response<JsonObject> {
+        val requestBody = JsonObject().apply {
+            addProperty("id_usuario", id_usuario)
+            addProperty("senha", senha)
+        }
+        return apiService.updatePassword(requestBody, token)
+    }
+
 }

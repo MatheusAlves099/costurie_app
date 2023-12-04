@@ -145,21 +145,23 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                     fontWeight = FontWeight.SemiBold
                 )
 
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 30.dp, top = 10.dp),
-                    color = Color.Black,
-                    text = stringResource(id = R.string.mais_populares_text),
-                    style = MaterialTheme.typography.bodySmall,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
+
 
                 if (publicationsPopularState.value.isEmpty()) {
                     isLoading = true
                     ProgressBar(isDisplayed = isLoading)
                 } else {
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 30.dp, top = 10.dp),
+                        color = Color.Black,
+                        text = stringResource(id = R.string.mais_populares_text),
+                        style = MaterialTheme.typography.bodySmall,
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+
                     LazyRow {
                         items(publicationsPopularState.value) { publication ->
                             var shortDesc = publication.descricao

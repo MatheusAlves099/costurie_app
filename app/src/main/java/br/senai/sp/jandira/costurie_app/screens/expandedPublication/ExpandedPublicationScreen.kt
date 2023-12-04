@@ -115,6 +115,10 @@ fun ExpandedPublicationScreen(
 
     val dadaUser = UserRepositorySqlite(context).findUsers()
 
+    var notVisibile by remember {
+        mutableStateOf(true)
+    }
+
 
     var listUsuario by remember {
         mutableStateOf(
@@ -154,7 +158,6 @@ fun ExpandedPublicationScreen(
     val scope = rememberCoroutineScope()
 
 
-
     var id = localStorage.lerValor(context, "id_publicacao")
 
     val publicationState = remember { mutableStateOf<BaseResponseIdPublication?>(null) }
@@ -178,6 +181,10 @@ fun ExpandedPublicationScreen(
         mutableStateOf(listOf<Color>(Destaque1, Destaque2))
     }
 
+    var painter by remember {
+        mutableStateOf("")
+    }
+
     Log.i("color", "ExpandedPublicationScreen: ${btnColor}")
     Log.i("color", "ExpandedPublicationScreen: ${textColor}")
 
@@ -193,7 +200,7 @@ fun ExpandedPublicationScreen(
             Log.e("usuario", "usuario: ${response.body()} ")
 
             fotoDoCara = response.body()?.usuario?.foto!!
-            Log.e("foto1", "foto: $fotoDoCara", )
+            Log.e("foto1", "foto: $fotoDoCara")
 
         } else {
             val errorBody = response.errorBody()?.string()
@@ -243,6 +250,7 @@ fun ExpandedPublicationScreen(
             btnColor = listOf(Destaque1, Destaque2)
             textColor = listOf(Color.White, Color.White)
             Log.i("ponto", "dei o ponto: ${publications}")
+
         } else {
             val errorBody = response.errorBody()?.string()
             Log.e("CURTIR UMA PUBLICAÇÃO", "Erro: $errorBody")
@@ -283,7 +291,7 @@ fun ExpandedPublicationScreen(
         mutableStateOf(false)
     }
 
-    suspend fun getPoint() {
+    suspend fun getPoint(): Boolean {
         val response = publicationRepository.getPoint(user.token, user.id.toInt(), id!!.toInt())
 
         if (response.isSuccessful) {
@@ -297,6 +305,11 @@ fun ExpandedPublicationScreen(
                 textColor = listOf(Destaque1, Destaque2)
                 isClicked = false
             }
+            notVisibile = false
+            return notVisibile
+        } else {
+            notVisibile = true
+            return notVisibile
         }
     }
 
@@ -307,7 +320,7 @@ fun ExpandedPublicationScreen(
         getPoint()
 
         Log.e("PUBLICAÇÃO", "A tal da publication explodida: ${getPublicationById()}")
-        Log.e("foto2", "foto: $fotoDoCara", )
+        Log.e("foto2", "foto: $fotoDoCara")
     }
 
 
@@ -325,7 +338,7 @@ fun ExpandedPublicationScreen(
                 sheetShape = RoundedCornerShape(20.dp),
                 sheetElevation = 10.dp,
                 sheetContent = {
-
+                    Log.d("DEBUG", "localStorage12: $localStorage")
                     ExpandedCommentScreen(
                         lifecycleScope = lifecycleScope,
                         navController = navController,
@@ -406,7 +419,7 @@ fun ExpandedPublicationScreen(
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    if (publicationState.value == null) {
+                    if (publicationState.value == null || notVisibile) {
                         isLoading = true
                         ProgressBar(isDisplayed = isLoading)
                     } else {
@@ -447,7 +460,7 @@ fun ExpandedPublicationScreen(
 
                                         var id = publicationState.value?.publicacao?.usuario?.id
 
-                                        Log.e("id_usuario", "id_usuario pra tela: $id",)
+                                        Log.e("id_usuario", "id_usuario pra tela: $id")
 
                                         if (user.id.toInt() == id) {
                                             navController.navigate("profile")
@@ -566,7 +579,7 @@ fun ExpandedPublicationScreen(
                                         foto = fotoDoCara
                                     )
 
-                                    Log.w("idmeu", "id meu: ${dadaUser[0].id}", )
+                                    Log.w("idmeu", "id meu: ${dadaUser[0].id}")
 
                                     val jsonUserAnunciante = UserChat(
                                         id = idAnunciante.toInt(),
@@ -595,7 +608,7 @@ fun ExpandedPublicationScreen(
                                         //addProperty("status", true)
                                     }
 
-                                    Log.w("corpo", "corpo: $jsonBody", )
+                                    Log.w("corpo", "corpo: $jsonBody")
 
 //                                    socket.connect()
 //                                    if (socket.connected()) {
@@ -616,27 +629,38 @@ fun ExpandedPublicationScreen(
                                                 Log.e("Data", "$data")
                                                 if (data.toString().isNotEmpty()) {
                                                     val chat =
-                                                        Gson().fromJson(data.toString(), MensagensResponse::class.java)
-                                                    Log.e("Chat - Luizão", "$chat", )
+                                                        Gson().fromJson(
+                                                            data.toString(),
+                                                            MensagensResponse::class.java
+                                                        )
+                                                    Log.e("Chat - Luizão", "$chat")
                                                     newChat = chat
                                                     Log.e("mumu aquiiii", "AnnouceDetail: ${chat}")
-                                                    Log.e("mumu testando dentro", "${ newChat.id_chat}", )
+                                                    Log.e(
+                                                        "mumu testando dentro",
+                                                        "${newChat.id_chat}",
+                                                    )
                                                     chatViewModel.idChat = newChat.id_chat
-                                                }else{
-                                                    Log.e("Morreu", "Bateu aqui: ${data.toString().isNotEmpty()}", )
+                                                } else {
+                                                    Log.e(
+                                                        "Morreu",
+                                                        "Bateu aqui: ${
+                                                            data.toString().isNotEmpty()
+                                                        }",
+                                                    )
                                                 }
                                             }
                                         }
                                     }
 
 
-                                    Log.e("luiz testando fora", "${ newChat.id_chat}", )
+                                    Log.e("luiz testando fora", "${newChat.id_chat}")
                                     chatViewModel.idUser2 = idAnunciante.toInt()
-                                    Log.w("idUser2", "aloka: ${chatViewModel.idUser2}", )
+                                    Log.w("idUser2", "aloka: ${chatViewModel.idUser2}")
                                     chatViewModel.foto = fotoAnunciante
-                                    Log.w("foto", "aloka: ${chatViewModel.foto}", )
+                                    Log.w("foto", "aloka: ${chatViewModel.foto}")
                                     chatViewModel.nome = nomeAnunciante
-                                    Log.w("nome", "aloka: ${chatViewModel.nome}", )
+                                    Log.w("nome", "aloka: ${chatViewModel.nome}")
 
                                     navController.navigate("chat")
                                 },
@@ -645,12 +669,18 @@ fun ExpandedPublicationScreen(
                                 color2 = Destaque2
                             )
 
+
+
+                            ProgressBar(isDisplayed = false)
                             ButtonGivePoint(
                                 onClick = {
                                     lifecycleScope.launch {
 
                                         isClicked = !isClicked
-                                        Log.i("isclicked", "ExpandedPublicationScreen: ${isClicked}")
+                                        Log.i(
+                                            "isclicked",
+                                            "ExpandedPublicationScreen: ${isClicked}"
+                                        )
                                         if (isClicked) {
                                             postGivePoint()
                                         } else {
@@ -663,6 +693,7 @@ fun ExpandedPublicationScreen(
                                 textColor = textColor
 
                             )
+
 
                             GradientButtonSmall(
                                 onClick = {

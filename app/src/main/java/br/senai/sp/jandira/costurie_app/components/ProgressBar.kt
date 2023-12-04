@@ -20,8 +20,7 @@ fun ProgressBar(
     if(isDisplayed) {
         Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(50.dp),
+                .fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

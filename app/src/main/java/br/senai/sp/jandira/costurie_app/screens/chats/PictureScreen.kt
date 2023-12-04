@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -160,11 +161,10 @@ fun PictureScreen(
                             })
 
                     Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 60.dp),
                     ) {
-
 
                         Text(
                             text = "Enviar foto".uppercase(),
@@ -176,11 +176,13 @@ fun PictureScreen(
                         )
                     }
                 }
+            }
 
                 Spacer(modifier = Modifier.height(13.dp))
 
                 Column(
                     modifier = Modifier
+                        .height(500.dp)
                         .width(329.dp)
                         .background(Principal2)
                         .clickable {
@@ -195,9 +197,11 @@ fun PictureScreen(
                     AsyncImage(
                         model = if (fotoUri == null) {
                             Image(
-                                painter = painterResource(id = R.drawable.chat_image),
+                                painter = painterResource(id = R.drawable.icon_add_big_image),
                                 contentDescription = "",
                                 modifier = Modifier
+                                    .fillMaxHeight()
+                                    .size(120.dp)
                             )
                         } else {
                             fotoUri
@@ -206,7 +210,6 @@ fun PictureScreen(
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(280.dp)
                     )
                 }
 
@@ -265,5 +268,4 @@ fun PictureScreen(
                 }
             }
         }
-    }
 }

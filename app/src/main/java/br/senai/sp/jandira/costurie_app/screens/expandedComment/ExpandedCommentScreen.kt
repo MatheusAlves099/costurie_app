@@ -108,13 +108,16 @@ fun ExpandedCommentScreen(
     var isReplyMode by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
-
+    Log.d("DEBUG", "localStorage1: $localStorage")
     var id = localStorage.lerValor(context, "id_publicacao")
+    Log.d("DEBUG", "localStorage: $localStorage")
 
     suspend fun getCommentByPublication() {
         val commentRepository = CommentRepository()
         val array = UserRepositorySqlite(context).findUsers()
         val user = array[0]
+
+        Log.i("usercomment", "getCommentByPublication: ${user}")
 
         val response = commentRepository.getCommentByPublication(user.token, id!!.toInt())
 
@@ -168,7 +171,7 @@ fun ExpandedCommentScreen(
 
         if (commentState.value.isNotEmpty()) {
 
-            Log.e("PUBLICATION1", "ExploreScreen: ${getCommentByPublication()}")
+
 
         }
     }

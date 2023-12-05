@@ -12,12 +12,8 @@ class ChatClient() {
         val options = IO.Options()
         options.path = "/clients/socketio/hubs/Hub"
 
-        socket = IO.socket("https://socketcosturie.webpubsub.azure.com", options)
+        socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
     }
-
-
-    //private val socket: Socket = IO.socket("http://10.107.144.8:3001")
-
 
     fun connect(idUsuario: Int) {
 

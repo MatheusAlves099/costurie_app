@@ -159,7 +159,7 @@ fun PasswordScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(95.dp))
+                        Spacer(modifier = Modifier.height(125.dp))
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {

@@ -101,7 +101,7 @@ fun MessageBar(
                     Modifier
                         .size(24.dp)
                         .clickable {
-//                            launcherImage()
+                            navController.navigate("pictureScreen")
                         }
                 )
                 

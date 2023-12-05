@@ -170,7 +170,7 @@ fun ValidationCodeScreen(
                             }
                         }
                         Column(
-                            modifier = Modifier.height(100.dp),
+                            modifier = Modifier.height(125.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {

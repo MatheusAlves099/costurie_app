@@ -251,6 +251,16 @@ fun PublishScreen(
 
                                     val anexo = AnexoResponse(uri.toString())
                                     selectedMediaUrl.add(anexo)
+                                    if (selectedMediaUrl.size == selectedMediaUri.size) {
+                                        createPublication(
+                                            id_usuario = user.id.toInt(),
+                                            token = user.token,
+                                            titulo = titleState,
+                                            descricao = descriptionState,
+                                            anexos = selectedMediaUrl,
+                                            tags = tagsArray
+                                        )
+                                    }
 
                                 } else {
                                     Toast
@@ -307,23 +317,18 @@ fun PublishScreen(
                 Modifier
                     .fillMaxWidth()
                     .padding(start = 30.dp, end = 30.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.End
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.close_icon),
-                    contentDescription = "",
-                    Modifier
-                        .size(35.dp)
-                        .clickable {
-
-                        }
-                )
-
-//                ModalSucess(
-//                    navController,
-//                    lifecycleScope,
-//                    localStorage
+//                Image(
+//                    painter = painterResource(id = R.drawable.close_icon),
+//                    contentDescription = "",
+//                    Modifier
+//                        .size(35.dp)
+//                        .clickable {
+//                            navController.popBackStack()
+//                        }
 //                )
+
                 Image(
                     painter = painterResource(id = R.drawable.send_icon),
                     contentDescription = "",
@@ -335,17 +340,9 @@ fun PublishScreen(
                                 lifecycleScope.launch {
                                     urlDownload(it.conteudo)
                                 }
+
                             }
-                            if (selectedMediaUrl.size == selectedMediaUri.size) {
-                                createPublication(
-                                    id_usuario = user.id.toInt(),
-                                    token = user.token,
-                                    titulo = titleState,
-                                    descricao = descriptionState,
-                                    anexos = selectedMediaUrl,
-                                    tags = tagsArray
-                                )
-                            }
+
                         }
                 )
             }

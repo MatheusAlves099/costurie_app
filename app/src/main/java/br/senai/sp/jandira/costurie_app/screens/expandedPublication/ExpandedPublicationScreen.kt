@@ -563,47 +563,48 @@ fun ExpandedPublicationScreen(
                             horizontalArrangement = Arrangement.SpaceAround,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            GradientButtonSmall(
-                                onClick = {
-                                    val fotoAnunciante = viewModelId.foto_perfil
-                                    val nomeAnunciante = viewModelId.nome_perfil
-                                    val idAnunciante = viewModelId.id_perfil
-                                    val jsonUser1 = UserChat(
-                                        id = dadaUser[0].id.toInt(),
-                                        nome = dadaUser[0].nome,
-                                        foto = fotoDoCara
-                                    )
+                            if (user.id.toInt() != publicationState.value?.publicacao?.usuario?.id) {
+                                GradientButtonSmall(
+                                    onClick = {
+                                        val fotoAnunciante = viewModelId.foto_perfil
+                                        val nomeAnunciante = viewModelId.nome_perfil
+                                        val idAnunciante = viewModelId.id_perfil
+                                        val jsonUser1 = UserChat(
+                                            id = dadaUser[0].id.toInt(),
+                                            nome = dadaUser[0].nome,
+                                            foto = fotoDoCara
+                                        )
 
-                                    Log.w("idmeu", "id meu: ${dadaUser[0].id}")
+                                        Log.w("idmeu", "id meu: ${dadaUser[0].id}")
 
-                                    val jsonUserAnunciante = UserChat(
-                                        id = idAnunciante.toInt(),
-                                        foto = fotoAnunciante,
-                                        nome = nomeAnunciante
-                                    )
+                                        val jsonUserAnunciante = UserChat(
+                                            id = idAnunciante.toInt(),
+                                            foto = fotoAnunciante,
+                                            nome = nomeAnunciante
+                                        )
 
-                                    listUsuario = listUsuario + jsonUser1
+                                        listUsuario = listUsuario + jsonUser1
 
-                                    listUsuario = listUsuario + jsonUserAnunciante
+                                        listUsuario = listUsuario + jsonUserAnunciante
 
 
-                                    val jsonBody = JsonObject().apply {
-                                        val usersArray = JsonArray()
+                                        val jsonBody = JsonObject().apply {
+                                            val usersArray = JsonArray()
 
-                                        for (user in listUsuario) {
-                                            val userObject = JsonObject().apply {
-                                                addProperty("id", user.id)
-                                                addProperty("nome", user.nome)
-                                                addProperty("foto", user.foto)
+                                            for (user in listUsuario) {
+                                                val userObject = JsonObject().apply {
+                                                    addProperty("id", user.id)
+                                                    addProperty("nome", user.nome)
+                                                    addProperty("foto", user.foto)
+                                                }
+                                                usersArray.add(userObject)
                                             }
-                                            usersArray.add(userObject)
+
+                                            add("users", usersArray)
+                                            //addProperty("status", true)
                                         }
 
-                                        add("users", usersArray)
-                                        //addProperty("status", true)
-                                    }
-
-                                    Log.w("corpo", "corpo: $jsonBody")
+                                        Log.w("corpo", "corpo: $jsonBody")
 
 //                                    socket.connect()
 //                                    if (socket.connected()) {
@@ -612,57 +613,59 @@ fun ExpandedPublicationScreen(
 //                                        Log.e("SocketIO", "Falha ao estabelecer a conexão")
 //                                    }
 
-                                    socket.emit("createRoom", jsonBody)
+                                        socket.emit("createRoom", jsonBody)
 
-                                    // Ouça o evento do socket
-                                    socket.on("newChat") { args ->
-                                        Log.e("entrou", "foi")
-                                        args.let { d ->
-                                            if (d.isNotEmpty()) {
-                                                val data = d[0]
+                                        // Ouça o evento do socket
+                                        socket.on("newChat") { args ->
+                                            Log.e("entrou", "foi")
+                                            args.let { d ->
+                                                if (d.isNotEmpty()) {
+                                                    val data = d[0]
 
-                                                Log.e("Data", "$data")
-                                                if (data.toString().isNotEmpty()) {
-                                                    val chat =
-                                                        Gson().fromJson(
-                                                            data.toString(),
-                                                            MensagensResponse::class.java
+                                                    Log.e("Data", "$data")
+                                                    if (data.toString().isNotEmpty()) {
+                                                        val chat =
+                                                            Gson().fromJson(
+                                                                data.toString(),
+                                                                MensagensResponse::class.java
+                                                            )
+                                                        Log.e("Chat - Luizão", "$chat")
+                                                        newChat = chat
+                                                        Log.e("mumu aquiiii", "AnnouceDetail: ${chat}")
+                                                        Log.e(
+                                                            "mumu testando dentro",
+                                                            "${newChat.id_chat}",
                                                         )
-                                                    Log.e("Chat - Luizão", "$chat")
-                                                    newChat = chat
-                                                    Log.e("mumu aquiiii", "AnnouceDetail: ${chat}")
-                                                    Log.e(
-                                                        "mumu testando dentro",
-                                                        "${newChat.id_chat}",
-                                                    )
-                                                    chatViewModel.idChat = newChat.id_chat
-                                                } else {
-                                                    Log.e(
-                                                        "Morreu",
-                                                        "Bateu aqui: ${
-                                                            data.toString().isNotEmpty()
-                                                        }",
-                                                    )
+                                                        chatViewModel.idChat = newChat.id_chat
+                                                    } else {
+                                                        Log.e(
+                                                            "Morreu",
+                                                            "Bateu aqui: ${
+                                                                data.toString().isNotEmpty()
+                                                            }",
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
 
 
-                                    Log.e("luiz testando fora", "${newChat.id_chat}")
-                                    chatViewModel.idUser2 = idAnunciante.toInt()
-                                    Log.w("idUser2", "aloka: ${chatViewModel.idUser2}")
-                                    chatViewModel.foto = fotoAnunciante
-                                    Log.w("foto", "aloka: ${chatViewModel.foto}")
-                                    chatViewModel.nome = nomeAnunciante
-                                    Log.w("nome", "aloka: ${chatViewModel.nome}")
+                                        Log.e("luiz testando fora", "${newChat.id_chat}")
+                                        chatViewModel.idUser2 = idAnunciante.toInt()
+                                        Log.w("idUser2", "aloka: ${chatViewModel.idUser2}")
+                                        chatViewModel.foto = fotoAnunciante
+                                        Log.w("foto", "aloka: ${chatViewModel.foto}")
+                                        chatViewModel.nome = nomeAnunciante
+                                        Log.w("nome", "aloka: ${chatViewModel.nome}")
 
-                                    navController.navigate("chat")
-                                },
-                                text = stringResource(id = R.string.botao_responder),
-                                color1 = Destaque1,
-                                color2 = Destaque2
-                            )
+                                        navController.navigate("chat")
+                                    },
+                                    text = stringResource(id = R.string.botao_responder),
+                                    color1 = Destaque1,
+                                    color2 = Destaque2
+                                )
+                            }
+
 
 
 

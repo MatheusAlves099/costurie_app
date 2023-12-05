@@ -289,7 +289,7 @@ fun EditProfileScreen(
                                 modifier = Modifier
                                     .size(45.dp)
                                     .clickable {
-                                        navController.navigate("home")
+                                        navController.popBackStack()
                                     }
                             )
                             Image(

@@ -110,6 +110,39 @@ fun ChatScreen(
                 }
 
                 // Ouça o evento do socket
+//                socket.emit("listMessages", idChat)
+//                LaunchedEffect(listaMensagens) {
+//                    // Ouça o evento do socket
+//                    socket.on("receive_message") { args ->
+//                        args.let { d ->
+//                            if (d.isNotEmpty()) {
+//                                val data = d[0]
+//                                if (data.toString().isNotEmpty()) {
+//                                    val mensagens =
+//                                        Gson().fromJson(
+//                                            data.toString(),
+//                                            MensagensResponse::class.java
+//                                        )
+//
+//                                    listaMensagens = mensagens
+//                                //Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
+//                                } else {
+//                                    listaMensagens = MensagensResponse(
+//                                        status = 0,
+//                                        message = "",
+//                                        id_chat = "",
+//                                        usuarios = listOf(),
+//                                        data_criacao = "",
+//                                        hora_criacao = "",
+//                                        mensagens = mutableStateListOf()
+//                                    )
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+
+
                 socket.emit("listMessages", idChat)
                 LaunchedEffect(listaMensagens) {
                     // Ouça o evento do socket
@@ -119,28 +152,19 @@ fun ChatScreen(
                                 val data = d[0]
                                 if (data.toString().isNotEmpty()) {
                                     val mensagens =
-                                        Gson().fromJson(
-                                            data.toString(),
-                                            MensagensResponse::class.java
-                                        )
+                                        Gson().fromJson(data.toString(), MensagensResponse::class.java)
 
-                                    listaMensagens = mensagens
-                                //Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
-                                } else {
-                                    listaMensagens = MensagensResponse(
-                                        status = 0,
-                                        message = "",
-                                        id_chat = "",
-                                        usuarios = listOf(),
-                                        data_criacao = "",
-                                        hora_criacao = "",
-                                        mensagens = mutableStateListOf()
-                                    )
+                                    if (mensagens.id_chat == idChat) {
+                                        listaMensagens = mensagens
+                                    }
+                                    Log.e("TesteIndo", "${listaMensagens.mensagens.reversed()}")
                                 }
                             }
                         }
                     }
                 }
+
+
                 // socket.emit("listMessages", idChat)
 
 //        socket.on("receive_message") { args ->

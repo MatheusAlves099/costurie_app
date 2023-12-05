@@ -146,8 +146,6 @@ fun ExpandedPublicationScreen(
         mutableStateOf("")
     }
 
-    var isLoading = false
-
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
     )
@@ -291,9 +289,9 @@ fun ExpandedPublicationScreen(
         mutableStateOf(false)
     }
 
-    suspend fun getPoint(): Boolean {
+    suspend fun getPoint(){
         val response = publicationRepository.getPoint(user.token, user.id.toInt(), id!!.toInt())
-
+        Log.i("notvisible", "ExpandedPublicationScreen: ${response}")
         if (response.isSuccessful) {
             val body = response.body()
             if (body!!.curtida) {
@@ -305,11 +303,9 @@ fun ExpandedPublicationScreen(
                 textColor = listOf(Destaque1, Destaque2)
                 isClicked = false
             }
+
+
             notVisibile = false
-            return notVisibile
-        } else {
-            notVisibile = true
-            return notVisibile
         }
     }
 
@@ -419,9 +415,8 @@ fun ExpandedPublicationScreen(
 
                     Spacer(modifier = Modifier.height(15.dp))
 
-                    if (publicationState.value == null || notVisibile) {
-                        isLoading = true
-                        ProgressBar(isDisplayed = isLoading)
+                    if (notVisibile) {
+                        ProgressBar(isDisplayed = notVisibile)
                     } else {
                         Row(
                             modifier = Modifier

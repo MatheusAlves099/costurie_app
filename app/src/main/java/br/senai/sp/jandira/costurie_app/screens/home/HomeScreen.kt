@@ -71,6 +71,8 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
 
     val localStorage: Storage = Storage()
 
+    val context = LocalContext.current
+
     val sheetState = rememberBottomSheetState(
         initialValue = BottomSheetValue.Collapsed
     )
@@ -79,8 +81,10 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
     )
     val scope = rememberCoroutineScope()
 
+    val screen = localStorage.lerValor(context, "currentScreen")
+
     var currentScreen by remember {
-        mutableStateOf(0)
+        mutableStateOf(screen)
     }
 
     val items = listOf(
@@ -167,10 +171,10 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                                             scope.launch {
                                                 if (sheetState.isCollapsed) {
                                                     sheetState.expand()
-                                                    selectedIndexItem = currentScreen
+                                                    selectedIndexItem = currentScreen!!.toInt()
                                                 } else {
                                                     sheetState.collapse()
-                                                    selectedIndexItem = currentScreen
+                                                    selectedIndexItem = currentScreen!!.toInt()
                                                 }
                                             }
                                         }
@@ -211,10 +215,12 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                     ) {
                         if (selectedIndexItem == 0) {
                             ExploreScreen(navController = navController, localStorage = localStorage)
-                            currentScreen = selectedIndexItem
+                            currentScreen = selectedIndexItem.toString()
+                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
                         } else if (selectedIndexItem == 1) {
+                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
                             ServicesScreen(navController = navController, lifecycleScope =  lifecycleScope, filterings = emptyList(), categories = emptyList(), viewModelUserTags = UserTagViewModel(), localStorage = localStorage)
-                            currentScreen = selectedIndexItem
+                            currentScreen = selectedIndexItem.toString()
                         } else if (selectedIndexItem == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
                         } else if (selectedIndexItem == 3) {
@@ -239,10 +245,12 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                             }
                             client.connect(data.toInt())
                             ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage, client = client, socket = socket,  chatViewModel = chatViewModel,  idUsuario = data.toInt())
-                            currentScreen = selectedIndexItem
+                            currentScreen = selectedIndexItem.toString()
+                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
                         } else {
                             ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUserViewModel,  localStorage = localStorage)
-                            currentScreen = selectedIndexItem
+                            currentScreen = selectedIndexItem.toString()
+                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
                         }
                     }
 

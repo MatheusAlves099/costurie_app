@@ -12,7 +12,7 @@ class ChatClient() {
         val options = IO.Options()
         options.path = "/clients/socketio/hubs/Hub"
 
-        socket = IO.socket("https://socketcosturie.webpubsub.azure.com", options)
+        socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
     }
 
 

@@ -506,44 +506,7 @@ fun ProfileViewedScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        GradientButtonSmall(
-                            onClick = { /*TODO*/ },
-                            text = stringResource(id = R.string.botao_recomendar),
-                            color1 = Color(201, 143, 236, 255),
-                            color2 = Color(168, 155, 255, 255)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(5.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Spacer(modifier = Modifier.height(40.dp))
-
-                        WhiteButtonSmall(
-                            onClick = {
-
-                            },
-                            text = stringResource(id = R.string.botao_recomendacoes).uppercase()
-                        )
-
-                        Spacer(modifier = Modifier.width(20.dp))
-
-                        WhiteButtonSmall(
-                            onClick = {},
-                            text = stringResource(id = R.string.botao_recomendados).uppercase()
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(15.dp))
 
                     Text(
                         color = Contraste,
@@ -557,7 +520,7 @@ fun ProfileViewedScreen(
                         textAlign = TextAlign.Justify
                     )
 
-                    Spacer(modifier = Modifier.height(25.dp))
+                    Spacer(modifier = Modifier.height(15.dp))
 
                     if (viewModel.tags != null){
                         Row(
@@ -631,7 +594,6 @@ fun ProfileViewedScreen(
                                             contentScale = ContentScale.Crop
                                         )
                                     }
-
                                 }
                             }
                         }

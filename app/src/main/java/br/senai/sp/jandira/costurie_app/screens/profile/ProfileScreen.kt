@@ -384,29 +384,7 @@ fun ProfileScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Spacer(modifier = Modifier.height(20.dp))
-
-                        WhiteButtonSmall(
-                            onClick = {
-
-                            },
-                            text = stringResource(id = R.string.botao_recomendacoes).uppercase()
-                        )
-
-                        Spacer(modifier = Modifier.width(20.dp))
-
-                        WhiteButtonSmall(
-                            onClick = {},
-                            text = stringResource(id = R.string.botao_recomendados).uppercase()
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(15.dp))
 
                     Text(
                         color = Contraste,

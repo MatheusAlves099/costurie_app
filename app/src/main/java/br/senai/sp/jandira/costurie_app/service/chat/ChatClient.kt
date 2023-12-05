@@ -15,10 +15,6 @@ class ChatClient() {
         socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
     }
 
-
-    //private val socket: Socket = IO.socket("http://10.107.144.8:3001")
-
-
     fun connect(idUsuario: Int) {
 
         socket.connect()

@@ -94,7 +94,7 @@ fun ButtonGivePoint(
                 )
 
                 Text(
-                    text = text,
+                    text = text.uppercase(),
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 12.sp,
                     fontWeight = FontWeight(600),

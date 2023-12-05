@@ -145,7 +145,7 @@ fun ValidationCodeScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        Spacer(modifier = Modifier.height(100.dp))
+                        Spacer(modifier = Modifier.height(125.dp))
 
                         Button(
                             onClick = {
@@ -170,7 +170,7 @@ fun ValidationCodeScreen(
                             }
                         }
                         Column(
-                            modifier = Modifier.height(125.dp),
+                            modifier = Modifier.height(100.dp),
                             verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {

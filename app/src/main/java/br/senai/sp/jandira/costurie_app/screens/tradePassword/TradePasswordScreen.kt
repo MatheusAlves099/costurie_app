@@ -191,7 +191,7 @@ fun TradePasswordScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(100.dp))
+                        Spacer(modifier = Modifier.height(125.dp))
                         Button(
                             modifier = Modifier.fillMaxWidth(),
                             onClick = {

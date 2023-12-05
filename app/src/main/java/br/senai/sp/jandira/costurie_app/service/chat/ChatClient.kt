@@ -5,7 +5,16 @@ import io.socket.client.Socket
 import org.json.JSONObject
 
 class ChatClient() {
-    private val socket: Socket = IO.socket("https://costurieapp.azurewebsites.net")
+
+    private val socket: Socket
+
+    init {
+        val options = IO.Options()
+        options.path = "/clients/socketio/hubs/Hub"
+
+        socket = IO.socket("https://socketcosturie.webpubsub.azure.com", options)
+    }
+
 
     //private val socket: Socket = IO.socket("http://10.107.144.8:3001")
 

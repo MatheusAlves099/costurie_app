@@ -68,7 +68,15 @@ fun ModalLocation(
     val viewModelEstado = viewModel<EstadoViewModel>()
     val viewModelCidade = viewModel<BairroViewModel>()
 
-    var newList by remember {
+    var newListEstado by remember {
+        mutableStateOf(listOf<UsersTagResponse>())
+    }
+
+    var newListCidade by remember {
+        mutableStateOf(listOf<UsersTagResponse>())
+    }
+
+    var newListBairro by remember {
         mutableStateOf(listOf<UsersTagResponse>())
     }
 
@@ -156,9 +164,17 @@ fun ModalLocation(
                     ) {
                         WhiteButton(
                             onClick = {
-                                         newList = list.filter {
-                                             it.cidade.equals(cidadeStateUser)
+                                         newListEstado = list.filter {
+                                             it.estado.equals(estadoStateUser)
                                          }
+
+                                        newListCidade = newListEstado.filter {
+                                            it.cidade.equals(cidadeStateUser)
+                                        }
+
+                                        newListBairro = newListCidade.filter {
+                                            it.bairro.equals(bairroStateUser)
+                                        }
                                     isDialogOpen = !isDialogOpen
                         },
                             text = "FILTRAR".uppercase()
@@ -173,5 +189,5 @@ fun ModalLocation(
         )
     }
 
-    return newList
+    return newListBairro
 }

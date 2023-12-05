@@ -319,10 +319,6 @@ fun ExpandedPublicationScreen(
         Log.e("foto2", "foto: $fotoDoCara")
     }
 
-
-
-
-
     Costurie_appTheme {
         Surface(
             modifier = Modifier
@@ -420,9 +416,8 @@ fun ExpandedPublicationScreen(
                     } else {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .width(360.dp)
                                 .padding(start = 10.dp, end = 10.dp),
-                            horizontalArrangement = Arrangement.SpaceAround,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Box(
@@ -441,6 +436,8 @@ fun ExpandedPublicationScreen(
                                     contentScale = ContentScale.Crop
                                 )
                             }
+                            
+                            Spacer(modifier = Modifier.width(5.dp))
 
                             Text(
                                 text = publicationState.value?.publicacao?.usuario?.nome.orEmpty(),
@@ -472,12 +469,6 @@ fun ExpandedPublicationScreen(
                                 color = Contraste
                             )
 
-                            GradientButtonSmall(
-                                onClick = {},
-                                text = stringResource(id = R.string.botao_recomendar),
-                                color1 = Destaque1,
-                                color2 = Destaque2
-                            )
                         }
 
                         Spacer(modifier = Modifier.height(30.dp))

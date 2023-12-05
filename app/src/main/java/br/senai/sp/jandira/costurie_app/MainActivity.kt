@@ -420,13 +420,15 @@ class MainActivity : ComponentActivity() {
                     composable(route = "profileType") {
                         TypeProfileScreen(
                             navController = navController,
-                            lifecycleScope = lifecycleScope
+                            lifecycleScope = lifecycleScope,
+                            localStorage = localStorage
                         )
                     }
                     composable(route = "tagSelection") {
                         TagSelectScreen(
                             lifecycleScope = lifecycleScope,
-                            navController = navController
+                            navController = navController,
+                            localStorage = localStorage
                         )
                     }
                 }

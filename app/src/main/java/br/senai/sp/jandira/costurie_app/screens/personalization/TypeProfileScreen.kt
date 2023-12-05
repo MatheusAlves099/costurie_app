@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -49,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque1
 import br.senai.sp.jandira.costurie_app.ui.theme.Destaque2
@@ -62,8 +64,9 @@ import kotlin.math.cos
 //}
 
 @Composable
-fun TypeProfileScreen(navController: NavController, lifecycleScope: LifecycleCoroutineScope) {
+fun TypeProfileScreen(navController: NavController, lifecycleScope: LifecycleCoroutineScope, localStorage: Storage) {
     //navController: NavController, lifecycleScope: LifecycleCoroutineScope
+    val context = LocalContext.current
     val brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
     var nomeState by remember {
         mutableStateOf("")
@@ -113,6 +116,7 @@ fun TypeProfileScreen(navController: NavController, lifecycleScope: LifecycleCor
                                   if(costureiraSelected && consumidorSelected == false) {
                                       navController.navigate("tagSelection")
                                   } else if (consumidorSelected && costureiraSelected == false) {
+                                      localStorage.salvarValor(context, "0", "currentScreen")
                                       navController.navigate("home")
                                   }
                         },

@@ -2,6 +2,7 @@ package br.senai.sp.jandira.costurie_app.screens.home
 
 import ProfileScreen
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -83,6 +84,8 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
 
     val screen = localStorage.lerValor(context, "currentScreen")
 
+    Log.i("current", "screen ${screen}")
+
     var currentScreen by remember {
         mutableStateOf(screen)
     }
@@ -121,7 +124,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
     )
 
     var selectedIndexItem by rememberSaveable {
-        mutableStateOf(0)
+        mutableStateOf(currentScreen)
     }
 
 
@@ -164,17 +167,17 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                                     colors = NavigationBarItemDefaults.colors(
                                         indicatorColor = Color.White
                                     ),
-                                    selected = selectedIndexItem == index,
+                                    selected = selectedIndexItem!!.toInt() == index,
                                     onClick = {
-                                        selectedIndexItem = index
-                                        if (selectedIndexItem == 2) {
+                                        selectedIndexItem= index.toString()
+                                        if (selectedIndexItem!!.toInt() == 2) {
                                             scope.launch {
                                                 if (sheetState.isCollapsed) {
                                                     sheetState.expand()
-                                                    selectedIndexItem = currentScreen!!.toInt()
+                                                    selectedIndexItem = currentScreen
                                                 } else {
                                                     sheetState.collapse()
-                                                    selectedIndexItem = currentScreen!!.toInt()
+                                                    selectedIndexItem = currentScreen
                                                 }
                                             }
                                         }
@@ -185,7 +188,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
 
                                             }
                                         ) {
-                                            if (selectedIndexItem == index) {
+                                            if (selectedIndexItem!!.toInt() == index) {
                                                 TextMenuBar(text = item.selected.uppercase())
                                             } else {
                                                 if (index == 2) {
@@ -213,17 +216,17 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center
                     ) {
-                        if (selectedIndexItem == 0) {
+                        if (selectedIndexItem!!.toInt() == 0) {
                             ExploreScreen(navController = navController, localStorage = localStorage)
                             currentScreen = selectedIndexItem.toString()
                             localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
-                        } else if (selectedIndexItem == 1) {
+                        } else if (selectedIndexItem!!.toInt() == 1) {
                             localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
                             ServicesScreen(navController = navController, lifecycleScope =  lifecycleScope, filterings = emptyList(), categories = emptyList(), viewModelUserTags = UserTagViewModel(), localStorage = localStorage)
                             currentScreen = selectedIndexItem.toString()
-                        } else if (selectedIndexItem == 2) {
+                        } else if (selectedIndexItem!!.toInt() == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
-                        } else if (selectedIndexItem == 3) {
+                        } else if (selectedIndexItem!!.toInt() == 3) {
 
                             val client = ChatClient()
 
@@ -251,6 +254,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                             ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUserViewModel,  localStorage = localStorage)
                             currentScreen = selectedIndexItem.toString()
                             localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
+                            Log.i("current", "HomeScreen: ${localStorage.lerValor(context, "currentScreen")}")
                         }
                     }
 

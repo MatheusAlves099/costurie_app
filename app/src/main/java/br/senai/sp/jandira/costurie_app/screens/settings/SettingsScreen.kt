@@ -95,7 +95,7 @@ fun SettingsScreen(
                                 .size(45.dp)
                                 .clickable {
 
-                                    navController.popBackStack()
+                                    navController.navigate("home")
                                 }
                         )
                     }

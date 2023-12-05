@@ -48,6 +48,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.MainActivity
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField
 import br.senai.sp.jandira.costurie_app.components.GoogleButton
 import br.senai.sp.jandira.costurie_app.components.GradientButton
@@ -64,7 +65,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, lifecycleScope: LifecycleCoroutineScope) {
+fun LoginScreen(navController: NavController, lifecycleScope: LifecycleCoroutineScope, localStorage: Storage) {
 
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
@@ -164,6 +165,7 @@ fun LoginScreen(navController: NavController, lifecycleScope: LifecycleCoroutine
                                         senha = password,
                                     )
                                 }
+                                localStorage.salvarValor(context, "0", "currentScreen")
                                 navController.navigate("home")
 
                             } else {

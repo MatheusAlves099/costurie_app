@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
                     composable(route = "login") {
                         LoginScreen(
                             navController = navController,
-                            lifecycleScope = lifecycleScope
+                            lifecycleScope = lifecycleScope,
+                            localStorage = localStorage
                         )
                     }
                     composable(route = "password") {

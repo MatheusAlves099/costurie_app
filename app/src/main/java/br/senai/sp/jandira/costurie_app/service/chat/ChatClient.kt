@@ -5,7 +5,7 @@ import io.socket.client.Socket
 import org.json.JSONObject
 
 class ChatClient() {
-    private val socket: Socket = IO.socket("http://10.107.144.27:3001")
+    private val socket: Socket = IO.socket("https://costurieapp.azurewebsites.net")
 
     //private val socket: Socket = IO.socket("http://10.107.144.8:3001")
 
@@ -33,6 +33,12 @@ class ChatClient() {
         socket.on(Socket.EVENT_DISCONNECT) {
             println("Disconnected from server")
         }
+
+        socket.on(Socket.EVENT_CONNECT_ERROR) {
+            val error = it[0] as Exception
+            println("Connection error: $error")
+        }
+
     }
 
     fun sendMessage(message: JSONObject) {

@@ -49,6 +49,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import br.senai.sp.jandira.costurie_app.R
+import br.senai.sp.jandira.costurie_app.Storage
 import br.senai.sp.jandira.costurie_app.components.CustomOutlinedTextField2
 import br.senai.sp.jandira.costurie_app.components.GradientButtonTag
 import br.senai.sp.jandira.costurie_app.components.TagColorViewModel
@@ -68,7 +69,8 @@ import kotlinx.coroutines.launch
 fun TagSelectScreen(
     //viewModel: UserViewModel,
     navController: NavController,
-    lifecycleScope: LifecycleCoroutineScope
+    lifecycleScope: LifecycleCoroutineScope,
+    localStorage: Storage
 ) {
 
     val brush = Brush.horizontalGradient(listOf(Destaque1, Destaque2))
@@ -156,6 +158,7 @@ fun TagSelectScreen(
                                         user.token,
                                         tagsArray)
 
+                                    localStorage.salvarValor(context, "0", "currentScreen")
                                     navController.navigate("home")
                                 }
                             }

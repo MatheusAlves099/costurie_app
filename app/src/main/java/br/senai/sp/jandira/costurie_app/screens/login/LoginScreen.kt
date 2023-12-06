@@ -312,8 +312,6 @@ fun LoginScreen(navController: NavController, lifecycleScope: LifecycleCoroutine
 
                             Line()
 
-                            GoogleButton( onClick = {}, text = "Entre com o Google")
-
                             Spacer(modifier = Modifier.height(5.dp))
 
 

@@ -137,7 +137,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
             BottomSheetScaffold(
                 scaffoldState = scaffoldState,
                 sheetShape = RoundedCornerShape(20.dp),
-                sheetElevation = 10.dp,
+                sheetElevation = 8.dp,
                 sheetContent = {
                     Box(
                         modifier = Modifier

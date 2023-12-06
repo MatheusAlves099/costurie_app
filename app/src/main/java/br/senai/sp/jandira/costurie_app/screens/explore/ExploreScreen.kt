@@ -2,6 +2,7 @@ package br.senai.sp.jandira.costurie_app.screens.explore
 
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -126,7 +127,6 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
         Surface(
             modifier = Modifier
                 .fillMaxSize(),
-            color = Color.White
         ) {
             Column(
                 modifier = Modifier
@@ -137,7 +137,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 30.dp, top = 10.dp),
+                        .padding(start = 12.dp, top = 10.dp),
                     color = Color.Black,
                     text = stringResource(id = R.string.explorar_titulo),
                     style = MaterialTheme.typography.bodySmall,
@@ -154,7 +154,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 30.dp, top = 10.dp),
+                            .padding(start = 12.dp),
                         color = Color.Black,
                         text = stringResource(id = R.string.mais_populares_text),
                         style = MaterialTheme.typography.bodySmall,
@@ -162,7 +162,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                         fontWeight = FontWeight.SemiBold
                     )
 
-                    LazyRow {
+                    LazyRow{
                         items(publicationsPopularState.value) { publication ->
                             var shortDesc = publication.descricao
                             var titleList = publication.titulo.split(" ")
@@ -182,8 +182,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                 modifier = Modifier
                                     .width(190.dp)
                                     .height(230.dp)
-                                    .padding(start = 32.dp)
-                                    .clip(RoundedCornerShape(16.dp))
+                                    .padding(start = 12.dp, end = 12.dp)
                                     .clickable {
                                         localStorage.salvarValor(
                                             context,
@@ -192,6 +191,8 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                         )
                                         navController.navigate("expandedPublication")
                                     },
+                                shape = RoundedCornerShape(16.dp),
+                                elevation = 8.dp
                             ) {
                                 Column(
                                     modifier = Modifier.fillMaxSize(),
@@ -201,6 +202,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                         modifier = Modifier
                                             .height(145.dp)
                                             .fillMaxWidth()
+                                            .padding(1.dp)
                                             .background(
                                                 Color(168, 155, 255, 102),
                                                 shape = RoundedCornerShape(16.dp)
@@ -210,7 +212,9 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                             model = publication.anexos[0].anexo,
                                             contentDescription = "",
                                             modifier = Modifier
-                                                .size(150.dp, 140.dp)
+                                                .fillMaxWidth()
+                                                .height(140.dp)
+                                                .padding(end = 6.dp, bottom = 4.dp)
                                                 .clip(shape = RoundedCornerShape(10.dp)),
                                             contentScale = ContentScale.Crop
                                         )
@@ -240,19 +244,19 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 30.dp, top = 10.dp),
+                        .padding(start = 12.dp, top = 10.dp),
                     color = Color.Black,
                     text = stringResource(id = R.string.recentes_text),
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold
                 )
-                Spacer(modifier = Modifier.height(10.dp))
-                LazyRow() {
+                LazyRow(
+                    modifier = Modifier.padding(bottom = 100.dp)
+                ) {
                     items(publicationsState.value.reversed()) { publication ->
                         var shortDesc = publication.descricao
                         var titleList = publication.titulo.split(" ")
@@ -272,9 +276,8 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                         Card(
                             modifier = Modifier
                                 .width(190.dp)
-                                .height(260.dp)
-                                .padding(start = 32.dp)
-                                .clip(RoundedCornerShape(16.dp))
+                                .height(230.dp)
+                                .padding(start = 12.dp, end = 12.dp)
                                 .clickable {
                                     localStorage.salvarValor(
                                         context,
@@ -283,8 +286,8 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                     )
                                     navController.navigate("expandedPublication")
                                 },
-                            backgroundColor = Color.White,
-                            elevation = 20.dp
+                            shape = RoundedCornerShape(16.dp),
+                            elevation = 8.dp
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxSize(),
@@ -294,6 +297,7 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                     modifier = Modifier
                                         .height(145.dp)
                                         .fillMaxWidth()
+                                        .padding(1.dp)
                                         .background(
                                             Color(168, 155, 255, 102),
                                             shape = RoundedCornerShape(16.dp)
@@ -303,7 +307,9 @@ fun ExploreScreen(navController: NavController, localStorage: Storage) {
                                         model = publication.anexos[0].anexo,
                                         contentDescription = "",
                                         modifier = Modifier
-                                            .size(150.dp, 140.dp)
+                                            .fillMaxWidth()
+                                            .height(140.dp)
+                                            .padding(end = 6.dp, bottom = 4.dp)
                                             .clip(shape = RoundedCornerShape(10.dp)),
                                         contentScale = ContentScale.Crop
                                     )

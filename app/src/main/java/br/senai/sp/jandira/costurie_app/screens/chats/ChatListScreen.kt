@@ -94,7 +94,7 @@ fun ChatListScreen(
                 if (data.toString().isNotEmpty()) {
                     val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
-                    if(chat.id_user == idUsuario){
+                    if (chat.id_user == idUsuario) {
                         listaContatos = chat
                     }
                 }
@@ -109,8 +109,6 @@ fun ChatListScreen(
         mutableStateOf("")
     }
 
-    var isLongPressActive by remember { mutableStateOf(false) }
-
     Costurie_appTheme {
         Surface(
             modifier = Modifier
@@ -122,42 +120,6 @@ fun ChatListScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (isLongPressActive)
-                    Box() {
-                        Image(
-                            painter = painterResource(id = R.drawable.retangulo_topo),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(100.dp),
-                            alignment = Alignment.TopEnd
-                        )
-                        Row(
-                            modifier = Modifier
-                                .width(390.dp)
-                                .height(80.dp)
-                                .padding(start = 15.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.arrow_back),
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .size(45.dp)
-                                    .clickable {
-                                        navController.navigate("home")
-                                    }
-                            )
-
-                            ModalDeleteMessage(
-                                lifecycleScope,
-                                localStorage,
-                                navController
-                            )
-                        }
-                    } else {
-
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -185,8 +147,6 @@ fun ChatListScreen(
                         searchIcon = true
                     )
 
-                }
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Column(
@@ -208,17 +168,10 @@ fun ChatListScreen(
                                 modifier = Modifier
                                     .size(380.dp, 85.dp)
                                     .padding(start = 32.dp, top = 4.dp, bottom = 4.dp)
-                                    .pointerInput(Unit) {
-                                        detectTransformGestures { _, pan, _, _ ->
-                                            if (pan != Offset(0f, 0f)) {
-                                                isLongPressActive = true
-                                            }
-                                        }
-                                    }
                                     .clickable {
 
-                                        Log.e("Luizão - ChatScreen", "$contato", )
-                                        Log.e("Luizão - ChatScreen", "id: ${it.id_chat}", )
+                                        Log.e("Luizão - ChatScreen", "$contato")
+                                        Log.e("Luizão - ChatScreen", "id: ${it.id_chat}")
 
 
                                         navController.navigate("chat")
@@ -230,7 +183,7 @@ fun ChatListScreen(
                                         socket.emit("listMessages", it.id_chat)
                                         Log.e("luiz", "ChatScreen: ${contato[0].id}")
                                     },
-                                backgroundColor = (if (isLongPressActive) Principal2 else Color.White),
+                                backgroundColor = (Color.White),
                                 shape = RoundedCornerShape(15.dp),
                                 elevation = AppBarDefaults.TopAppBarElevation,
 
@@ -257,18 +210,6 @@ fun ChatListScreen(
                                                 .clip(shape = RoundedCornerShape(10.dp)),
                                             contentScale = ContentScale.Crop
                                         )
-
-                                        if (isLongPressActive) Image(
-                                            painterResource(id = R.drawable.check_icon),
-                                            contentDescription = "",
-                                            modifier = Modifier
-                                                .size(20.dp)
-                                                .offset(x = 40.dp, y = 40.dp)
-                                                .clip(shape = RoundedCornerShape(10.dp)),
-                                            contentScale = ContentScale.Crop
-                                        ) else {
-
-                                        }
                                     }
 
                                     Column(
@@ -284,16 +225,6 @@ fun ChatListScreen(
                                             fontSize = 15.sp,
                                             color = Contraste
                                         )
-
-//                                        Text(
-//                                            text = "Boa noite!",
-//                                            textAlign = TextAlign.Start,
-//                                            modifier = Modifier
-//                                                .width(220.dp)
-//                                                .height(22.dp),
-//                                            fontSize = 15.sp,
-//                                            color = Contraste2
-//                                        )
                                     }
 
                                     Column(
@@ -303,23 +234,6 @@ fun ChatListScreen(
                                         Arrangement.SpaceBetween,
                                         Alignment.CenterHorizontally
                                     ) {
-//                                        Canvas(
-//                                            modifier = Modifier
-//                                                .size(12.dp)
-//                                                .pointerInput(Unit) {
-//                                                    detectTransformGestures { _, pan, _, _ ->
-//                                                        if (pan != Offset(0f, 0f)) {
-//                                                            isLongPressActive = true
-//                                                        }
-//                                                    }
-//                                                },
-//                                            onDraw = {
-//                                                drawCircle(
-//                                                    color = if (isLongPressActive) Color.Transparent else Destaque1
-//                                                )
-//                                            }
-//                                        )
-
                                         Text(
                                             text = formatarData(it.data_criacao),
                                             textAlign = TextAlign.Start,
@@ -332,10 +246,8 @@ fun ChatListScreen(
                                     }
                                 }
                             }
-
                         }
                     }
-
                 }
             }
         }

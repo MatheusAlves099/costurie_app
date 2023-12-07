@@ -63,12 +63,21 @@ import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.viewModel.UserTagViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel
 import br.senai.sp.jandira.costurie_app.viewModel.UserViewModel2
+import io.socket.client.Socket
 import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineScope, viewModelUserViewModel: UserViewModel2, chatViewModel: ChatViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    lifecycleScope: LifecycleCoroutineScope,
+    viewModelUserViewModel: UserViewModel2,
+    chatViewModel: ChatViewModel,
+    client: ChatClient,
+    socket: Socket,
+    idUsuario: Int,
+) {
 
     val localStorage: Storage = Storage()
 
@@ -144,7 +153,11 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                             .fillMaxWidth()
                             .height(750.dp)
                     ) {
-                        PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
+                        PublishScreen(
+                            navController = navController,
+                            lifecycleScope = lifecycleScope,
+                            localStorage = localStorage
+                        )
                     }
                 },
                 sheetBackgroundColor = Color.White,
@@ -169,7 +182,7 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                                     ),
                                     selected = selectedIndexItem!!.toInt() == index,
                                     onClick = {
-                                        selectedIndexItem= index.toString()
+                                        selectedIndexItem = index.toString()
                                         if (selectedIndexItem!!.toInt() == 2) {
                                             scope.launch {
                                                 if (sheetState.isCollapsed) {
@@ -217,12 +230,30 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
                         verticalArrangement = Arrangement.Center
                     ) {
                         if (selectedIndexItem!!.toInt() == 0) {
-                            ExploreScreen(navController = navController, localStorage = localStorage)
+                            ExploreScreen(
+                                navController = navController,
+                                localStorage = localStorage
+                            )
                             currentScreen = selectedIndexItem.toString()
-                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
+                            localStorage.salvarValor(
+                                context,
+                                currentScreen.toString(),
+                                "currentScreen"
+                            )
                         } else if (selectedIndexItem!!.toInt() == 1) {
-                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
-                            ServicesScreen(navController = navController, lifecycleScope =  lifecycleScope, filterings = emptyList(), categories = emptyList(), viewModelUserTags = UserTagViewModel(), localStorage = localStorage)
+                            localStorage.salvarValor(
+                                context,
+                                currentScreen.toString(),
+                                "currentScreen"
+                            )
+                            ServicesScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope,
+                                filterings = emptyList(),
+                                categories = emptyList(),
+                                viewModelUserTags = UserTagViewModel(),
+                                localStorage = localStorage
+                            )
                             currentScreen = selectedIndexItem.toString()
                         } else if (selectedIndexItem!!.toInt() == 2) {
                             //PublishScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage)
@@ -241,20 +272,44 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
 
                             var data = ""
 
-                            if(dadaUser.isNotEmpty()){
+                            if (dadaUser.isNotEmpty()) {
                                 array = dadaUser[0]
 
                                 data = array.id.toString()
                             }
                             client.connect(data.toInt())
-                            ChatListScreen(navController = navController, lifecycleScope = lifecycleScope, localStorage = localStorage, client = client, socket = socket,  chatViewModel = chatViewModel,  idUsuario = data.toInt())
+                            ChatListScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope,
+                                localStorage = localStorage,
+                                client = client,
+                                socket = socket,
+                                chatViewModel = chatViewModel,
+                                idUsuario = data.toInt()
+                            )
                             currentScreen = selectedIndexItem.toString()
-                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
+                            localStorage.salvarValor(
+                                context,
+                                currentScreen.toString(),
+                                "currentScreen"
+                            )
                         } else {
-                            ProfileScreen(navController = navController, lifecycleScope = lifecycleScope, viewModel = viewModelUserViewModel,  localStorage = localStorage)
+                            ProfileScreen(
+                                navController = navController,
+                                lifecycleScope = lifecycleScope,
+                                viewModel = viewModelUserViewModel,
+                                localStorage = localStorage
+                            )
                             currentScreen = selectedIndexItem.toString()
-                            localStorage.salvarValor(context, currentScreen.toString(), "currentScreen")
-                            Log.i("current", "HomeScreen: ${localStorage.lerValor(context, "currentScreen")}")
+                            localStorage.salvarValor(
+                                context,
+                                currentScreen.toString(),
+                                "currentScreen"
+                            )
+                            Log.i(
+                                "current",
+                                "HomeScreen: ${localStorage.lerValor(context, "currentScreen")}"
+                            )
                         }
                     }
 
@@ -263,10 +318,11 @@ fun HomeScreen (navController: NavController,lifecycleScope: LifecycleCoroutineS
         }
     }
 }
-    data class BottomnavigationBarItem(
-        val route: String,
-        val selected: String,
-        val unselected: Painter,
-        val hasNews: Boolean,
-        val badgeCount: Int? = null
-    )
+
+data class BottomnavigationBarItem(
+    val route: String,
+    val selected: String,
+    val unselected: Painter,
+    val hasNews: Boolean,
+    val badgeCount: Int? = null
+)

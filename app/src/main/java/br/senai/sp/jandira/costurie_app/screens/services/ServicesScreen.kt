@@ -37,6 +37,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -259,7 +260,8 @@ fun ServicesScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(62.dp)
-                        .padding(horizontal = 32.dp),
+                        .padding(horizontal = 32.dp)
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(20.dp)),
                     searchIcon = true
                 )
 

@@ -170,18 +170,13 @@ fun ChatListScreen(
                             Log.d("LISTA4", "ChatListScreen: ${listaContatos.users}")
                             var contato = it.users.filter { user -> user.id != idUsuario }
 
-                            Log.e("oii", "aquiiii: ${contato[0].id}")
+                            Log.e("oii", "aquiiii: ${contato}")
 
                             Card(
                                 modifier = Modifier
                                     .size(380.dp, 85.dp)
                                     .padding(start = 32.dp, top = 4.dp, bottom = 4.dp)
                                     .clickable {
-
-                                        Log.e("Luizão - ChatScreen", "$contato")
-                                        Log.e("Luizão - ChatScreen", "id: ${it.id_chat}")
-
-
                                         navController.navigate("chat")
 
                                         chatViewModel.idChat = it.id_chat
@@ -189,7 +184,7 @@ fun ChatListScreen(
                                         chatViewModel.foto = contato[0].foto
                                         chatViewModel.nome = contato[0].nome
                                         socket.emit("listMessages", it.id_chat)
-                                        Log.e("luiz", "ChatScreen: ${contato[0].id}")
+                                        Log.e("foto", "ChatScreen: ${chatViewModel.foto}")
                                     },
                                 backgroundColor = (Color.White),
                                 shape = RoundedCornerShape(15.dp),

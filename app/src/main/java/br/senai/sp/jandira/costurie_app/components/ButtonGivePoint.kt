@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -45,7 +46,8 @@ fun ButtonGivePoint(
     onClick: () -> Unit,
     text: String,
     btnColor: List<Color>,
-    textColor: List<Color>
+    textColor: List<Color>,
+    painter: Painter
 
 ) {
 
@@ -85,7 +87,7 @@ fun ButtonGivePoint(
 
 
                 Image(
-                    painter = painterResource(id = R.drawable.icon_agulha),
+                    painter = painter,
                     contentDescription = "image description",
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier

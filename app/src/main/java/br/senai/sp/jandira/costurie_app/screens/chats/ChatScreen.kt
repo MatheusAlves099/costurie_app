@@ -117,19 +117,21 @@ fun ChatScreen(
                         args.let { d ->
                             if (d.isNotEmpty()) {
                                 val data = d[0]
-                                if (data.toString().isNotEmpty()) {
+                                if (data is String && data == "receive_contacts") {
+                                    Log.e("MORREU MAS NAO PAASSA", "Morri mas passo bem", )
+                                } else if (data.toString().isNotEmpty()) {
                                     val mensagens =
-                                        Gson().fromJson(
+                                        com.google.gson.Gson().fromJson(
                                             data.toString(),
-                                            MensagensResponse::class.java
+                                            br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse::class.java
                                         )
 
                                     listaMensagens = mensagens
                                     if (mensagens.id_chat == idChat) {
-                                        Log.w("XAMUEEL EU TE AMO", "IDCHAT = ${mensagens.id_chat}", )
-                                       listaMensagens = mensagens
-                                   }
-                                    Log.w("XAMUEEL NÃO", "IDCHAT = ${mensagens.id_chat}", )
+                                        android.util.Log.w("XAMUEEL EU TE AMO", "IDCHAT = ${mensagens.id_chat}", )
+                                        listaMensagens = mensagens
+                                    }
+                                    android.util.Log.w("XAMUEEL NÃO", "IDCHAT = ${mensagens.id_chat}", )
                                 } else {
                                     listaMensagens = MensagensResponse(
                                         status = 0,
@@ -141,6 +143,7 @@ fun ChatScreen(
                                         mensagens = mutableStateListOf()
                                     )
                                 }
+
                             }
                         }
                     }

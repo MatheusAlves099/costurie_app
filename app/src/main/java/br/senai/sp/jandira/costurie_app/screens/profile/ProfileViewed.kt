@@ -357,7 +357,7 @@ fun ProfileViewedScreen(
                                     nome = dadaUser[0].nome
                                 )
 
-                                Log.w("idmeu", "id meu: ${dadaUser[0].id}", )
+                                Log.w("idmeu", "id meu: ${fotoAnunciante}", )
 
                                 val jsonUserAnunciante = UserChat(
                                     id = idAnunciante.toInt(),
@@ -386,7 +386,8 @@ fun ProfileViewedScreen(
                                     //addProperty("status", true)
                                 }
 
-                                Log.w("corpo", "corpo: $jsonBody", )
+                                Log.w("fotouser1", "corpo: ${jsonUser1.foto}", )
+                                Log.w("fotoAnunciante", "corpo: ${jsonUserAnunciante.foto}", )
 
 //                                    socket.connect()
 //                                    if (socket.connected()) {

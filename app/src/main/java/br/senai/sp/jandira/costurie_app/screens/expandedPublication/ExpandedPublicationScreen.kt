@@ -661,27 +661,53 @@ fun ExpandedPublicationScreen(
 
 
                             ProgressBar(isDisplayed = false)
-                            ButtonGivePoint(
-                                onClick = {
-                                    lifecycleScope.launch {
+                            if (isClicked) {
+                                ButtonGivePoint(
+                                    onClick = {
+                                        lifecycleScope.launch {
 
-                                        isClicked = !isClicked
-                                        Log.i(
-                                            "isclicked",
-                                            "ExpandedPublicationScreen: ${isClicked}"
-                                        )
-                                        if (isClicked) {
-                                            postGivePoint()
-                                        } else {
-                                            postRemovePoint()
+                                            isClicked = !isClicked
+                                            Log.i(
+                                                "isclicked",
+                                                "ExpandedPublicationScreen: ${isClicked}"
+                                            )
+                                            if (isClicked) {
+                                                postGivePoint()
+                                            } else {
+                                                postRemovePoint()
+                                            }
                                         }
-                                    }
-                                },
-                                text = stringResource(id = R.string.text_give_point),
-                                btnColor = btnColor,
-                                textColor = textColor
+                                    },
+                                    text = stringResource(id = R.string.text_give_point),
+                                    btnColor = btnColor,
+                                    textColor = textColor,
+                                    painter = painterResource(id = R.drawable.icon_agulha_branca)
 
-                            )
+                                )
+                            } else {
+                                ButtonGivePoint(
+                                    onClick = {
+                                        lifecycleScope.launch {
+
+                                            isClicked = !isClicked
+                                            Log.i(
+                                                "isclicked",
+                                                "ExpandedPublicationScreen: ${isClicked}"
+                                            )
+                                            if (isClicked) {
+                                                postGivePoint()
+                                            } else {
+                                                postRemovePoint()
+                                            }
+                                        }
+                                    },
+                                    text = stringResource(id = R.string.text_give_point),
+                                    btnColor = btnColor,
+                                    textColor = textColor,
+                                    painter = painterResource(id = R.drawable.icon_agulha)
+
+                                )
+                            }
 
 
                             GradientButtonSmall(

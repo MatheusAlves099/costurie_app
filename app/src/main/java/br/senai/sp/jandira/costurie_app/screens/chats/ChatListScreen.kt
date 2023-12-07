@@ -94,6 +94,10 @@ fun ChatListScreen(
                 if (data.toString().isNotEmpty()) {
                     val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
+                    Log.d("chattt", "ChatListScreen: $chat")
+
+                    Log.w("BOTA DENTRO", "ChatListScreen: $idUsuario", )
+
                     if (chat.id_user == idUsuario) {
                         listaContatos = chat
                     }

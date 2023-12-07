@@ -124,11 +124,32 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable(route = "home") {
+                        val context = LocalContext.current
+
+                        //val dadaUser = UserRepository(context).findUsers()
+                        val dadaUser = UserRepositorySqlite(context).findUsers()
+
+                        var array = User()
+
+                        var data = ""
+
+                        if (dadaUser.isNotEmpty()) {
+                            array = dadaUser[0]
+
+                            data = array.id.toString()
+                        }
+                        val client1 = ChatClient()
+                        client1.connect(data.toInt())
+                        val socket1 = client1.getSocket()
+                        client.connect(data.toInt())
                         HomeScreen(
                             navController = navController,
                             lifecycleScope = lifecycleScope,
                             viewModelUser2,
-                            chatViewModel
+                            chatViewModel,
+                            client = client1,
+                            socket = socket1,
+                            idUsuario = data.toInt()
                         )
                     }
                     composable(route = "explore") {

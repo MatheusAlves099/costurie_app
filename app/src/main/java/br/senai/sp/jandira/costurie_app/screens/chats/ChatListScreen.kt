@@ -92,14 +92,18 @@ fun ChatListScreen(
             if (d.isNotEmpty()) {
                 val data = d[0]
                 if (data.toString().isNotEmpty()) {
-                    val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
+                    //val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
-                    Log.d("chattt", "ChatListScreen: $chat")
+                    if (data is String && data == "receive_contacts") {
+                        Log.e("MORREU MAS NAO PAASSA", "Morri mas passo bem", )
+                    } else if (data.toString().isNotEmpty()) {
+                        val chat = Gson().fromJson(data.toString(), SocketResponse::class.java)
 
-                    Log.w("BOTA DENTRO", "ChatListScreen: $idUsuario", )
+                        Log.e("tentativa erro", "ChatScreen: ${chat}", )
 
-                    if (chat.id_user == idUsuario) {
-                        listaContatos = chat
+                        if(chat.id_user == idUsuario){
+                            listaContatos = chat
+                        }
                     }
                 }
             }

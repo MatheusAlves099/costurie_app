@@ -6,16 +6,16 @@ import org.json.JSONObject
 
 class ChatClient() {
 
-//    private val socket: Socket
-//
-//    init {
-//        val options = IO.Options()
-//        options.path = "/clients/socketio/hubs/Hub"
-//
-//        socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
-//    }
+    private val socket: Socket
 
-    private val socket: Socket = IO.socket("http://192.168.3.7:3001")
+    init {
+        val options = IO.Options()
+        options.path = "/clients/socketio/hubs/Hub"
+
+        socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
+    }
+
+    //private val socket: Socket = IO.socket("http://192.168.3.7:3001")
 
     fun connect(idUsuario: Int) {
 

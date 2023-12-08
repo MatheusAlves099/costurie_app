@@ -113,6 +113,8 @@ fun ExpandedPublicationScreen(
 ) {
     var context = LocalContext.current
 
+    val userLuizao = UserRepositorySqlite(context)
+
     val dadaUser = UserRepositorySqlite(context).findUsers()
 
     var notVisibile by remember {
@@ -627,6 +629,7 @@ fun ExpandedPublicationScreen(
                                                             "mumu testando dentro",
                                                             "${newChat.id_chat}",
                                                         )
+                                                        userLuizao.updateIdChat(idChat = newChat.id_chat)
                                                         chatViewModel.idChat = newChat.id_chat
                                                     } else {
                                                         Log.e(

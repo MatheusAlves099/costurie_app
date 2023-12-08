@@ -14,5 +14,6 @@ data class User(
     val idEndereco: Int = 0,
     val bairro: String = "",
     val cidade: String = "",
-    val ufEstado: String = ""
+    val ufEstado: String = "",
+    val idChat: String = ""
 )

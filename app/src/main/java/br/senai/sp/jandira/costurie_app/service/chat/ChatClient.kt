@@ -11,6 +11,7 @@ class ChatClient() {
     init {
         val options = IO.Options()
         options.path = "/clients/socketio/hubs/Hub"
+        options.reconnection = true
 
         socket = IO.socket("https://socket-costurie.webpubsub.azure.com", options)
     }

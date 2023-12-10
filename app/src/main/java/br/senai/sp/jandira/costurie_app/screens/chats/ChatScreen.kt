@@ -36,6 +36,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,6 +52,7 @@ import br.senai.sp.jandira.costurie_app.components.SendMesssage
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal1
 import br.senai.sp.jandira.costurie_app.ui.theme.Principal2
@@ -69,6 +71,9 @@ fun ChatScreen(
     idUsuario: Int,
     chatViewModel: ChatViewModel
 ) {
+
+    val context = LocalContext.current
+    val user = UserRepositorySqlite(context)
 
     val idChat = chatViewModel.idChat
     val idUser2 = chatViewModel.idUser2
@@ -117,18 +122,21 @@ fun ChatScreen(
                         args.let { d ->
                             if (d.isNotEmpty()) {
                                 val data = d[0]
-                                if (data is String && data == "receive_contacts") {
+
+                                Log.e("data", "$data")
+                                if (data is String && data == "receive_message") {
                                     Log.e("MORREU MAS NAO PAASSA", "Morri mas passo bem", )
                                 } else if (data.toString().isNotEmpty()) {
-                                    val mensagens =
-                                        com.google.gson.Gson().fromJson(
+                                    val mensagens = Gson().fromJson(
                                             data.toString(),
-                                            br.senai.sp.jandira.costurie_app.service.chat.MensagensResponse::class.java
+                                            MensagensResponse::class.java
                                         )
 
-                                    listaMensagens = mensagens
-                                    if (mensagens.id_chat == idChat) {
-                                        android.util.Log.w("XAMUEEL EU TE AMO", "IDCHAT = ${mensagens.id_chat}", )
+                                    val idChatOfc = user.findUsers()[0].idChat
+
+                                    Log.e("IDCHAT", "$idChatOfc")
+
+                                    if(mensagens.id_chat == idChatOfc){
                                         listaMensagens = mensagens
                                     }
                                     android.util.Log.w("XAMUEEL NÃO", "IDCHAT = ${mensagens.id_chat}", )

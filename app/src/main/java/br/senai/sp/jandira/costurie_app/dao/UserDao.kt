@@ -26,4 +26,9 @@ interface UserDao {
 
     @Query("SELECT * FROM tbl_user")
     fun findUsers(): List<User>
+
+    @Query("UPDATE tbl_user set idChat = :idChat")
+    fun updateIdChat(idChat: String): Int
+    @Query("SELECT * FROM tbl_user WHERE idChat = :idChat")
+    fun findIdChat(idChat: String): User
 }

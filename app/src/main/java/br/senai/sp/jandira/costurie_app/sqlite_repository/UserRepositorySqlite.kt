@@ -32,4 +32,12 @@ class UserRepositorySqlite(context: Context) {
         return  db.userDao().deleteAll()
     }
 
+    fun updateIdChat(idChat: String): Int{
+        return db.userDao().updateIdChat(idChat)
+    }
+
+    fun findIdChat(idChat: String): User{
+        return db.userDao().findIdChat(idChat)
+    }
+
 }

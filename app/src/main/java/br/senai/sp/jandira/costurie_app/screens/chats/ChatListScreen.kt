@@ -55,6 +55,7 @@ import br.senai.sp.jandira.costurie_app.components.ModalDeleteMessage
 import br.senai.sp.jandira.costurie_app.service.chat.ChatClient
 import br.senai.sp.jandira.costurie_app.service.chat.SocketResponse
 import br.senai.sp.jandira.costurie_app.service.chat.view_model.ChatViewModel
+import br.senai.sp.jandira.costurie_app.sqlite_repository.UserRepositorySqlite
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste
 import br.senai.sp.jandira.costurie_app.ui.theme.Contraste2
 import br.senai.sp.jandira.costurie_app.ui.theme.Costurie_appTheme
@@ -75,6 +76,10 @@ fun ChatListScreen(
     idUsuario: Int,
     chatViewModel: ChatViewModel
 ) {
+
+    var context = LocalContext.current
+
+    val user = UserRepositorySqlite(context)
 
     var listaContatos by remember {
         mutableStateOf(
@@ -111,7 +116,7 @@ fun ChatListScreen(
     }
 
     Log.d("LISTA2", "ChatListScreen: $listaContatos")
-    var context = LocalContext.current
+
 
     var pesquisaState by remember {
         mutableStateOf("")
@@ -184,6 +189,7 @@ fun ChatListScreen(
                                         chatViewModel.foto = contato[0].foto
                                         chatViewModel.nome = contato[0].nome
                                         socket.emit("listMessages", it.id_chat)
+                                        user.updateIdChat(idChat = it.id_chat)
                                         Log.e("foto", "ChatScreen: ${chatViewModel.foto}")
                                     },
                                 backgroundColor = (Color.White),

@@ -122,7 +122,8 @@ fun ChatScreen(
                         args.let { d ->
                             if (d.isNotEmpty()) {
                                 val data = d[0]
-                                Log.e("data", "$data", )
+
+                                Log.e("data", "$data")
                                 if (data is String && data == "receive_message") {
                                     Log.e("MORREU MAS NAO PAASSA", "Morri mas passo bem", )
                                 } else if (data.toString().isNotEmpty()) {
